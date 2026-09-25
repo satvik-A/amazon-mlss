@@ -1,0 +1,62 @@
+# CONTEXT: current state (single source of truth; read this first)
+Updated 2026-09-25. Older docs are in `research/archive/` (history only). Detailed ledger: `research/CHECKLIST.md` (older entries reference archived paths). Rules: `research/organiser_answers.md`.
+
+## 1. Task and scoring
+- Match S2/S3 records to each S1 business (S1 is deduplicated). Output `matching_results.tsv` (LB-scored) + `candidate_pairs.tsv` (final zip).
+- Metric: **macro F0.5 per S1**; a singleton scores 1 if predicted empty, 0 otherwise.
+- **Candidate-set size per S1 counts toward final ranking** (smaller is better). `candidate_pairs` = input to the **first scoring model**, so all shrinking must be deterministic blocking (similarity, keys, rules, cut-offs tuned on train); no learned pair-scorer before it.
+- Models: each one separately MIT/Apache-2.0 (base model's licence too), ≤ 8B total params, offline, fine-tuned only on provided data. Multiple models OK.
+- Allowed: RapidFuzz/LightGBM/pandas/polars, small hand-written dictionaries, unsupervised statistics / clustering / self-training / synthetic pairs on test records. Prohibited: geo/postal packages (libpostal), large static geo tables, external lookups, hosted LLM APIs.
+- Country is an open set; France appears only in test (public + private splits).
+
+## 2. Data facts (verified)
+- Train: 2.21M S1, 10.32M S2+S3. Test: 1.73M S1 (US 0.66M, India 0.81M, **France 0.26M**), 9.97M S2+S3; test has 22% more S2/S3 per S1.
+- Singletons 5.6% (train). Matches per S1: mean 3.46, max 11; per source S2 ≤ 5, S3 ≤ 6.
+- Each matched record belongs to exactly one S1 (0 exceptions of 7.64M); not confirmed for test → enforce in the decision layer only.
+- Matches always share the country. 26% of S2/S3 are orphans.
+- **Twin decoys:** same name (± a qualifier word), nearby house number (shift ≤ 25 / 1-digit edit); 84% of singletons have one. Number sets: identical in 62–71% of true pairs vs ~1–2% of look-alikes; disjoint 2–5% vs ~70%.
+- **Test decoys use NEW qualifier words** (Medicals, Steel, Sweets, Bakery…; France too), and some share the exact address, differing only by a name word → generic "unexplained extra word" features, never a fixed train list.
+- Exact-equal names country-wide are the same business only 8.6% of the time → name-only statistics are useless; learn word stats from the address-conditioned candidate pool.
+- Noise seen: scrambled letters, accents, look-alike digits (5mart), legal suffix swaps/moves, "Fake F/K/A Real" (real name on the right), web handles, Indian-script names (9% of S2), literal `None` address (3.3%), component reordering, number noise (#, leading zeros, dropped digit, 7nd).
+- No leakage in IDs or row order (checked).
+
+## 3. Pipeline (package `code/business_entity_resolution/src/ber/`, pip-installed from GitHub in Kaggle jobs)
+| Module | Role |
+|---|---|
+| `translit.py` | Rule-based Indic → Latin (fallback only) |
+| `tables.py` | Small hand dictionaries: street types (US/IN/FR), number words, legal forms, alias markers, honorific noise words, leet map |
+| `text.py` | fold (NFKD), dot collapse, tokenise, skeleton, leet fix |
+| `artifacts.py` | Learned from provided data: Indic lexicon, sibling-based lexicon extension (test-legal), OOV fallback, address/name synonym pairs, vocab |
+| `normalize.py` | `Normalizer(art_dir).transform(df)` → nw, core, alias, legal, decoy, sk, aw (synonym-expanded), ad, au, noaddr. Same for all sources/splits |
+| `blocking.py` | `Index` (per-country inverted index, IDF, freq cap 5000 / keys 200), arms: primary combined (name+skeleton+address+numbers+units+number×word+word pairs+name×word), namepair, keys, nameonly, trigram; `expand` (sibling signatures); `number_relation`; `prune` (alpha, G, gate, beta) |
+| `features.py` | `pair_features(P, QN, RN)`: 49 features (rapidfuzz batch ratios, token/skeleton sets, numbers/house/unit relations, address, blocking, context), ~60k pairs/s |
+| `metrics.py` | Exact macro F0.5 (self-tested on the brief's example) |
+| `io.py` | Validator-safe writer (asserts every rule; matches ⊆ candidates) |
+
+Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kill switch), small subsets only. Full runs on Kaggle (user `satvikaderla`, internet on, private dataset `amazon-ml-er-2026-data` = parquet of all files). Repo: github.com/satvik-A/amazon-mlss (public).
+
+## 4. Experiment results
+**Blocking (30k train S1 vs full pool)**
+| Run | Pairs found | Cands/S1 | S1 fully found | Notes |
+|---|---|---|---|---|
+| v1 IDF token overlap | 87.3% @30 | 30 | 72.2% | Indian-script 39% |
+| v2 per-arm RRF fusion | 84.5% @30 | 30 | 67.7% | **rejected**: loses joint evidence |
+| v3 combined primary + aux + siblings | 94.1% | 51 | 84.0% | Indian-script 82% |
+| **v4** + word pairs, name×word, digit-drop, name-only | **95.8%** | 61.5 | **88.3%** | US 97.9 / India 92.8; no-address 74% (weakest) |
+| v5 (normalised + trigram + groups + pruning sweep) | running | — | — | `kaggle/blocking_v5` |
+
+**Artefacts (full data, `kaggle/artifacts`)**
+- Indic lexicon 1,318 words (consistency 0.998). Sibling lexicon on hidden train words: coverage 100%, accuracy 100% (fallback 52%). Test unseen Indic words: 200 (5.3% of tokens): 25 via siblings, 175 via fallback (mostly decoy qualifiers).
+- Address synonyms learned (st/street, state codes ↔ names, transliterated states); union-find merging rejected (ct, tn, "new" ambiguities).
+
+**Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
+
+**Validation:** exact scorer OK; all-empty probe file passes the official validator (`output/probe_all_empty_matching_results.tsv`; its LB score = test singleton rate; **awaiting the user's upload**).
+
+## 5. Running / next
+1. `er-blocking-v5` (running): frontier table (recall / completeness vs cands/S1) + labelled candidate pool `cand_train_sample.parquet`.
+2. `er-matcher-v1` (ready; launch after v5): LightGBM, split blending A 60 / B 30 / C 10 by S1, rank-aware cut-offs tuned on B, held-out F0.5 on C, **end-to-end F0.5 per blocking policy** → choose the operating point.
+3. Then: full train/test candidate generation + first real LB submission; cluster/context stage-2 + has-match head + global assignment; decoy-word stats from the pool; France hardening (hand table, self-training); heavy models (cross-encoder, Qwen3-8B judge) as features to a GBDT combiner; bi-encoder distilled into blocking; second-pass re-retrieval; packaging.
+
+## 6. Kaggle jobs (folder → kernel)
+`kaggle/artifacts` → er-artifacts · `kaggle/blocking_v5` → er-blocking-v5 · `kaggle/matcher_v1` → er-matcher-v1. Push: `.venv/bin/kaggle kernels push -p <folder>`; results: `kaggle kernels output satvikaderla/<kernel> -p <folder>/kout`.
