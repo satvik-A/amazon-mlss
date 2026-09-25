@@ -13,3 +13,5 @@ __pycache__/
 .claude/
 skills-lock.json
 kaggle.json
+__pycache__/
+*.egg-info/

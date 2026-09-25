@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ber"
+version = "0.1.0"
+description = "Business entity resolution pipeline (Amazon ML Challenge 2026)"
+requires-python = ">=3.10"
+dependencies = ["polars>=1.20", "numpy", "rapidfuzz>=3.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

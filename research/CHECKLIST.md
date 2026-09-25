@@ -48,6 +48,11 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 | 8 | France: hand table, self-training, synthetic pairs, LB probe | [ ] |
 | 9 | Final fits, package, documentation (every model + licence + params) | [ ] |
 
+## C2. Verified plan decisions (2026-09-25)
+- [x] Plan phases 1–8 checked against rules B (see chat/strategy_v3).
+- [x] **Stacking via split blending, not K-fold:** train S1s split by group into A 60% (level-1 models) / B 30% (level-2 combiner) / C 10% (final holdout for cut-offs and calibration). Saves 5× GPU training on the heavy models.
+- [x] Code lives in the real package `code/business_entity_resolution/src/ber/`; Kaggle notebooks `pip install` it from GitHub.
+
 ## D. Idea backlog (each gets tested; nothing dropped silently)
 **Cross-stage reuse ("give earlier steps what later steps know")**
 - [ ] Distil the cross-encoder into the blocking bi-encoder → better ranking → smaller candidate set at equal recall.
