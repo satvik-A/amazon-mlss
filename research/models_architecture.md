@@ -66,7 +66,7 @@ Companion documents: `plan.md` (data findings), `training_plan.md` (training/val
 | Model | Licence | Size | Notes |
 |---|---|---|---|
 | **Qwen3-4B / Qwen3.5-4B** | Apache | 4B | LoRA; listwise "select" prompt (S1 + ≤ 5 candidate clusters → which one, or none) |
-| Qwen3-8B | Apache | 8B | Only if Q2 says per model |
+| Qwen3-8B | Apache | 8B | Allowed (limit is per model): best judge choice |
 | Qwen3.5-9B | Apache | **9B** | **Excluded (> 8B)** |
 | Phi-4-mini | MIT | 3.8B | Alternative |
 
