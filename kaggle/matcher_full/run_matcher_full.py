@@ -116,4 +116,8 @@ log(f"policy chosen on B (smallest candidate set within 0.0005 of the best F): {
 dec = dict(cfg0, rule=rule, policy=dict(alpha=pick["alpha"], G=pick["G"], gate=False, beta=pick["beta"]), features=fc,
            head_features=M.HEAD_FEATURES, ref=REF, holdout_C=dict(F=pick["F_C"], cands=pick["cands_C"]))
 json.dump(dec, open(f"{WD}/decision.json", "w"), indent=1)
+# level-1 outputs for stacking: B/C rows kept by the chosen policy (+ raw ids so heavy models can score the same pairs)
+for nm, d in (("B", Bv), ("C", Cv)):
+    M.prune_pool(d, dec["policy"]).drop("h").write_parquet(f"{WD}/level1_{nm}.parquet")
+log(f"wrote level1_B/C.parquet (policy-pruned rows with features, p, y)")
 log(json.dumps(dec)[:600]); log(f"\nDONE {time.time()-T0:.0f}s")
