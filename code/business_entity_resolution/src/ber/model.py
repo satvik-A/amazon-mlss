@@ -83,9 +83,20 @@ __all__ = ["RULES", "prune_pool", "pool_features", "s1_agg", "HEAD_FEATURES", "e
 
 
 # ---- context features computed on the WHOLE country pool / S1 table (identically in training and at submission) ------
+def claim_stats(path: str) -> pl.DataFrame:
+    """Per record, from a whole country pool FILE with streaming (never loads the pool): how many S1s retrieved it
+    (n_s1_for_r) and how many score it within 5% of its best S1 (n_claim). A no-address record with a common name ties
+    across every same-name S1; the cross-encoder cannot see that."""
+    lf = pl.scan_parquet(path).select("r", "sc")
+    best = lf.group_by("r").agg(pl.col("sc").max().alias("_b"), pl.len().cast(pl.Int32).alias("n_s1_for_r"))
+    cl = lf.join(best.select("r", "_b"), on="r").filter(pl.col("sc") >= 0.95 * pl.col("_b")).group_by("r").agg(pl.len().cast(pl.Int32).alias("n_claim"))
+    return best.join(cl, on="r", how="left").select("r", "n_s1_for_r", pl.col("n_claim").fill_null(0)).collect(engine="streaming")
+
+
 def claim_features(pool: pl.DataFrame) -> pl.DataFrame:
-    """Per record: how many S1s retrieved it (n_s1_for_r) and how many score it within 5% of its best S1 (n_claim).
-    A no-address record with a common name ties across every same-name S1; the cross-encoder cannot see that."""
+    """In-memory version of claim_stats (pool = the whole country pool)."""
+    if "n_claim" in pool.columns:
+        return pool
     best = pl.col("sc").max().over("r")
     return pool.with_columns(pl.len().over("r").cast(pl.Int32).alias("n_s1_for_r"),
                              (pl.col("sc") >= 0.95 * best).cast(pl.Int32).sum().over("r").alias("n_claim"))

@@ -41,33 +41,36 @@ NZ = Normalizer(ART)
 s1_all = pl.read_parquet(f"{IN}/test_s1.parquet")
 valid_r = pl.concat([pl.read_parquet(f"{IN}/test_s2.parquet", columns=["entity_id"]), pl.read_parquet(f"{IN}/test_s3.parquet", columns=["entity_id"])])["entity_id"]
 cands, matches = [], []
+NSH = int(os.environ.get("NSH", 1 if LOCAL else 8))   # S1 shards per country: features for 70M+ rows do not fit at once
 for p in POOLS:
-    pool = M.claim_features(pl.read_parquet(p)); ctry = os.path.basename(p)[len("pool_test_"):-len(".parquet")]
-    kept = M.prune_pool(pool, cfg["policy"]); del pool
+    ctry = os.path.basename(p)[len("pool_test_"):-len(".parquet")]
+    st = M.claim_stats(p)                                   # record-level stats over the WHOLE pool (streaming)
     S = s1_all.filter(pl.col("country") == ctry)
-    kept = kept.join(M.s1_name_freq(S, NZ), on="s1", how="left")
-    R = pl.concat([pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()])
-    F = M.pool_features(kept, S, R, NZ)
-    F = F.with_columns(pl.Series("p", m.predict(M.X(F, fc))))
-    F.write_parquet(f"{WD}/level1_test_{ctry}.parquet")   # for er-xenc-score (uncertain band) and level 2
-    xf = find(f"xenc_test_{ctry}.parquet") if not LOCAL else []
-    if stack is not None and xf:
-        F = F.join(pl.read_parquet(xf[0]), on=["s1", "r"], how="left")
-        F = F.with_columns(pl.Series("p", stack.predict(M.X(F, cfg2["stack_features"]))))
-        sel = M.decide(F, cfg2, head); log(f"  {ctry}: level-2 decisions ({F[cfg2['stack_features'][-1]].is_not_null().sum()} pairs with cross-encoder scores)")
-    else:
-        sel = M.decide(F, cfg, head)
-    per = sel.group_by("s1").len()
-    log(f"{ctry}: S1 {S.height}  candidates {kept.height} ({kept.height/S.height:.2f}/S1)  predicted matches {sel.height} "
-        f"({sel.height/S.height:.2f}/S1)  S1 predicted empty {1 - per.height/S.height:.4f}  mean p {F['p'].mean():.4f}  {time.time()-T0:.0f}s")
-    # label-free transfer check: pseudo-pairs (>=99% precise on US/India train) that are candidates -> share predicted
-    pp = pseudo_pairs(NZ.transform(S), NZ.transform(R)).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
-    hit = pp.join(sel.select("s1", "r"), on=["s1", "r"], how="semi").height
-    pS = F.join(pp, on=["s1", "r"], how="semi")["p"]
-    log(f"  {ctry} pseudo-pairs in candidates {pp.height} ({pp['s1'].n_unique()/S.height:.3f} of S1): predicted as match {hit/max(pp.height,1):.4f}, "
-        f"mean p {pS.mean() if pS.len() else float('nan'):.4f}, p<0.5 share {(pS < 0.5).mean() if pS.len() else float('nan'):.4f}")
-    cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r"))
-    del F, kept, R
+    nf = M.s1_name_freq(S, NZ)
+    for k in range(NSH):
+        pool = pl.scan_parquet(p).filter(pl.col("s1").hash(3) % NSH == k).collect(engine="streaming").join(st, on="r", how="left")
+        kept = M.prune_pool(pool, cfg["policy"]); del pool
+        kept = kept.join(nf, on="s1", how="left")
+        Sk = S.filter(pl.col("entity_id").is_in(kept["s1"].unique().implode()))
+        R = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()
+        F = M.pool_features(kept, Sk, R, NZ)
+        F = F.with_columns(pl.Series("p", m.predict(M.X(F, fc))))
+        F.write_parquet(f"{WD}/level1_test_{ctry}_{k}.parquet")   # for er-xenc-score (uncertain band) and level 2
+        xf = find(f"xenc_test_{ctry}_{k}.parquet") if not LOCAL else []
+        if stack is not None and xf:
+            F = F.join(pl.read_parquet(xf[0]), on=["s1", "r"], how="left")
+            F = F.with_columns(pl.Series("p", stack.predict(M.X(F, cfg2["stack_features"]))))
+            sel = M.decide(F, cfg2, head)
+        else:
+            sel = M.decide(F, cfg, head)
+        # label-free transfer check: pseudo-pairs (>=99% precise on US/India train) that are candidates -> share predicted
+        pp = pseudo_pairs(NZ.transform(Sk), NZ.transform(R)).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
+        hit = pp.join(sel.select("s1", "r"), on=["s1", "r"], how="semi").height
+        log(f"{ctry}[{k}]: S1 {Sk.height} candidates {kept.height} matches {sel.height}; pseudo-pairs {pp.height} predicted {hit/max(pp.height,1):.4f}  {time.time()-T0:.0f}s")
+        cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r"))
+        del F, kept, R
+    cn = sum(c.height for c in cands[-NSH:]); mn = pl.concat(matches[-NSH:])
+    log(f"{ctry}: S1 {S.height}  candidates {cn} ({cn/S.height:.2f}/S1)  matches {mn.height} ({mn.height/S.height:.2f}/S1)  S1 predicted empty {1 - mn['s1'].n_unique()/S.height:.4f}")
 C = pl.concat(cands); Mt = pl.concat(matches)
 write_submission(Mt, C, s1_all["entity_id"], valid_r, f"{WD}/matching_results.tsv", f"{WD}/candidate_pairs.tsv")
 log(f"total: candidates/S1 {C.height/s1_all.height:.2f}, matches/S1 {Mt.height/s1_all.height:.2f}, S1 with no match {1 - Mt['s1'].n_unique()/s1_all.height:.4f}")

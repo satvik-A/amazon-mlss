@@ -38,12 +38,14 @@ NZ = Normalizer(ART)
 parts = []
 S1ALL = pl.read_parquet(f"{IN}/train_s1.parquet")
 for p in POOLS:
-    P = M.claim_features(pl.read_parquet(p))              # on the whole country pool, before sampling (as at test time)
-    ids = P["s1"].unique().sort()
-    ids = ids.filter((ids.hash(7) % 1_000_000) < int(1_000_000 * min(1.0, N_S1 / len(ids))))
-    parts.append(P.filter(pl.col("s1").is_in(ids.implode())))
-    log(f"{os.path.basename(p)}: {P.height} rows, {P['s1'].n_unique()} S1 -> sample {parts[-1]['s1'].n_unique()} S1 / {parts[-1].height} rows")
-    del P
+    # never load a whole country pool (100M+ rows): record-level stats by streaming, then only the sampled S1s' rows
+    st = M.claim_stats(p)
+    ids = pl.scan_parquet(p).select(pl.col("s1").unique()).collect(engine="streaming")["s1"].sort()
+    thr = int(1_000_000 * min(1.0, N_S1 / len(ids)))
+    P = pl.scan_parquet(p).filter((pl.col("s1").hash(7) % 1_000_000) < thr).collect(engine="streaming").join(st, on="r", how="left")
+    parts.append(P)
+    log(f"{os.path.basename(p)}: {len(ids)} S1 -> sample {P['s1'].n_unique()} S1 / {P.height} rows  {time.time()-T0:.0f}s")
+    del P, st
 pool = pl.concat(parts, how="vertical_relaxed"); del parts
 ctry = pool.select("s1").unique().join(S1ALL.select(pl.col("entity_id").alias("s1"), "country"), on="s1")["country"].unique().to_list()
 pool = pool.join(M.s1_name_freq(S1ALL.filter(pl.col("country").is_in(ctry)), NZ), on="s1", how="left")
