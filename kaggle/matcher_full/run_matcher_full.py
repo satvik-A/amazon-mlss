@@ -14,6 +14,7 @@ from ber.normalize import Normalizer
 from ber.metrics import macro_f05
 from ber.decide import rank_threshold
 from ber import model as M
+from ber.artifacts import pseudo_pairs
 
 T0 = time.time(); WD = "." if LOCAL else "/kaggle/working"
 N_S1 = int(os.environ.get("N_S1", 3000 if LOCAL else 120_000))  # sampled S1 per country
@@ -86,6 +87,14 @@ log(f"rule chosen on B (has-head excluded from choice: in-sample on B): {rule}; 
 ceil = f05(Cv.filter(pl.col("y") == 1).select("s1", "r"), gC, sC); log(f"ceiling on C (perfect decisions on the pool): {ceil['f05']:.4f}")
 per = resC[rule]["per"].join(s1.select(pl.col("entity_id").alias("s1"), "country"), on="s1")
 log(per.group_by("country").agg(pl.col("f").mean(), pl.len()))
+# reference for the label-free France check in the submission job: pseudo-pair hit rate on C (with true precision)
+selC = M.decide(Cv, dict(cfg0, rule=rule), head)
+for c in ("US", "India"):
+    sc_ = s1.filter(pl.col("country") == c).filter(pl.col("entity_id").is_in(sC.implode()))
+    pp = pseudo_pairs(NZ.transform(sc_), NZ.transform(R.filter(pl.col("country") == c))).join(Cv.select("s1", "r"), on=["s1", "r"], how="semi")
+    prec = pp.join(gC, on=["s1", "r"], how="semi").height / max(pp.height, 1)
+    hit = pp.join(selC.select("s1", "r"), on=["s1", "r"], how="semi").height / max(pp.height, 1)
+    log(f"  {c} C pseudo-pairs {pp.height}: true precision {prec:.4f}, predicted as match {hit:.4f}  (compare with the France number in er-submit)")
 
 # ---- blocking policy: end-to-end F per policy (Pareto points of the full-mode frontiers) --------------------------
 fr = pl.concat([pl.read_csv(f) for f in FRONTS]).group_by(["alpha", "G", "beta"]).agg(pl.col("cands").mean(), pl.col("complete").mean()).sort("cands")
