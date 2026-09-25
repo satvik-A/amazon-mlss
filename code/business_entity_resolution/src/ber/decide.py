@@ -31,12 +31,13 @@ def rank_threshold(d: pl.DataFrame, t1: float, t2: float, p: str = "p") -> pl.Da
     return d.filter(((pl.col("_rk") == 1) & (pl.col(p) > t1)) | ((pl.col("_rk") > 1) & (pl.col(p) > t2))).select("s1", "r")
 
 
-def source_caps(sel: pl.DataFrame, d: pl.DataFrame, p: str = "p", caps: dict = CAPS) -> pl.DataFrame:
-    """Keep at most caps[source] accepted records per S1 and source (highest p first)."""
+def source_caps(sel: pl.DataFrame, d: pl.DataFrame, p: str = "p", caps: dict = CAPS, total: int = 11) -> pl.DataFrame:
+    """Keep at most caps[source] accepted records per S1 and source, and `total` per S1 (highest p first)."""
     x = sel.join(d.select("s1", "r", p), on=["s1", "r"], how="left").with_columns(pl.col("r").str.slice(0, 2).alias("_src"))
     x = x.with_columns(pl.col(p).rank("ordinal", descending=True).over(["s1", "_src"]).alias("_k"))
     cap = pl.col("_src").replace_strict(caps, default=99, return_dtype=pl.Int64)
-    return x.filter(pl.col("_k") <= cap).select("s1", "r")
+    x = x.filter(pl.col("_k") <= cap)
+    return x.filter(pl.col(p).rank("ordinal", descending=True).over("s1") <= total).select("s1", "r")
 
 
 def _pb_prefix(P: np.ndarray) -> np.ndarray:
