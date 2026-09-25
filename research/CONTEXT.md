@@ -69,6 +69,13 @@ Full-mode test pools: US 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m; Ind
 
 **Determinism + scale (commits 2a1c90e, 1c53379):** rank ties were broken arbitrarily (~24% of an S1's candidates changed with batch composition). Now: ties by record id, integer-quantised IDF (exact sums), inputs in entity_id order → identical candidates for subset / full / shuffled inputs. Query: sorted-array postings gathered per chunk + chunks sized by expected join rows (identical output; no more full-table scans per chunk). ~37k joined posting rows per query; 69% from tokens with df 2000–5000; trigram arm = 37% of rows.
 
+**Matcher v1 vs v2 (normaliser A/B; v5 sample pool, 30k S1, LightGBM on A, tuned on B, holdout C = 3,091 S1):**
+| | C macro F0.5 | singleton | non-singleton | US | India |
+|---|---|---|---|---|---|
+| v1 old normaliser (8764e93) | 0.9590 | 0.945 | 0.960 | 0.972 | 0.941 |
+| **v2 fixed normaliser (a4c1490)** | **0.9615 (+0.0025, gate passed)** | 0.969 | 0.961 | 0.973 | 0.944 |
+Ceiling (perfect decisions on this pool) 0.9837. Decision rules within ±0.0005 of each other (rank-threshold best on B for v2). End-to-end vs candidate-set size (v2): 5.9 cands → 0.9444, 43 → 0.9582, 91.5 (no pruning) → 0.9615 → group/beta pruning is too lossy; next: deterministic feature cut-offs.
+
 **Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
 
 **Validation:** exact scorer OK. **LB probe (all-empty) = 0.05642 → test singleton rate 5.64%** (train 5.6%: consistent). A wrong non-empty prediction on a singleton costs its full 1/N; every non-singleton S1 needs ≥1 correct match to score anything.
