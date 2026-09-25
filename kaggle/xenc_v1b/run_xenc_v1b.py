@@ -9,6 +9,8 @@ REF = "__REF__"
 LOCAL = not os.path.exists("/kaggle")
 WD = "." if LOCAL else "/kaggle/working"
 if not LOCAL:
+    # the image's torchao 0.10 makes recent peft refuse to build LoRA layers; we do not use torchao
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.51", "peft>=0.13",
                     f"git+https://github.com/satvik-A/amazon-mlss.git@{REF}#subdirectory=code/business_entity_resolution"], check=True)
 else:
@@ -78,10 +80,11 @@ import json, math, os, sys, time
 import numpy as np, polars as pl, torch
 from sklearn.metrics import roc_auc_score, log_loss
 kind, WD, TRAIN_MIN = sys.argv[1], sys.argv[2], float(sys.argv[3])
+tag = kind.replace("hf:", "").replace("/", "_")
 torch.manual_seed(0); np.random.seed(0)
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 tr = pl.read_parquet(f"{WD}/pairs_train.parquet"); ev = pl.read_parquet(f"{WD}/pairs_eval.parquet")
-L = open(f"{WD}/log_{kind}.txt", "w")
+L = open(f"{WD}/log_{tag}.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(f"[{kind}] " + s, flush=True); L.write(s + "\n"); L.flush()
 from transformers import AutoTokenizer
@@ -117,19 +120,21 @@ if kind.startswith("qwen"):
                                target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]))
         return (1e-4, 8) if kind == "qwen4b" else (2e-4, 24)
 else:
+    # "bge" = BAAI/bge-reranker-v2-m3; "hf:<id>" = any HF encoder / encoder-decoder with a sequence-classification head
     from transformers import AutoModelForSequenceClassification
-    name = "BAAI/bge-reranker-v2-m3"
-    tok = AutoTokenizer.from_pretrained(name)
-    model = AutoModelForSequenceClassification.from_pretrained(name).to(dev)
+    name = kind[3:] if kind.startswith("hf:") else "BAAI/bge-reranker-v2-m3"
+    tok = AutoTokenizer.from_pretrained(name, trust_remote_code=True)
+    model = AutoModelForSequenceClassification.from_pretrained(name, num_labels=1, trust_remote_code=True, ignore_mismatched_sizes=True).to(dev)
     def enc(a, b):
         return {k: v.to(dev) for k, v in tok(list(a), list(b), padding=True, truncation=True, max_length=192, return_tensors="pt").items()}
     def fwd(b):
         return model(**b).logits.squeeze(-1).float()
     def make_trainable():
-        return 2e-5, 24
+        return (1e-4, 24) if "t5" in name.lower() else (2e-5, 24)
 
 @torch.no_grad()
-def score(d, bs=128):
+def score(d, bs=None):
+    bs = bs or (16 if kind == "qwen4b" else 128)   # 4B activations at 128 x ~220 tokens overflow a T4
     model.eval(); out = []
     a, b = d["t_s1"].to_list(), d["t_r"].to_list()
     for i in range(0, len(a), bs):
@@ -178,9 +183,9 @@ log(f"trained {steps} steps, {seen} pairs ({seen/len(a):.2f} epoch) in {(time.ti
 ev = ev if ev.height <= EVAL_MAX else ev.filter(pl.col("s1").is_in(ev["s1"].unique().sort().head(int(EVAL_MAX / 18)).implode()))
 t2 = time.time(); lg = score(ev); log(f"eval scored {ev.height} pairs in {time.time()-t2:.0f}s ({ev.height/(time.time()-t2):.0f} pairs/s)")
 r1, x = report("FINE-TUNED", ev, lg)
-x.select("s1", "r", "y", "country", "sc", "rk", "lg").write_parquet(f"{WD}/eval_{kind}.parquet")
-model.save_pretrained(f"{WD}/model_{kind}"); tok.save_pretrained(f"{WD}/model_{kind}")
-json.dump({"zero_shot": r0, "fine_tuned": r1, "pairs_seen": seen, "steps": steps, "model": name}, open(f"{WD}/metrics_{kind}.json", "w"), indent=1)
+x.select("s1", "r", "y", "country", "sc", "rk", "lg").write_parquet(f"{WD}/eval_{tag}.parquet")
+model.save_pretrained(f"{WD}/model_{tag}"); tok.save_pretrained(f"{WD}/model_{tag}")
+json.dump({"zero_shot": r0, "fine_tuned": r1, "pairs_seen": seen, "steps": steps, "model": name}, open(f"{WD}/metrics_{tag}.json", "w"), indent=1)
 '''
 
 if __name__ == "__main__":
@@ -196,7 +201,7 @@ if __name__ == "__main__":
         codes = [subprocess.run([sys.executable, f"{WD}/worker.py", k, WD, str(TRAIN_MIN / max(1, len(kinds)))]).returncode for k in kinds]
     log(f"worker exit codes {codes}")
     for k in kinds:
-        for f in (f"{WD}/log_{k}.txt",):
+        for f in (f"{WD}/log_{k.replace('hf:', '').replace('/', '_')}.txt",):
             if os.path.exists(f): log(f"--- {k}"); log(open(f).read()[-3000:])
     # baseline for reference: blocking score alone on the same eval pairs
     ev = pl.read_parquet(f"{WD}/pairs_eval.parquet")

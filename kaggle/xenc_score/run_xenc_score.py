@@ -7,6 +7,7 @@ REF = "__REF__"
 LOCAL = not os.path.exists("/kaggle")
 WD = "." if LOCAL else "/kaggle/working"
 if not LOCAL:
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)   # peft vs old torchao
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.51", "peft>=0.13"], check=True)
 import numpy as np, polars as pl
 T0 = time.time(); BAND_LO, BAND_HI = float(os.environ.get("BAND_LO", 0.005)), float(os.environ.get("BAND_HI", 0.995))

@@ -9,6 +9,8 @@ REF = "__REF__"
 LOCAL = not os.path.exists("/kaggle")
 WD = "." if LOCAL else "/kaggle/working"
 if not LOCAL:
+    # the image's torchao 0.10 makes recent peft refuse to build LoRA layers; we do not use torchao
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.51", "peft>=0.13",
                     f"git+https://github.com/satvik-A/amazon-mlss.git@{REF}#subdirectory=code/business_entity_resolution"], check=True)
 else:
@@ -131,7 +133,8 @@ else:
         return (1e-4, 24) if "t5" in name.lower() else (2e-5, 24)
 
 @torch.no_grad()
-def score(d, bs=128):
+def score(d, bs=None):
+    bs = bs or (16 if kind == "qwen4b" else 128)   # 4B activations at 128 x ~220 tokens overflow a T4
     model.eval(); out = []
     a, b = d["t_s1"].to_list(), d["t_r"].to_list()
     for i in range(0, len(a), bs):
