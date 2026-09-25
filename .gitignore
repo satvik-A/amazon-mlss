@@ -1,0 +1,14 @@
+# competition data: never commit (size + redistribution)
+student_resource/dataset/
+*.tsv
+*.parquet
+research/eda/cache/
+output/
+# env / OS
+.venv/
+__pycache__/
+.DS_Store
+*.ipynb_checkpoints
+.agents/
+.claude/
+skills-lock.json
