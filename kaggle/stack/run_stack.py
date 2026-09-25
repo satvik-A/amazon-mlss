@@ -33,7 +33,7 @@ S1 = pl.concat([B.select("s1"), C.select("s1")]).unique()
 gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id").is_in(S1["s1"].implode())) \
        .with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
        .filter(pl.col("matched_entity_ids") != "").select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
-# evaluation S1 sets must include S1s with no rows left after pruning: take them from the level-1 files' S1 lists
+# S1s left with no rows after pruning are absent from both arms, so the level-2 minus level-1 delta is unaffected
 h2 = pl.col("s1").hash(13) % 2
 B1, B2 = B.filter(h2 == 0), B.filter(h2 == 1)
 g = lambda d: gt.filter(pl.col("s1").is_in(d["s1"].unique().implode()))
