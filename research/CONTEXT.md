@@ -46,6 +46,16 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 | **v4** + word pairs, name×word, digit-drop, name-only | **95.8%** | 61.5 | **88.3%** | US 97.9 / India 92.8; no-address 74% (weakest) |
 | v5 (normalised + trigram + groups + pruning sweep) | running | — | — | `kaggle/blocking_v5` |
 
+**Recall lab (account 2; full S2/S3 pool, ~29k train S1 per country; internal pool = primary top-60 + aux + siblings)**
+| Variant | US recall / complete | India recall / complete | No-address copy recall US / IN | Indic copy recall | cands/S1 | ms/query |
+|---|---|---|---|---|---|---|
+| r0 base | 98.16 / 94.0 | 92.92 / 82.7 | 74.2 / 70.5 | 85.8 | ~89 | ~10 |
+| r1 aux caps ×2 | 98.43 / 94.9 | 93.56 / 84.1 | 78.7 / 74.2 | 86.8 | ~117 | ~10 |
+| r3 df cap 2000 | 98.05 / 93.7 | 92.75 / 82.3 | 73.8 / 70.0 | 85.4 | ~86 | **4.4** |
+| r4 top-100 + trigram 25 | 98.30 / 94.4 | 93.55 / 84.1 | 74.4 / 71.2 | 87.0 | ~136 | 7.4 |
+Findings: caps move recall < 1 pt; the hole is **copies with no address (~72%)** → new arm 7 (name tokens of no-address records indexed on their own; local sample 0.905 → 0.967), full-scale check running (r5–r7). df cap 2000 is 2.3× faster for −0.1/−0.2 pt.
+Full-mode test US pool: 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m.
+
 **Artefacts (full data, `kaggle/artifacts`)**
 - Indic lexicon 1,318 words (consistency 0.998). Sibling lexicon on hidden train words: coverage 100%, accuracy 100% (fallback 52%). Test unseen Indic words: 200 (5.3% of tokens): 25 via siblings, 175 via fallback (mostly decoy qualifiers).
 - Address synonyms learned (st/street, state codes ↔ names, transliterated states); union-find merging rejected (ct, tn, "new" ambiguities).
