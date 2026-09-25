@@ -107,10 +107,13 @@ for c in ("US", "India"):
     log(f"  {c} C pseudo-pairs {pp.height}: true precision {prec:.4f}, predicted as match {hit:.4f}  (compare with the France number in er-submit)")
 
 # ---- blocking policy: end-to-end F per policy (Pareto points of the full-mode frontiers) --------------------------
-fr = pl.concat([pl.read_csv(f) for f in FRONTS]).group_by(["alpha", "G", "beta"]).agg(pl.col("cands").mean(), pl.col("complete").mean()).sort("cands")
 best, pts = -1.0, []
-for r in fr.iter_rows(named=True):
-    if r["complete"] > best + 1e-4: pts.append(r); best = r["complete"]
+if FRONTS:
+    fr = pl.concat([pl.read_csv(f) for f in FRONTS]).group_by(["alpha", "G", "beta"]).agg(pl.col("cands").mean(), pl.col("complete").mean()).sort("cands")
+    for r in fr.iter_rows(named=True):
+        if r["complete"] > best + 1e-4: pts.append(r); best = r["complete"]
+else:   # no frontier sweep upstream: a few group limits without the (lossy) reverse-preference filter
+    pts = [dict(alpha=0.0, G=g, beta=-1.0, cands=None, complete=None) for g in (5, 10, 20)]
 pts.append(dict(alpha=0.0, G=99, beta=-1.0, cands=None, complete=None))  # no pruning (internal pool)
 rows = []
 for r in pts:

@@ -40,12 +40,15 @@ log(f"S1 {S.height}  R {R.height}  {time.time()-T0:.0f}s")
 ann = candidates(S, R, S, NZ, log=log)
 keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin"]
 ann = ann.select(keep)
+SWEEP = os.environ.get("SWEEP", "0") == "1"   # group/beta pruning frontier (known lossy; expensive at 100M+ rows)
 if SPLIT == "train":
     gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id").is_in(S["entity_id"].implode())) \
            .with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
            .filter(pl.col("matched_entity_ids") != "").select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
     ann = ann.join(gt.with_columns(pl.lit(1, dtype=pl.Int8).alias("y")), on=["s1", "r"], how="left").with_columns(pl.col("y").fill_null(0))
-    log(f"internal pool {ann.height/S.height:.1f}/S1; pair recall {ann['y'].sum()/gt.height:.4f}")
+    comp = gt.join(ann.filter(pl.col("y") == 1).select("s1", "r", pl.lit(True).alias("k")), on=["s1", "r"], how="left").group_by("s1").agg(pl.col("k").fill_null(False).all())["k"].mean()
+    log(f"internal pool {ann.height/S.height:.1f}/S1; pair recall {ann['y'].sum()/gt.height:.4f}; S1 complete {comp:.4f}")
+if SPLIT == "train" and SWEEP:
     A = ann.select(pl.col("s1").alias("id"), pl.col("r").alias("id_r"), "sc", "gid", "rel", "a4", "rev_margin")
     rows = []
     for alpha in (0.0, 0.5, 0.7, 0.8):
