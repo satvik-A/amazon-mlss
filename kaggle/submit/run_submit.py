@@ -12,6 +12,7 @@ import numpy as np, polars as pl, lightgbm as lgb
 from ber.normalize import Normalizer
 from ber.io import write_submission
 from ber import model as M
+from ber.artifacts import pseudo_pairs
 
 T0 = time.time(); WD = "." if LOCAL else "/kaggle/working"
 REP = open(f"{WD}/results_submit.txt", "w")
@@ -41,6 +42,12 @@ for p in POOLS:
     per = sel.group_by("s1").len()
     log(f"{ctry}: S1 {S.height}  candidates {kept.height} ({kept.height/S.height:.2f}/S1)  predicted matches {sel.height} "
         f"({sel.height/S.height:.2f}/S1)  S1 predicted empty {1 - per.height/S.height:.4f}  mean p {F['p'].mean():.4f}  {time.time()-T0:.0f}s")
+    # label-free transfer check: pseudo-pairs (>=99% precise on US/India train) that are candidates -> share predicted
+    pp = pseudo_pairs(NZ.transform(S), NZ.transform(R)).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
+    hit = pp.join(sel.select("s1", "r"), on=["s1", "r"], how="semi").height
+    pS = F.join(pp, on=["s1", "r"], how="semi")["p"]
+    log(f"  {ctry} pseudo-pairs in candidates {pp.height} ({pp['s1'].n_unique()/S.height:.3f} of S1): predicted as match {hit/max(pp.height,1):.4f}, "
+        f"mean p {pS.mean() if pS.len() else float('nan'):.4f}, p<0.5 share {(pS < 0.5).mean() if pS.len() else float('nan'):.4f}")
     cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r"))
     del F, kept, R
 C = pl.concat(cands); Mt = pl.concat(matches)
