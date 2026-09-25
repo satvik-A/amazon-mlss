@@ -8,8 +8,9 @@ K = f"{ROOT}/.venv/bin/kaggle"; PY = f"{ROOT}/.venv/bin/python"
 STATE = f"{ROOT}/kaggle/.orchestrator_state.json"; LOG = f"{ROOT}/kaggle/orchestrator.log"
 TERMINAL = {"COMPLETE", "ERROR", "CANCEL_ACKNOWLEDGED", "CANCELLED"}
 ACTIVE = {"RUNNING", "QUEUED", "NEW", "PENDING"}
+CANDS2 = ["er-cands2-train-us", "er-cands2-train-india", "er-cands2-test-us", "er-cands2-test-india", "er-cands2-test-france"]
 CPU_JOBS = {"er-blocking-v5", "er-cands-train-us", "er-cands-train-india", "er-cands-test-us", "er-cands-test-india",
-            "er-matcher-full", "er-submit", "er-stack"}
+            "er-matcher-full", "er-submit", "er-stack", "er-matcher-full2", "er-submit2", *CANDS2}
 GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-score"}
 XENC = ["er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3"]
 
@@ -31,10 +32,16 @@ JOBS = [
      lambda st: launch("kaggle/xenc_score", "NvidiaTeslaT4", [x for x in XENC if st.get(x) == "COMPLETE"] + ["er-matcher-full"])),
     ("er-stack", "cpu", ["er-xenc-score"], lambda st: launch("kaggle/stack")),
     ("er-xenc-v2", "gpu", [], lambda st: prebuilt("kaggle/xenc_v2", "NvidiaTeslaT4")),
+    # second pass (blocking arms 7 + 8): gated by the file kaggle/.cands2_go (created once the config is chosen + jobs2 built)
+    *[(n, "cpu", [], (lambda f: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/cands_full/jobs2/{f}"])(n[len("er-cands2-"):].replace("-", "_")))
+      for n in CANDS2],
+    ("er-matcher-full2", "cpu", ["er-cands2-train-us", "er-cands2-train-india"], lambda st: launch("kaggle/matcher_full2")),
+    ("er-submit2", "cpu", ["er-matcher-full2", "er-cands2-test-us", "er-cands2-test-india", "er-cands2-test-france"], lambda st: launch("kaggle/submit2")),
     ("er-xenc-v3", "gpu", [], lambda st: prebuilt("kaggle/xenc_v3", "NvidiaTeslaT4")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
 WAIT_FOR = {"er-xenc-score": ["er-xenc-v1b"]}
+GATES = {n: f"{ROOT}/kaggle/.cands2_go" for n in CANDS2}
 
 
 def log(msg):
@@ -79,6 +86,8 @@ def main():
                 continue
             if any(prev.get(w) in ACTIVE for w in WAIT_FOR.get(name, [])):
                 continue
+            if name in GATES and not os.path.exists(GATES[name]):
+                continue
             if (res == "gpu" and gpu_busy >= 2) or (res == "cpu" and cpu_busy >= 5):
                 continue
             c = cmd(prev)
@@ -90,14 +99,15 @@ def main():
                 launched[name] = time.strftime("%H:%M")
                 gpu_busy += res == "gpu"; cpu_busy += res == "cpu"
             json.dump(st, open(STATE, "w"), indent=1)
-        # submission files: download + official validator, once
-        if prev.get("er-submit") == "COMPLETE" and not launched.get("submit:fetched"):
-            d = f"{ROOT}/kaggle/submit/kout"; os.makedirs(d, exist_ok=True)
-            subprocess.run([K, "kernels", "output", "satvikaderla/er-submit", "-p", d, "-o"], capture_output=True, text=True)
-            v = subprocess.run([PY, f"{ROOT}/student_resource/utils/validate_submission.py", "-m", f"{d}/matching_results.tsv",
-                                "-c", f"{d}/candidate_pairs.tsv", "-t", f"{ROOT}/student_resource/dataset/test"], capture_output=True, text=True)
-            log(f"SUBMISSION fetched to kaggle/submit/kout; validator: {(v.stdout.strip().splitlines() or ['?'])[-1]}")
-            launched["submit:fetched"] = 1; json.dump(st, open(STATE, "w"), indent=1)
+        # submission files: download + official validator, once per submit job
+        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2")):
+            if prev.get(sj) == "COMPLETE" and not launched.get(f"{sj}:fetched"):
+                d = f"{ROOT}/kaggle/{folder}/kout"; os.makedirs(d, exist_ok=True)
+                subprocess.run([K, "kernels", "output", f"satvikaderla/{sj}", "-p", d, "-o", "--file-pattern", r".*\.(tsv|txt)$"], capture_output=True, text=True)
+                v = subprocess.run([PY, f"{ROOT}/student_resource/utils/validate_submission.py", "-m", f"{d}/matching_results.tsv",
+                                    "-c", f"{d}/candidate_pairs.tsv", "-t", f"{ROOT}/student_resource/dataset/test"], capture_output=True, text=True)
+                log(f"SUBMISSION {sj} fetched to kaggle/{folder}/kout; validator: {(v.stdout.strip().splitlines() or ['?'])[-1]}")
+                launched[f"{sj}:fetched"] = 1; json.dump(st, open(STATE, "w"), indent=1)
         json.dump(st, open(STATE, "w"), indent=1)
         done = all(n in launched for n, *_ in JOBS) and all(prev.get(n) in TERMINAL for n, *_ in JOBS)
         if done:
