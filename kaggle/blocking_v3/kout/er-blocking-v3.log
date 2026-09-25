@@ -1,0 +1,105 @@
+[{"stream_name":"stdout","time":10.002757786,"data":"TRAIN S1=2206821 R=10320219\n"}
+,{"stream_name":"stdout","time":199.753243197,"data":"  prep pool 10320219: 190s\n"}
+,{"stream_name":"stdout","time":546.740900372,"data":"  pool tokens 233738289\n"}
+,{"stream_name":"stdout","time":615.607994721,"data":"  pool postings after df cap 157391449  613s\n"}
+,{"stream_name":"stdout","time":827.635075498,"data":"retrieved 3363571  825s\n"}
+,{"stream_name":"stdout","time":830.197168195,"data":"expansion adds 254454\n"}
+,{"stream_name":"stdout","time":833.482814141,"data":"\n"}
+,{"stream_name":"stdout","time":833.482948764,"data":"=== v3 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===\n"}
+,{"stream_name":"stdout","time":833.502284695,"data":"expansion: mean added per S1 8.48\n"}
+,{"stream_name":"stdout","time":833.515110091,"data":"K=  5 all=0.7736 +exp=0.7766  indic=0.646/0.671  noaddr=0.092/0.096  web=0.662/0.665  alias=0.988/0.988  US=0.7976/0.7989  India=0.7372/0.7430\n"}
+,{"stream_name":"stdout","time":833.52197064,"data":"K= 10 all=0.8494 +exp=0.8525  indic=0.731/0.756  noaddr=0.202/0.206  web=0.783/0.786  alias=0.996/0.996  US=0.8699/0.8711  India=0.8184/0.8243\n"}
+,{"stream_name":"stdout","time":833.528783907,"data":"K= 20 all=0.8787 +exp=0.8817  indic=0.768/0.793  noaddr=0.274/0.277  web=0.824/0.827  alias=0.999/0.999  US=0.8968/0.8980  India=0.8513/0.8571\n"}
+,{"stream_name":"stdout","time":833.53575841,"data":"K= 30 all=0.8901 +exp=0.8932  indic=0.785/0.811  noaddr=0.305/0.309  web=0.841/0.844  alias=1.000/1.000  US=0.9067/0.9079  India=0.8651/0.8709\n"}
+,{"stream_name":"stdout","time":833.54239394,"data":"K= 50 all=0.9016 +exp=0.9047  indic=0.803/0.828  noaddr=0.344/0.348  web=0.857/0.860  alias=1.000/1.000  US=0.9161/0.9173  India=0.8797/0.8856\n"}
+,{"stream_name":"stdout","time":833.549448638,"data":"K=100 all=0.9145 +exp=0.9176  indic=0.828/0.853  noaddr=0.400/0.404  web=0.870/0.873  alias=1.000/1.000  US=0.9256/0.9268  India=0.8979/0.9037\n"}
+,{"stream_name":"stdout","time":833.549490143,"data":"\n"}
+,{"stream_name":"stdout","time":833.549497017,"data":"=== UNION recall: primary topK + aux(top15 each) + sibling expansion ===\n"}
+,{"stream_name":"stdout","time":833.577473282,"data":"K= 20 union=0.9348 (cands/S1=41.5)  indic=0.802  noaddr=0.729  web=0.907  alias=1.000  US=0.9478  India=0.9151\n"}
+,{"stream_name":"stdout","time":833.585249583,"data":"      entity-complete: 0.8262\n"}
+,{"stream_name":"stdout","time":833.612302038,"data":"K= 30 union=0.9405 (cands/S1=51.3)  indic=0.819  noaddr=0.733  web=0.916  alias=1.000  US=0.9525  India=0.9224\n"}
+,{"stream_name":"stdout","time":833.619053914,"data":"      entity-complete: 0.8400\n"}
+,{"stream_name":"stdout","time":833.65223622,"data":"K= 50 union=0.9462 (cands/S1=71.0)  indic=0.836  noaddr=0.738  web=0.924  alias=1.000  US=0.9570  India=0.9299\n"}
+,{"stream_name":"stdout","time":833.659159075,"data":"      entity-complete: 0.8539\n"}
+,{"stream_name":"stdout","time":833.669804322,"data":"K=100 union=0.9526 (cands/S1=120.6)  indic=0.859  noaddr=0.749  web=0.931  alias=1.000  US=0.9616  India=0.9391\n"}
+,{"stream_name":"stdout","time":833.677039931,"data":"      entity-complete: 0.8700\n"}
+,{"stream_name":"stdout","time":833.677127138,"data":"\n"}
+,{"stream_name":"stdout","time":833.677135203,"data":"=== entity completeness (ALL matches of the S1 retrieved) ===\n"}
+,{"stream_name":"stdout","time":833.68976889,"data":"  top20+exp: 0.7008    top20 only: 0.6952\n"}
+,{"stream_name":"stdout","time":833.702041336,"data":"  top30+exp: 0.7258    top30 only: 0.7201\n"}
+,{"stream_name":"stdout","time":833.714684266,"data":"  top50+exp: 0.7514    top50 only: 0.7455\n"}
+,{"stream_name":"stdout","time":833.71473493,"data":"\n"}
+,{"stream_name":"stdout","time":833.714764628,"data":"=== per-arm: share of found positives hit by arm, and unique finds ===\n"}
+,{"stream_name":"stdout","time":833.719429665,"data":"  primary   hit 0.963  unique 35321\n"}
+,{"stream_name":"stdout","time":833.720410935,"data":"  namepair  hit 0.546  unique 358\n"}
+,{"stream_name":"stdout","time":833.721415992,"data":"  keys      hit 0.573  unique 1014\n"}
+,{"stream_name":"stdout","time":833.722053386,"data":"  expansion-only finds: 317\n"}
+,{"stream_name":"stdout","time":833.873762811,"data":"\n"}
+,{"stream_name":"stdout","time":833.873805905,"data":"=== sample of remaining misses (not in top30, not expanded) ===\n"}
+,{"stream_name":"stdout","time":833.876472878,"data":"  rk=47 | Loia Inc | 2445 Oak Street, Gray, TN  ==\u003e  Loia Ínc | 445 Oak Street, Gray, Tennessee\n"}
+,{"stream_name":"stdout","time":833.876861285,"data":"  rk=- | Swami Infraproject Ltd | E-E2102, Sector -58 Gurugram, Ireo Grand Arch Golf Cour  ==\u003e  Center Swami Ltd | E-e##2102, Badshahpur, Gurgaon, HR\n"}
+,{"stream_name":"stdout","time":833.876885574,"data":"  rk=- | Midwest Legacy Silicon | 412 Juanita Drive, Unit 615B, Henderson, TN  ==\u003e  Midwest Legacy Center | JUANITA DR, HENDERSON, TN\n"}
+,{"stream_name":"stdout","time":833.876891582,"data":"  rk=- | Smith's Graphics | 1612 Hackney Street, Winfield, KS  ==\u003e  Smith's Services | Kansas, Winfield, 1544 Hackney Street\n"}
+,{"stream_name":"stdout","time":833.876896915,"data":"  rk=75 | Oncology Center LLC | Buffalo, IA, 217 3rd St  ==\u003e  ONCOLOGY CENTER | 3RD SAINT, BUFFALO, IA\n"}
+,{"stream_name":"stdout","time":833.876903255,"data":"  rk=- | Ram Enterprises Private Limited | No.30/06-H, First Floor, Deenplaza, Near State Bank, Ma  ==\u003e  Ram Enterprises Pbrfvte-Limited | Mayuram,mayiladuthurai, H.no C-30/06-h, Nagapattinam, த\n"}
+,{"stream_name":"stdout","time":833.876961231,"data":"  rk=- | Royal Education Labs LLC | 234 County Rd 733, Calhoun, TN  ==\u003e  Royal Education Lhsb LLC | None\n"}
+,{"stream_name":"stdout","time":833.877040181,"data":"  rk=34 | Bright Telecom Company | 1952 Curtiss Street, Downers Grove, IL  ==\u003e  Bright Company Center | Downers Grove, Curtiss Street, Illinois\n"}
+,{"stream_name":"stdout","time":833.877117857,"data":"  rk=- | Delta Coalition LLC | 4482 Sycamore Drive, Gilbert, AZ  ==\u003e  Delta Coaflitgon LLC | Sycamore Dr, GILBERT DP, AZ\n"}
+,{"stream_name":"stdout","time":833.877243604,"data":"  rk=- | Behavioral Health Center | 466 Ridgeview Road, Orange, CT  ==\u003e  Behavioral Health Center Inc | ORANGE, CT, RIDGEVIEW ROAD\n"}
+,{"stream_name":"stdout","time":833.877358284,"data":"  rk=46 | Southern Business LLP | Plot No.- 93-94, Rishi Galav Nagar, Galta Gate, Jaipur,  ==\u003e  सदर्न बिजनेस एलएलपी | PLOT NO.- 93-94, JAIPUR, Rajasthan\n"}
+,{"stream_name":"stdout","time":833.877510208,"data":"  rk=51 | Nitco \u0026 Sons Limited | No.2, Manjunatha Nilaya, Katrhirguppe Main Road, Bangal  ==\u003e  Nitco + Limited Services | None\n"}
+,{"stream_name":"stdout","time":833.877586861,"data":"  rk=- | Bianca Hanson Preferred Integrated | 613 Newcastle Lane, Grand Prairie, TX  ==\u003e  Hansonbianca.Com | Newcastle Ln, Grand Prairie, Texas\n"}
+,{"stream_name":"stdout","time":833.877693373,"data":"  rk=- | Unique Media Pvt Ltd | Shop No 9, Bldg No B-20, Sector-10, Shanti Nagar, Mira   ==\u003e  यूनिक मीडिया प्रा. लि. | Shop No 9, Thane, MH\n"}
+,{"stream_name":"stdout","time":833.877753047,"data":"  rk=- | Hotel International Private Limited | Stpi, 2Nd Floor, Solitaire Building, Plot No. 14 \u0026 15 S  ==\u003e  హోటల్ ఇంటర్నేషనల్ ప్రైవేట్ లిమిటెడ్ | STPI, RANGAREDDY, Telangana\n"}
+,{"stream_name":"stdout","time":833.877833005,"data":"  rk=- | Unique Consultants Private Limited | A-2, 531 Sector 21, Turbhe, Navi Mumbai, Thane, Maharas  ==\u003e  यूनिक कंसल्टेंट्स प्राइवेट लिमिटेड | A-2, THANE, NAVI MUMBAI, Maharashtra\n"}
+,{"stream_name":"stdout","time":833.877841101,"data":"  rk=84 | Urgent Care Specialists | 1445 Benley Street, Murfreesboro, TN  ==\u003e  Urgent Care Spécialists LLC | TN, BENLEY SAINT, MURFREESBORO\n"}
+,{"stream_name":"stdout","time":833.877943263,"data":"  rk=- | Jay Brothers Ltd | 32, Brahaman Mohalla, Lalawala, Bassi, Jaipur, Rajastha  ==\u003e  Jay  Brothers Ltd | ##32, Jaipur, राजस्थान\n"}
+,{"stream_name":"stdout","time":833.877951092,"data":"  rk=64 | Meum LLC | 1021 Meadow View Lane, City Of De Pere, WI  ==\u003e  Meum  LLC | Meadow View Ln, City Of De Pere, Wisconsin\n"}
+,{"stream_name":"stdout","time":833.878016741,"data":"  rk=60 | New Healthcare Pvt Ltd | 24 Park Street, Park Center Building, 9Th Floor, Kolkat  ==\u003e  নিউ হেলথকেয়ার প্রাইভেট লিমিটেড | H.no 24 Park Street, পশ্চিমবঙ্গ, Howrah, Kolkata\n"}
+,{"stream_name":"stdout","time":833.878124042,"data":"  rk=- | Real Global Private Limited | 52 Tularam Bagh, Allahabad, Uttar Pradesh  ==\u003e  Real Global Private-Ltd | None\n"}
+,{"stream_name":"stdout","time":833.878130897,"data":"  rk=- | Hunger Ministries | 1534 Bays Fork Road, Bowling Green, KY  ==\u003e  Hunger Ministries | None\n"}
+,{"stream_name":"stdout","time":833.878136033,"data":"  rk=- | Barrett Transalta | 305 Mountain Falls Drive, Lake Toxaway, NC  ==\u003e  Barrett Transata | None\n"}
+,{"stream_name":"stdout","time":833.878141003,"data":"  rk=- | Delhi Designer Limited | 1014A, 10Th Floor, D Mall, Netaji Subhash Place, Pitamp  ==\u003e  Delhi Dmggnhir Limited | 1014A, Delhi, DL\n"}
+,{"stream_name":"stdout","time":833.878145248,"data":"  rk=- | Blue Systems Private Limited | Shop No. 3-4-12, Jagdish, Mahankali Street, Hyderabad,   ==\u003e  Blue Systems Private Ltd | None\n"}
+,{"stream_name":"stdout","time":833.945950883,"data":"\n"}
+,{"stream_name":"stdout","time":833.945999404,"data":"train: mean candidates(top30) 30.0; mean 'strong' (\u003e=2 arms) 3.34; exp/S1 8.48\n"}
+,{"stream_name":"stdout","time":838.953757044,"data":"\n"}
+,{"stream_name":"stdout","time":838.953828357,"data":"TEST France: S1 sample 10000, pool 1434993\n"}
+,{"stream_name":"stdout","time":846.721443692,"data":"  prep pool 1434993: 8s\n"}
+,{"stream_name":"stdout","time":890.304932589,"data":"  pool tokens 27677722\n"}
+,{"stream_name":"stdout","time":894.358212888,"data":"  pool postings after df cap 17326600  892s\n"}
+,{"stream_name":"stdout","time":934.305064779,"data":"France: mean candidates(top30) 30.0; mean 'strong' (\u003e=2 arms) 2.66; exp/S1 7.49\n"}
+,{"stream_name":"stdout","time":934.448380291,"data":"France: sample top-5 candidates for 4 S1s:\n"}
+,{"stream_name":"stdout","time":934.458728905,"data":"  ## Saint-Nazaire Societe SARL | 64 Rue de Cardurand, Saint-Nazaire, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.459009748,"data":"      1 Saint-Nazaire Sôciete SARL | 64 R De Cardurand, Saint-nazaire, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.459023003,"data":"      2 Saint-Nazaire Service | 64 R De Cardurand, Saint-nazaire, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.459027931,"data":"      3 Saint-Nazaire Societe | 64 R. De Cardurand, St.-nazaire, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.459031995,"data":"      4 Saint-Nazaire Societe | 64 R. DE CARDURAND, SAINT-NAZAIRE, Loire-Atlantique\n"}
+,{"stream_name":"stdout","time":934.459035873,"data":"      5 Gildquo aka Maelys Danse SCI | 64 Rue d'Anjou, Saint-Nazaire, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.460155885,"data":"  ## Education Service SAS | 2 Rue des Ecoles Cap Ferret, Lège-Cap-Ferret, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":934.46019534,"data":"      1 Education Service SAS | Lege-cap-ferret, 2 R Des Ecoles Cap Ferret\n"}
+,{"stream_name":"stdout","time":934.460216193,"data":"      2 EDUCATION SERVICE SAS | 2 Rue Des Ecoles Cap Ferret, Lege-cap-ferret\n"}
+,{"stream_name":"stdout","time":934.460221111,"data":"      3 EDUCATION SERVICE SAS | 2 Rue Des Ecoles Cap Ferret, Lège-cap-ferret\n"}
+,{"stream_name":"stdout","time":934.460286271,"data":"      4 Education SAS Cie | 2 RUE DES ECOLES CAP FERRET, LÈGE-CAP-FERRET\n"}
+,{"stream_name":"stdout","time":934.460294378,"data":"      5 education service sas | 2 RUE DES ECOLES CAP FRRET, LÈGE-CAP-FERRET\n"}
+,{"stream_name":"stdout","time":934.461867317,"data":"  ## Collège Michel | 67 Avenue de Mont à Camp, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":934.462006126,"data":"      1 collgemichel.com | 0067 Av. De Mont À Camp, Lille, Nord\n"}
+,{"stream_name":"stdout","time":934.46206096,"data":"      2 Societe Sainte | 67 - AVENUE DU PEPLE BELGE, LILLE, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":934.462066479,"data":"      3 Développement Michel Collège | Nº 69 Avenue De Mont À Camp, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":934.462071804,"data":"      4 Collège Michel Distribution SCI | Nord, LILLE, N° 69 AVENUE DE MONT À CAMP\n"}
+,{"stream_name":"stdout","time":934.462076627,"data":"      5 Detude Anciens Sarl | 67 AVENUE GASPARD MALO, DUNKERQUE, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":934.463060553,"data":"  ## Lami Restaurant EI | 8 Rue Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":934.463147233,"data":"      1 Lami Restaurant Ei | 8 RUE SARAH BERNHARDT, MÉRIGNAC, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":934.46324767,"data":"      2 Lamirestaurantei.Com | 8 R Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":934.463256003,"data":"      3 Lami SNC  Restaurant | 10 Rue Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":934.463260991,"data":"      4 Nyctalope Musique Développement SARL | LA BAULE-ESCOUBLAC, 8 AVENUE SARAH BERNHARDT\n"}
+,{"stream_name":"stdout","time":934.463266853,"data":"      5 Imperial ècole EURL | N° 8 Avenue Sarah Bernhardt, Nantes, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":934.463325141,"data":"\n"}
+,{"stream_name":"stdout","time":934.463342893,"data":"DONE 932s\n"}
+,{"stream_name":"stderr","time":939.522842578,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":939.523070787,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":940.018088377,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":940.01814344,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":942.044127414,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":944.14917146,"data":"[NbConvertApp] Writing 422950 bytes to __results__.html\n"}
+]

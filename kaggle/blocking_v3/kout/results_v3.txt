@@ -1,0 +1,98 @@
+TRAIN S1=2206821 R=10320219
+  prep pool 10320219: 190s
+  pool tokens 233738289
+  pool postings after df cap 157391449  613s
+retrieved 3363571  825s
+expansion adds 254454
+
+=== v3 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===
+expansion: mean added per S1 8.48
+K=  5 all=0.7736 +exp=0.7766  indic=0.646/0.671  noaddr=0.092/0.096  web=0.662/0.665  alias=0.988/0.988  US=0.7976/0.7989  India=0.7372/0.7430
+K= 10 all=0.8494 +exp=0.8525  indic=0.731/0.756  noaddr=0.202/0.206  web=0.783/0.786  alias=0.996/0.996  US=0.8699/0.8711  India=0.8184/0.8243
+K= 20 all=0.8787 +exp=0.8817  indic=0.768/0.793  noaddr=0.274/0.277  web=0.824/0.827  alias=0.999/0.999  US=0.8968/0.8980  India=0.8513/0.8571
+K= 30 all=0.8901 +exp=0.8932  indic=0.785/0.811  noaddr=0.305/0.309  web=0.841/0.844  alias=1.000/1.000  US=0.9067/0.9079  India=0.8651/0.8709
+K= 50 all=0.9016 +exp=0.9047  indic=0.803/0.828  noaddr=0.344/0.348  web=0.857/0.860  alias=1.000/1.000  US=0.9161/0.9173  India=0.8797/0.8856
+K=100 all=0.9145 +exp=0.9176  indic=0.828/0.853  noaddr=0.400/0.404  web=0.870/0.873  alias=1.000/1.000  US=0.9256/0.9268  India=0.8979/0.9037
+
+=== UNION recall: primary topK + aux(top15 each) + sibling expansion ===
+K= 20 union=0.9348 (cands/S1=41.5)  indic=0.802  noaddr=0.729  web=0.907  alias=1.000  US=0.9478  India=0.9151
+      entity-complete: 0.8262
+K= 30 union=0.9405 (cands/S1=51.3)  indic=0.819  noaddr=0.733  web=0.916  alias=1.000  US=0.9525  India=0.9224
+      entity-complete: 0.8400
+K= 50 union=0.9462 (cands/S1=71.0)  indic=0.836  noaddr=0.738  web=0.924  alias=1.000  US=0.9570  India=0.9299
+      entity-complete: 0.8539
+K=100 union=0.9526 (cands/S1=120.6)  indic=0.859  noaddr=0.749  web=0.931  alias=1.000  US=0.9616  India=0.9391
+      entity-complete: 0.8700
+
+=== entity completeness (ALL matches of the S1 retrieved) ===
+  top20+exp: 0.7008    top20 only: 0.6952
+  top30+exp: 0.7258    top30 only: 0.7201
+  top50+exp: 0.7514    top50 only: 0.7455
+
+=== per-arm: share of found positives hit by arm, and unique finds ===
+  primary   hit 0.963  unique 35321
+  namepair  hit 0.546  unique 358
+  keys      hit 0.573  unique 1014
+  expansion-only finds: 317
+
+=== sample of remaining misses (not in top30, not expanded) ===
+  rk=47 | Loia Inc | 2445 Oak Street, Gray, TN  ==>  Loia Ínc | 445 Oak Street, Gray, Tennessee
+  rk=- | Swami Infraproject Ltd | E-E2102, Sector -58 Gurugram, Ireo Grand Arch Golf Cour  ==>  Center Swami Ltd | E-e##2102, Badshahpur, Gurgaon, HR
+  rk=- | Midwest Legacy Silicon | 412 Juanita Drive, Unit 615B, Henderson, TN  ==>  Midwest Legacy Center | JUANITA DR, HENDERSON, TN
+  rk=- | Smith's Graphics | 1612 Hackney Street, Winfield, KS  ==>  Smith's Services | Kansas, Winfield, 1544 Hackney Street
+  rk=75 | Oncology Center LLC | Buffalo, IA, 217 3rd St  ==>  ONCOLOGY CENTER | 3RD SAINT, BUFFALO, IA
+  rk=- | Ram Enterprises Private Limited | No.30/06-H, First Floor, Deenplaza, Near State Bank, Ma  ==>  Ram Enterprises Pbrfvte-Limited | Mayuram,mayiladuthurai, H.no C-30/06-h, Nagapattinam, த
+  rk=- | Royal Education Labs LLC | 234 County Rd 733, Calhoun, TN  ==>  Royal Education Lhsb LLC | None
+  rk=34 | Bright Telecom Company | 1952 Curtiss Street, Downers Grove, IL  ==>  Bright Company Center | Downers Grove, Curtiss Street, Illinois
+  rk=- | Delta Coalition LLC | 4482 Sycamore Drive, Gilbert, AZ  ==>  Delta Coaflitgon LLC | Sycamore Dr, GILBERT DP, AZ
+  rk=- | Behavioral Health Center | 466 Ridgeview Road, Orange, CT  ==>  Behavioral Health Center Inc | ORANGE, CT, RIDGEVIEW ROAD
+  rk=46 | Southern Business LLP | Plot No.- 93-94, Rishi Galav Nagar, Galta Gate, Jaipur,  ==>  सदर्न बिजनेस एलएलपी | PLOT NO.- 93-94, JAIPUR, Rajasthan
+  rk=51 | Nitco & Sons Limited | No.2, Manjunatha Nilaya, Katrhirguppe Main Road, Bangal  ==>  Nitco + Limited Services | None
+  rk=- | Bianca Hanson Preferred Integrated | 613 Newcastle Lane, Grand Prairie, TX  ==>  Hansonbianca.Com | Newcastle Ln, Grand Prairie, Texas
+  rk=- | Unique Media Pvt Ltd | Shop No 9, Bldg No B-20, Sector-10, Shanti Nagar, Mira   ==>  यूनिक मीडिया प्रा. लि. | Shop No 9, Thane, MH
+  rk=- | Hotel International Private Limited | Stpi, 2Nd Floor, Solitaire Building, Plot No. 14 & 15 S  ==>  హోటల్ ఇంటర్నేషనల్ ప్రైవేట్ లిమిటెడ్ | STPI, RANGAREDDY, Telangana
+  rk=- | Unique Consultants Private Limited | A-2, 531 Sector 21, Turbhe, Navi Mumbai, Thane, Maharas  ==>  यूनिक कंसल्टेंट्स प्राइवेट लिमिटेड | A-2, THANE, NAVI MUMBAI, Maharashtra
+  rk=84 | Urgent Care Specialists | 1445 Benley Street, Murfreesboro, TN  ==>  Urgent Care Spécialists LLC | TN, BENLEY SAINT, MURFREESBORO
+  rk=- | Jay Brothers Ltd | 32, Brahaman Mohalla, Lalawala, Bassi, Jaipur, Rajastha  ==>  Jay  Brothers Ltd | ##32, Jaipur, राजस्थान
+  rk=64 | Meum LLC | 1021 Meadow View Lane, City Of De Pere, WI  ==>  Meum  LLC | Meadow View Ln, City Of De Pere, Wisconsin
+  rk=60 | New Healthcare Pvt Ltd | 24 Park Street, Park Center Building, 9Th Floor, Kolkat  ==>  নিউ হেলথকেয়ার প্রাইভেট লিমিটেড | H.no 24 Park Street, পশ্চিমবঙ্গ, Howrah, Kolkata
+  rk=- | Real Global Private Limited | 52 Tularam Bagh, Allahabad, Uttar Pradesh  ==>  Real Global Private-Ltd | None
+  rk=- | Hunger Ministries | 1534 Bays Fork Road, Bowling Green, KY  ==>  Hunger Ministries | None
+  rk=- | Barrett Transalta | 305 Mountain Falls Drive, Lake Toxaway, NC  ==>  Barrett Transata | None
+  rk=- | Delhi Designer Limited | 1014A, 10Th Floor, D Mall, Netaji Subhash Place, Pitamp  ==>  Delhi Dmggnhir Limited | 1014A, Delhi, DL
+  rk=- | Blue Systems Private Limited | Shop No. 3-4-12, Jagdish, Mahankali Street, Hyderabad,   ==>  Blue Systems Private Ltd | None
+
+train: mean candidates(top30) 30.0; mean 'strong' (>=2 arms) 3.34; exp/S1 8.48
+
+TEST France: S1 sample 10000, pool 1434993
+  prep pool 1434993: 8s
+  pool tokens 27677722
+  pool postings after df cap 17326600  892s
+France: mean candidates(top30) 30.0; mean 'strong' (>=2 arms) 2.66; exp/S1 7.49
+France: sample top-5 candidates for 4 S1s:
+  ## Saint-Nazaire Societe SARL | 64 Rue de Cardurand, Saint-Nazaire, Pays de la Loire
+      1 Saint-Nazaire Sôciete SARL | 64 R De Cardurand, Saint-nazaire, Pays de la Loire
+      2 Saint-Nazaire Service | 64 R De Cardurand, Saint-nazaire, Pays de la Loire
+      3 Saint-Nazaire Societe | 64 R. De Cardurand, St.-nazaire, Pays de la Loire
+      4 Saint-Nazaire Societe | 64 R. DE CARDURAND, SAINT-NAZAIRE, Loire-Atlantique
+      5 Gildquo aka Maelys Danse SCI | 64 Rue d'Anjou, Saint-Nazaire, Pays de la Loire
+  ## Education Service SAS | 2 Rue des Ecoles Cap Ferret, Lège-Cap-Ferret, Nouvelle-Aquitaine
+      1 Education Service SAS | Lege-cap-ferret, 2 R Des Ecoles Cap Ferret
+      2 EDUCATION SERVICE SAS | 2 Rue Des Ecoles Cap Ferret, Lege-cap-ferret
+      3 EDUCATION SERVICE SAS | 2 Rue Des Ecoles Cap Ferret, Lège-cap-ferret
+      4 Education SAS Cie | 2 RUE DES ECOLES CAP FERRET, LÈGE-CAP-FERRET
+      5 education service sas | 2 RUE DES ECOLES CAP FRRET, LÈGE-CAP-FERRET
+  ## Collège Michel | 67 Avenue de Mont à Camp, Lille, Hauts-de-France
+      1 collgemichel.com | 0067 Av. De Mont À Camp, Lille, Nord
+      2 Societe Sainte | 67 - AVENUE DU PEPLE BELGE, LILLE, Hauts-de-France
+      3 Développement Michel Collège | Nº 69 Avenue De Mont À Camp, Lille, Hauts-de-France
+      4 Collège Michel Distribution SCI | Nord, LILLE, N° 69 AVENUE DE MONT À CAMP
+      5 Detude Anciens Sarl | 67 AVENUE GASPARD MALO, DUNKERQUE, Hauts-de-France
+  ## Lami Restaurant EI | 8 Rue Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine
+      1 Lami Restaurant Ei | 8 RUE SARAH BERNHARDT, MÉRIGNAC, Nouvelle-Aquitaine
+      2 Lamirestaurantei.Com | 8 R Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine
+      3 Lami SNC  Restaurant | 10 Rue Sarah Bernhardt, Mérignac, Nouvelle-Aquitaine
+      4 Nyctalope Musique Développement SARL | LA BAULE-ESCOUBLAC, 8 AVENUE SARAH BERNHARDT
+      5 Imperial ècole EURL | N° 8 Avenue Sarah Bernhardt, Nantes, Pays de la Loire
+
+DONE 932s
