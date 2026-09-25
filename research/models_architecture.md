@@ -9,7 +9,7 @@ Companion documents: `plan.md` (data findings), `training_plan.md` (training/val
 1. **Translation is mostly solved by data, not models.** The generator converts names to Indian scripts **word by word from a closed vocabulary**. In training: 1,347 Indian-script word types; 551,230 of 551,240 true pairs line up word for word; the most common mapping is right 98.8% of the time. Test: 1,518 types, **171 unseen** (3.6% of tokens). → A **dictionary learned from training** handles 96.4% of tokens. A tiny transliteration model (IndicXlit, 11M params, MIT) or Qwen handles only the **171 unseen word types**: translate the vocabulary once, not 1.4M records.
 2. **Fine-tuned small models beat large zero-shot ones for entity matching.** AnyMatch at 1.3B roughly equals GPT-4, and fine-tuned small LLMs beat zero-shot GPT-4 on most datasets (EDBT 2025). → Fine-tune one small multilingual backbone. Don't prompt a big model.
 3. **Split the work by what each model is good at.** Twins differ in **digits** (house numbers), which transformers compare poorly. The **GBDT** handles numbers, structure and competition. The **transformer** handles name noise (scrambled letters, transliteration, aliases, website names).
-4. **One backbone, several LoRA heads:** a Qwen3-0.6B-family model serves (a) the retrieval embedding, (b) the pair classifier for S1↔R **and** R↔R, and (c) name normalisation checks. An optional Qwen3-4B "select" judge covers only the uncertain band. Worst-case total ≈ 4.7B parameters, **under 8B even if the limit applies to the whole pipeline**.
+4. **One backbone, several LoRA heads:** a Qwen3-0.6B-family model serves (a) the retrieval embedding, (b) the pair classifier for S1↔R **and** R↔R, and (c) name normalisation checks. An optional Qwen3-4B "select" judge covers only the uncertain band. The limit is **per model** (confirmed), so each slot can use up to an 8B model; §3.
 
 ---
 
@@ -79,17 +79,21 @@ Companion documents: `plan.md` (data findings), `training_plan.md` (training/val
 
 ---
 
-## 3. Parameter budget (designed to fit 8B even if the limit covers everything)
-| Component | Params |
-|---|---|
-| Qwen3-0.6B base (shared by the embedding and classifier adapters) | 0.6B |
-| LoRA adapters (×3) | ~0.03B |
-| IndicXlit | 0.011B |
-| Qwen3-4B judge (optional) | 4.0B |
-| LightGBM/CatBoost | (not neural; negligible) |
-| **Total** | **≈ 4.7B** |
+## 3. Parameter budget: PER MODEL (confirmed by the organisers, answers 7/10)
+"The limit is per model, so every model you use (embedder, reranker, matcher, or any preprocessing model) must **independently** meet it."
+- There is **no combined budget**. Several models, ensembles and cascades are allowed.
+- Each model must independently: be MIT/Apache-2.0 (including its **base model's** licence), have ≤ 8B **total** parameters (MoE total counts, so 35B-A3B is out), run offline, and be fine-tuned by us only on provided data.
 
----
+What this unlocks (each model ≤ 8B, all can coexist):
+| Slot | Best allowed choice | Alternative |
+|---|---|---|
+| Transliteration fallback (preprocessing) | IndicXlit 11M (MIT) | Qwen3-4B |
+| Embedding / retrieval | Qwen3-Embedding-**4B/8B** or bge-m3 | Qwen3-Embedding-0.6B (fast) |
+| Pair classifier (S1–R and R–R) | Qwen3-Reranker-**4B** (LoRA) | bge-reranker-v2-m3, Qwen3-Reranker-0.6B |
+| Listwise judge | Qwen3-**8B** (LoRA) | Qwen3-4B / Qwen3.5-4B |
+| Tabular | LightGBM + CatBoost ensemble | — |
+
+Limits in practice are now **compute** (Kaggle T4 about 30 GPU-h/week; test has 1.73M S1) and **candidate-set size** (strategy v3), not licence budget. Choose model size per slot by measured gain per GPU-hour.
 
 ## 4. Architecture: one backbone, many heads
 
