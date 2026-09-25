@@ -172,3 +172,24 @@ Everything below fixes these. A larger probe used too much memory and was stoppe
 1. Is the 8B limit per model or for the whole ensemble?
 2. May unlabelled test records be used (e.g. clustering test S2/S3 is unsupervised on test inputs; it's needed at inference anyway, so it should be fine)?
 3. How many submissions per day?
+
+---
+
+## 8. Full-scale candidate-search results (Kaggle run v1, 30k S1 vs the full 10.3M S2/S3 pool)
+Method: IDF token overlap + name word pairs + name keys + (number, street) key; frequency cap 5000; top 200 kept. Results in `kaggle/eda_blocking/results_v1.txt`.
+
+| K | all | US | India | Indian-script name | no address | website/handle | alias |
+|---|---|---|---|---|---|---|---|
+| 10 | 81.8% | 85.1% | 76.8% | 38.0% | 63.7% | 53.1% | 90.0% |
+| 30 | **87.3%** | 91.5% | 80.8% | **39.4%** | 74.1% | 68.7% | 95.6% |
+| 100 | 92.4% | 93.9% | 90.0% | 68.2% | 82.4% | 77.1% | 97.5% |
+| 200 | 94.1% | 95.6% | 91.8% | 72.6% | 86.5% | 81.3% | 98.7% |
+
+- **At the entity level, only 72.2% of S1s have *all* their matches in the top 30** (mean 87% found per S1). This is the ceiling on the score right now, so **candidate search is priority #1**.
+- Unique contribution per search arm: token overlap 9,358; name pairs 474; (number, street) 342; name keys 42.
+- Fixes, in order of expected gain:
+  1. **Transliteration** of Indian scripts (39% → should approach the Latin-script rate). India lags US by about 11 pts, mostly because of this.
+  2. **Recover cluster siblings**: pull in S2/S3 records that match a retrieved record's address or number exactly. This fixes Indian-script, website and no-address copies through their Latin-script siblings.
+  3. **Split website/handle names** against S1 names with the spaces removed.
+  4. **Rank per arm, then combine**, instead of summing IDF across arms (the address tokens swamp the name signal).
+- **Kaggle has no internet** on this account (pip failed); phone verification probably needed. Otherwise upload the needed wheels (rapidfuzz, lightgbm) as a Kaggle dataset.

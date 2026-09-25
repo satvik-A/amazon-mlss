@@ -1,0 +1,22 @@
+loaded S1=2206821 R=10320219 pairs=7638365  6s
+R tokens 135993953  314s
+R postings after df<=5000: 85607547
+candidates kept (<=200/S1): 5971323  401s
+
+=== recall@K (pairs) overall and by slice ===
+K=  5 all=0.7303  indic=0.334(n=7546)  noaddr=0.484(n=4656)  web=0.334(n=5853)  alias=0.789(n=934)  US=0.7570  India=0.6900
+K= 10 all=0.8182  indic=0.380(n=7546)  noaddr=0.637(n=4656)  web=0.531(n=5853)  alias=0.900(n=934)  US=0.8512  India=0.7683
+K= 20 all=0.8585  indic=0.391(n=7546)  noaddr=0.708(n=4656)  web=0.642(n=5853)  alias=0.946(n=934)  US=0.8985  India=0.7980
+K= 30 all=0.8726  indic=0.394(n=7546)  noaddr=0.741(n=4656)  web=0.687(n=5853)  alias=0.956(n=934)  US=0.9152  India=0.8082
+K= 50 all=0.8858  indic=0.418(n=7546)  noaddr=0.776(n=4656)  web=0.724(n=5853)  alias=0.959(n=934)  US=0.9274  India=0.8229
+K=100 all=0.9237  indic=0.682(n=7546)  noaddr=0.824(n=4656)  web=0.771(n=5853)  alias=0.975(n=934)  US=0.9394  India=0.8999
+K=200 all=0.9407  indic=0.726(n=7546)  noaddr=0.865(n=4656)  web=0.813(n=5853)  alias=0.987(n=934)  US=0.9559  India=0.9177
+
+=== per-arm hit rate among positives found, and unique contribution ===
+  tok        hits 0.971   unique 9358
+  npair      hits 0.746   unique 474
+  nkey       hits 0.579   unique 42
+  num_street hits 0.528   unique 342
+
+=== entity-level: share of S1 whose ALL matches are in top-K ===
+  all matches in top30: 0.7224   mean frac: 0.8719
