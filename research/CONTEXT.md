@@ -53,9 +53,13 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 | r1 aux caps ×2 | 98.43 / 94.9 | 93.56 / 84.1 | 78.7 / 74.2 | 86.8 | ~117 | ~10 |
 | r3 df cap 2000 | 98.05 / 93.7 | 92.75 / 82.3 | 73.8 / 70.0 | 85.4 | ~86 | **4.4** |
 | r4 top-100 + trigram 25 | 98.30 / 94.4 | 93.55 / 84.1 | 74.4 / 71.2 | 87.0 | ~136 | 7.4 |
-| **r5 + arm 7 (no-address names)** | **98.80 / 96.1** | **93.72 / 84.8** | **87.6 / 90.7** | 85.9 | ~98 | 7.9 |
+| r5 + arm 7 (no-address names) | 98.80 / 96.1 | 93.72 / 84.8 | 87.6 / 90.7 | 85.9 | ~98 | 7.9 |
+| r6 arm 7 cap 20 | 98.92 / 96.6 | 93.78 / 85.1 | 90.2 / 92.4 | 85.9 | ~108 | 13 |
+| r7 arm 7 cap 20 + aux ×2 + df 2k | 98.87 / 96.4 | 94.07 / 85.6 | 89.6 / 91.4 | 86.6 | ~128 | 5.1 |
+| r8 arms 7 + 8 (name key × address) | 98.98 / 96.5 | 96.37 / 89.9 | 87.6 / 90.7 | 94.9 | ~99 | 11.7 |
+| **r9 arms 7 + 8 + aux ×2 + df 2k = new default (d83f580)** | **99.05 / 96.8** | **96.58 / 90.4** | 89.6 / 91.4 | **95.1** | ~129 | **5.2** |
 Findings: caps move recall < 1 pt; the hole is **copies with no address (~72%)** → new arm 7 (name tokens of no-address records indexed on their own; local sample 0.905 → 0.967), **confirmed at full scale (r5): completeness +2.1 (US) / +2.2 (India), no-address copy recall +13 / +20 pts, +9 cands/S1** → adopted for the second candidate pass (current Kaggle pools = 988ce1d, without arm 7). df cap 2000 is 2.3× faster for −0.1/−0.2 pt.
-Full-mode test pools: US 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m; India 810k → 71.7M (88.5/S1) in 2h18m.
+Full-mode test pools (first pass, 988ce1d): France 259k S1 → 24.6M rows (95.0/S1) in 43 min; US 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m; India 810k → 71.7M (88.5/S1) in 2h18m.
 
 **Cross-encoder (bge-reranker-v2-m3, fine-tuned on A-split pairs, eval on C-split top-15 + aux):** AUC 0.9997 (zero-shot 0.992; Qwen3-Reranker-0.6B zero-shot 0.980; blocking score 0.941); top-1 0.998; singletons: best candidate p ≥ 0.5 for 22% → needs number features / has-match head (stacking).
 

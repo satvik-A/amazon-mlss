@@ -1,0 +1,13 @@
+variant {"name": "r5_arm7", "cap": 5000, "key_cap": 200, "caps": {}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7]}; polars 1.44.2; ber from /kaggle/input/datasets/satvik006/er-src/ber
+{"variant": "r5_arm7", "country": "US", "S1": 29086, "cands": 97.6020078388228, "p95": 117.0, "recall": 0.98798574613792, "complete": 0.9614278956369856, "recall_r_indic": null, "recall_r_noaddr": 0.8763474952441345, "complete_s1_noaddr": null, "build_s": 368, "query_s": 237, "ms_per_query": 8.141239727329522}
+{"variant": "r5_arm7", "country": "India", "S1": 29051, "cands": 98.38494371966542, "p95": 117.0, "recall": 0.9371787095683647, "complete": 0.8484462093336733, "recall_r_indic": 0.8586920067076579, "recall_r_noaddr": 0.9074355083459787, "complete_s1_noaddr": null, "build_s": 271, "query_s": 223, "ms_per_query": 7.68803375763867}
+shape: (2, 13)
+┌─────────┬─────────┬───────┬───────────┬───┬────────────────────┬─────────┬─────────┬──────────────┐
+│ variant ┆ country ┆ S1    ┆ cands     ┆ … ┆ complete_s1_noaddr ┆ build_s ┆ query_s ┆ ms_per_query │
+│ ---     ┆ ---     ┆ ---   ┆ ---       ┆   ┆ ---                ┆ ---     ┆ ---     ┆ ---          │
+│ str     ┆ str     ┆ i64   ┆ f64       ┆   ┆ null               ┆ i64     ┆ i64     ┆ f64          │
+╞═════════╪═════════╪═══════╪═══════════╪═══╪════════════════════╪═════════╪═════════╪══════════════╡
+│ r5_arm7 ┆ US      ┆ 29086 ┆ 97.602008 ┆ … ┆ null               ┆ 368     ┆ 237     ┆ 8.14124      │
+│ r5_arm7 ┆ India   ┆ 29051 ┆ 98.384944 ┆ … ┆ null               ┆ 271     ┆ 223     ┆ 7.688034     │
+└─────────┴─────────┴───────┴───────────┴───┴────────────────────┴─────────┴─────────┴──────────────┘
+DONE 1142s
