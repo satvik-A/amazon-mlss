@@ -11,6 +11,9 @@ WD = "." if LOCAL else "/kaggle/working"
 if not LOCAL:
     # the image's torchao 0.10 makes recent peft refuse to build LoRA layers; we do not use torchao
     subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)
+    if any(k.startswith("qwen35") for k in os.environ.get("KINDS_HINT", "__KINDS__").split(",")):
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "transformers"], check=True)
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "flash-linear-attention", "causal-conv1d"], check=False)
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.51", "peft>=0.13",
                     f"git+https://github.com/satvik-A/amazon-mlss.git@{REF}#subdirectory=code/business_entity_resolution"], check=True)
 else:
@@ -80,7 +83,7 @@ import json, math, os, sys, time
 import numpy as np, polars as pl, torch
 from sklearn.metrics import roc_auc_score, log_loss
 kind, WD, TRAIN_MIN = sys.argv[1], sys.argv[2], float(sys.argv[3])
-tag = kind.replace("hf:", "").replace("/", "_")
+tag = kind.replace("hf:", "").replace("/", "_").replace(":", "_")
 torch.manual_seed(0); np.random.seed(0)
 dev = "cuda" if torch.cuda.is_available() else "cpu"
 tr = pl.read_parquet(f"{WD}/pairs_train.parquet"); ev = pl.read_parquet(f"{WD}/pairs_eval.parquet")
@@ -89,7 +92,37 @@ def log(*a):
     s = " ".join(str(x) for x in a); print(f"[{kind}] " + s, flush=True); L.write(s + "\n"); L.flush()
 from transformers import AutoTokenizer
 EVAL_MAX = 10**9
-if kind.startswith("qwen"):
+if kind.startswith("qwen35"):
+    from transformers import AutoModelForImageTextToText
+    from peft import LoraConfig, get_peft_model
+    name = "Qwen/Qwen3.5-" + kind.split(":")[1]
+    tok = AutoTokenizer.from_pretrained(name, padding_side="left")
+    big = not kind.endswith("0.8B")
+    model = AutoModelForImageTextToText.from_pretrained(name, **({"torch_dtype": torch.float16} if big else {})).to(dev)
+    if big:
+        model.gradient_checkpointing_enable(); model.enable_input_require_grads()
+    yes, no = tok.convert_tokens_to_ids("yes"), tok.convert_tokens_to_ids("no")
+    pre = tok.encode('<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n', add_special_tokens=False)
+    suf = tok.encode("<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n", add_special_tokens=False)
+    INST = "Are the Query business record and the Document business record the same business entity (same business at the same location)?"
+    def enc(a, b):
+        body = tok([f"<Instruct>: {INST}\n<Query>: {x}\n<Document>: {y}" for x, y in zip(a, b)], add_special_tokens=False)["input_ids"]
+        ids = [pre + t[:200] + suf for t in body]; m = max(map(len, ids)); pad = tok.pad_token_id
+        return dict(input_ids=torch.tensor([[pad] * (m - len(i)) + i for i in ids], device=dev),
+                    attention_mask=torch.tensor([[0] * (m - len(i)) + [1] * len(i) for i in ids], device=dev))
+    def fwd(b):
+        try:
+            lg = model(**b, logits_to_keep=1).logits[:, -1, :]
+        except TypeError:
+            lg = model(**b).logits[:, -1, :]
+        return (lg[:, yes] - lg[:, no]).float()
+    def make_trainable():
+        global model
+        # LoRA on the language model's linear layers only (attention, gated-DeltaNet projections, MLP), not the vision tower
+        tm = r"^(?!.*visual).*\.(q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj|in_proj\w*|out_proj)$"
+        model = get_peft_model(model, LoraConfig(r=16, lora_alpha=32, lora_dropout=0.05, target_modules=tm))
+        return (1e-4, 12) if big else (2e-4, 24)
+elif kind.startswith("qwen"):
     from transformers import AutoModelForCausalLM
     from peft import LoraConfig, get_peft_model
     name = "Qwen/Qwen3-Reranker-4B" if kind == "qwen4b" else "Qwen/Qwen3-Reranker-0.6B"
@@ -138,7 +171,7 @@ else:
 
 @torch.no_grad()
 def score(d, bs=None):
-    bs = bs or (16 if kind == "qwen4b" else 128)   # 4B activations at 128 x ~220 tokens overflow a T4
+    bs = bs or (16 if kind == "qwen4b" else 32 if kind.startswith("qwen35") else 128)   # 4B activations at 128 x ~220 tokens overflow a T4
     model.eval(); out = []
     a, b = d["t_s1"].to_list(), d["t_r"].to_list()
     for i in range(0, len(a), bs):
@@ -205,7 +238,7 @@ if __name__ == "__main__":
         codes = [subprocess.run([sys.executable, f"{WD}/worker.py", k, WD, str(TRAIN_MIN / max(1, len(kinds)))]).returncode for k in kinds]
     log(f"worker exit codes {codes}")
     for k in kinds:
-        for f in (f"{WD}/log_{k.replace('hf:', '').replace('/', '_')}.txt",):
+        for f in (f"{WD}/log_{k.replace('hf:', '').replace('/', '_').replace(':', '_')}.txt",):
             if os.path.exists(f): log(f"--- {k}"); log(open(f).read()[-3000:])
     # baseline for reference: blocking score alone on the same eval pairs
     ev = pl.read_parquet(f"{WD}/pairs_eval.parquet")

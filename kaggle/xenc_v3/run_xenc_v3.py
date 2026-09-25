@@ -1,4 +1,4 @@
-"""[v2: ByT5-base (bytes) on GPU0, CANINE-c (characters) on GPU1] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
+"""[v3: Qwen3.5-0.8B LoRA on GPU0, Qwen3.5-2B LoRA on GPU1 (hybrid Gated-DeltaNet)] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
   GPU0  Qwen/Qwen3-Reranker-0.6B  (Apache-2.0)  LoRA, yes/no logit
   GPU1  BAAI/bge-reranker-v2-m3   (Apache-2.0, XLM-R base MIT)  full fine-tune
 Pairs are built here with our blocking (CPU): TRAIN on A-split S1s (hash(11)%100 < 60, same split as the matcher, so
@@ -11,7 +11,7 @@ WD = "." if LOCAL else "/kaggle/working"
 if not LOCAL:
     # the image's torchao 0.10 makes recent peft refuse to build LoRA layers; we do not use torchao
     subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)
-    if any(k.startswith("qwen35") for k in os.environ.get("KINDS_HINT", "hf:google/byt5-base,hf:google/canine-c").split(",")):
+    if any(k.startswith("qwen35") for k in os.environ.get("KINDS_HINT", "qwen35:0.8B,qwen35:2B").split(",")):
         subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", "transformers"], check=True)
         subprocess.run([sys.executable, "-m", "pip", "install", "-q", "flash-linear-attention", "causal-conv1d"], check=False)
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "transformers>=4.51", "peft>=0.13",
@@ -20,13 +20,13 @@ else:
     sys.path.insert(0, os.path.abspath("../../code/business_entity_resolution/src"))
 import numpy as np, polars as pl
 T0 = time.time()
-REP = open(f"{WD}/results_xenc_v2.txt", "w")
+REP = open(f"{WD}/results_xenc_v3.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); REP.write(s + "\n"); REP.flush()
 N_A = int(os.environ.get("N_A", 300 if LOCAL else 12000))    # train S1 per country
 N_C = int(os.environ.get("N_C", 100 if LOCAL else 2000))     # eval S1 per country
 TRAIN_MIN = float(os.environ.get("TRAIN_MIN", 1 if LOCAL else 105))
-KINDS = os.environ.get("KINDS", "hf:google/byt5-base,hf:google/canine-c").split(",")   # one model per GPU
+KINDS = os.environ.get("KINDS", "qwen35:0.8B,qwen35:2B").split(",")   # one model per GPU
 
 # ------------------------------------------------ 1. pairs (CPU) ----------------------------------------------------
 def build_pairs():
