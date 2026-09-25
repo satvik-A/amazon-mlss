@@ -1,0 +1,3 @@
+{"id": "satvikaderla/er-eda-blocking", "title": "er-eda-blocking", "code_file": "eda_blocking.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data"], "competition_sources": [], "kernel_sources": []}
