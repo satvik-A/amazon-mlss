@@ -19,6 +19,16 @@ Rule: each model **and its base model** must be MIT or Apache-2.0, ≤ 8B **tota
 ## Embedders (bi-encoders: blocking arm, similarity features)
 Qwen3-Embedding-0.6B / 4B / 8B (0.60 / 4.02 / 7.57B, Apache) · bge-m3 (MIT) · multilingual-e5-large-instruct (0.56B, MIT) · snowflake-arctic-embed-l-v2.0 (0.57B, Apache) · granite-embedding-278m-multilingual (Apache) · nomic-embed-text-v2-moe (0.48B, Apache).
 
+## Qwen3.5 series (checked 2026-09-25)
+Hybrid recurrent architecture: 3 of every 4 layers are **Gated DeltaNet linear attention** (a recurrent state), every 4th is full attention; vision-language models (`Qwen3_5ForConditionalGeneration`, vocab 248k), used text-only. Apache-2.0.
+| Model | Params | In limit | Plan |
+|---|---|---|---|
+| Qwen/Qwen3.5-0.8B | 0.87B | yes | yes/no scorer + LoRA (`er-xenc-v3`) |
+| Qwen/Qwen3.5-2B | 2.27B | yes | yes/no scorer + LoRA, fp16 base + checkpointing (`er-xenc-v3`) |
+| Qwen/Qwen3.5-4B | 4.66B | yes | next if 2B beats 0.8B |
+| Qwen/Qwen3.5-9B | 9.65B | **no** | excluded |
+| Qwen3.5-27B / 35B-A3B / 122B, Qwen3.6-27B / 35B, Qwen3-Next-80B | 27–125B | no | excluded |
+
 ## Generative judges (listwise over an S1's candidates, uncertain band first)
 | Model | Params | Licence (base) | Note |
 |---|---|---|---|
