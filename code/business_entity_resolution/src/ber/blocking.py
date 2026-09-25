@@ -15,8 +15,8 @@ import gc
 import numpy as np
 import polars as pl
 
-ARMS = {0: "primary", 3: "namepair", 4: "keys", 5: "nameonly", 6: "trigram"}
-CAP = {0: 100, 3: 15, 4: 15, 5: 20, 6: 10}
+ARMS = {0: "primary", 3: "namepair", 4: "keys", 5: "nameonly", 6: "trigram", 7: "noaddr"}
+CAP = {0: 100, 3: 15, 4: 15, 5: 20, 6: 10, 7: 10}
 
 
 def _pairs4(col: str):
@@ -41,6 +41,13 @@ def tokens(N: pl.DataFrame, query: bool = False) -> pl.DataFrame:
     for a, e in arms:
         t = d.select("id", e.list.unique().alias("t")).explode("t").drop_nulls("t").filter(pl.col("t").str.len_chars() > 3)
         out.append(t.select("id", pl.col("t").hash().alias("h"), pl.lit(a, dtype=pl.UInt8).alias("arm")))
+    # arm 7: name tokens of records WITHOUT an address, indexed on their own. A no-address copy's only evidence is its
+    # name, and in the name-only arm it ties with every same-name record of the country (recall ~72% on such copies).
+    # Index side: only no-address records; query side: every query.
+    z = d if query else d.filter(pl.col("noaddr"))
+    t = z.select("id", pl.concat_list(pre("z:", "core"), pre("zk:", "sk")).list.unique().alias("t")).explode("t").drop_nulls("t") \
+         .filter(pl.col("t").str.len_chars() > 3)
+    out.append(t.select("id", pl.col("t").hash().alias("h"), pl.lit(7, dtype=pl.UInt8).alias("arm")))
     # arm 6: character trigrams of the first two core words (scrambled / typo'd names, esp. with no address)
     s = d.select("id", (pl.lit("^") + pl.col("core").list.head(2).list.join("") + pl.lit("$")).alias("s")).filter(pl.col("s").str.len_chars() >= 5)
     tri = s.with_columns(pl.int_ranges(0, pl.col("s").str.len_chars() - 2).alias("i")).explode("i") \
@@ -76,7 +83,7 @@ def signatures(N: pl.DataFrame) -> pl.DataFrame:
 class Index:
     """Inverted index for one country's S2/S3 pool (or S1 pool, for reverse lookups)."""
 
-    def __init__(self, N: pl.DataFrame, cap: int = 5000, key_cap: int = 200, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6)):
+    def __init__(self, N: pl.DataFrame, cap: int = 5000, key_cap: int = 200, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6, 7)):
         parts = []
         for c0 in range(0, N.height, chunk):
             tk = tokens(N.slice(c0, chunk))
