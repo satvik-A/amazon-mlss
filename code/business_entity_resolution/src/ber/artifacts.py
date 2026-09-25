@@ -178,14 +178,19 @@ def fit_vocab(names: pl.DataFrame, min_n: int = 2) -> pl.DataFrame:
 
 
 # ---- test-time (unsupervised) ---------------------------------------------------------------------------------------
-def pseudo_pairs(QN: pl.DataFrame, RN: pl.DataFrame, min_shared: int = 3) -> pl.DataFrame:
+def pseudo_pairs(QN: pl.DataFrame, RN: pl.DataFrame, min_shared: int = 3, num_equal: bool = True) -> pl.DataFrame:
     """High-precision S1->R pairs WITHOUT labels: same first address number, same core-name set, >= min_shared common
-    address words. Train check (300k S1): US precision 0.9975 / recall 0.52; India 0.914 / 0.50.
+    address words, and (num_equal) the same full number set. Train check (300k S1, num_equal=False): US precision 0.9975 /
+    recall 0.52; India 0.914 / 0.50 -> with num_equal India 0.992 (India twins differ in a later number: 6-3-891 vs 6-3-896).
     QN/RN: normalised frames. Returns [s1, r]."""
     k = lambda N: N.filter((pl.col("ad").list.len() > 0) & (pl.col("core").list.len() > 0)).select(
-        "entity_id", pl.col("ad").list.first().alias("hn"), pl.col("core").list.sort().list.join(" ").alias("ck"), "aw")
-    j = k(QN).rename({"entity_id": "s1"}).join(k(RN).rename({"entity_id": "r", "aw": "aw_r"}), on=["hn", "ck"])
-    return j.filter(pl.col("aw").list.set_intersection(pl.col("aw_r")).list.len() >= min_shared).select("s1", "r")
+        "entity_id", pl.col("ad").list.first().alias("hn"), pl.col("core").list.sort().list.join(" ").alias("ck"), "aw",
+        pl.col("ad").list.unique().list.sort().list.join(" ").alias("nums"))
+    j = k(QN).rename({"entity_id": "s1"}).join(k(RN).rename({"entity_id": "r", "aw": "aw_r", "nums": "nums_r"}), on=["hn", "ck"])
+    j = j.filter(pl.col("aw").list.set_intersection(pl.col("aw_r")).list.len() >= min_shared)
+    if num_equal:
+        j = j.filter(pl.col("nums") == pl.col("nums_r"))
+    return j.select("s1", "r")
 
 
 def fit_country_addr_synonyms(nz, s1: pl.DataFrame, R: pl.DataFrame, min_n: int = 50, chunk: int = 500_000,
