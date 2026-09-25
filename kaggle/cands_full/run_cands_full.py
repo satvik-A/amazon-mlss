@@ -9,6 +9,10 @@ if CFG["split"].startswith("__"):
 LOCAL = not os.path.exists("/kaggle")
 if LOCAL:
     sys.path.insert(0, os.path.abspath(f"{HERE}/../../code/business_entity_resolution/src"))
+elif glob.glob("/kaggle/input/**/er-src/**/ber/__init__.py", recursive=True):   # account 2: no internet -> offline bundle
+    _W = os.path.dirname(glob.glob("/kaggle/input/**/polars-1.44.2*.whl", recursive=True)[0])
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-index", "--find-links", _W, "polars==1.44.2", "rapidfuzz==3.14.6", "lightgbm==4.6.0"], check=True)
+    sys.path.insert(0, os.path.dirname(os.path.dirname(glob.glob("/kaggle/input/**/er-src/**/ber/__init__.py", recursive=True)[0])))
 else:
     subprocess.run([sys.executable, "-m", "pip", "install", "-q",
                     f"git+https://github.com/satvik-A/amazon-mlss.git@{CFG['ref']}#subdirectory=code/business_entity_resolution"], check=True)

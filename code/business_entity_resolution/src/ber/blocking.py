@@ -16,7 +16,8 @@ import numpy as np
 import polars as pl
 
 ARMS = {0: "primary", 3: "namepair", 4: "keys", 5: "nameonly", 6: "trigram", 7: "noaddr", 8: "namekey_x_addr"}
-CAP = {0: 100, 3: 15, 4: 15, 5: 20, 6: 10, 7: 10, 8: 10}
+# recall lab r9 (full train pool): completeness US 94.0 -> 96.8, India 82.7 -> 90.4 vs the v5 config, 2x faster queries
+CAP = {0: 100, 3: 30, 4: 30, 5: 40, 6: 25, 7: 20, 8: 10}
 
 
 def _pairs4(col: str):
@@ -91,7 +92,7 @@ def signatures(N: pl.DataFrame) -> pl.DataFrame:
 class Index:
     """Inverted index for one country's S2/S3 pool (or S1 pool, for reverse lookups)."""
 
-    def __init__(self, N: pl.DataFrame, cap: int = 5000, key_cap: int = 200, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6, 7, 8)):
+    def __init__(self, N: pl.DataFrame, cap: int = 2000, key_cap: int = 200, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6, 7, 8)):
         parts = []
         for c0 in range(0, N.height, chunk):
             tk = tokens(N.slice(c0, chunk))
