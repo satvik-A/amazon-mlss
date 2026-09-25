@@ -17,3 +17,5 @@ __pycache__/
 *.egg-info/
 kaggle/cands_full/jobs/
 kaggle/*/build/
+kaggle/.orchestrator_state.json
+kaggle/orchestrator.log
