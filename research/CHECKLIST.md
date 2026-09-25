@@ -78,8 +78,9 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [!] Don't over-tune to the public LB (it's a subset); prefer CV plus the country-holdout check.
 
 **Heavy models (compute is not a constraint now)**
-- [ ] Cross-encoder bake-off: Qwen3-Reranker 0.6B / 4B / 8B vs bge-reranker-v2-m3; with and without digits in the input.
-- [ ] Listwise judge: Qwen3-8B, LoRA; input = S1 + its candidate clusters; output = which cluster(s), or none. First on the uncertain band, then on everything if it helps.
+- [~] Cross-encoder bake-off: `er-xenc-v1` (bge-reranker-v2-m3 full FT; zero-shot AUC 0.992, top-1 0.998), `er-xenc-v1b` (Qwen3-Reranker 0.6B LoRA + 4B LoRA), `er-xenc-v2` queued (ByT5-base bytes, gte-multilingual-reranker). 8B excluded (8.19B).
+- [ ] Recursive / iterative ideas (no time limit): iterative collective classification (neighbour predictions as features, 2–3 rounds); recurrent-depth LM (Huginn-3.9B, Apache) as judge; RWKV-7 / Mamba-2 hybrids for long listwise inputs; TRM-style tiny recursive set decoder trained from scratch.
+- [!] **Qwen3-8B is 8.19B total params → over the 8B limit (excluded)**; so are Qwen3-Reranker-8B and granite-3.3-8b. Listwise judge candidates: Qwen3-4B (thinking), DeepSeek-R1-Distill-Qwen-7B (MIT), Qwen2.5-7B, Mistral-7B-v0.3, OLMo-2-7B, Phi-4-mini. Full shortlist with verified licences: `research/models.md`.
 - [ ] Bi-encoder: Qwen3-Embedding-4B/8B vs bge-m3 (dense + sparse + multi-vector).
 - [ ] Ensembling across seeds, folds and model families; order-swap test-time augmentation for the cross-encoders.
 
