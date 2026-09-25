@@ -28,9 +28,9 @@ JOBS = [
     ("er-submit", "cpu", ["er-matcher-full", "er-cands-test-us", "er-cands-test-india", "er-cands-test-france"],
      lambda st: launch("kaggle/submit")),
     # cross-encoder scores for B/C: needs the matcher's level-1 files and at least the bge run; uses every finished bake-off
-    ("er-xenc-score", "gpu", ["er-matcher-full", "er-xenc-v1"],
-     lambda st: launch("kaggle/xenc_score", "NvidiaTeslaT4", [x for x in XENC if st.get(x) == "COMPLETE"] + ["er-matcher-full"])),
-    ("er-stack", "cpu", ["er-xenc-score"], lambda st: launch("kaggle/stack")),
+    ("er-xenc-score", "gpu", ["er-matcher-full2", "er-xenc-v1"],
+     lambda st: launch("kaggle/xenc_score", "NvidiaTeslaT4", [x for x in XENC if st.get(x) == "COMPLETE"] + ["er-matcher-full2"])),
+    ("er-stack", "cpu", ["er-xenc-score"], lambda st: launch("kaggle/stack", sources=["er-matcher-full2", "er-xenc-score"])),
     ("er-xenc-v2", "gpu", [], lambda st: prebuilt("kaggle/xenc_v2", "NvidiaTeslaT4")),
     # second pass (blocking arms 7 + 8): gated by the file kaggle/.cands2_go (created once the config is chosen + jobs2 built)
     *[(n, "cpu", [], (lambda f: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/cands_full/jobs2/{f}"])(n[len("er-cands2-"):].replace("-", "_")))
@@ -40,7 +40,7 @@ JOBS = [
     ("er-xenc-v3", "gpu", [], lambda st: prebuilt("kaggle/xenc_v3", "NvidiaTeslaT4")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
-WAIT_FOR = {"er-xenc-score": ["er-xenc-v1b"]}
+WAIT_FOR = {"er-xenc-score": ["er-xenc-v1b", "er-xenc-v2", "er-xenc-v3"]}
 GATES = {n: f"{ROOT}/kaggle/.cands2_go" for n in CANDS2}
 
 
