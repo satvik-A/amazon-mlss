@@ -54,7 +54,9 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 | r3 df cap 2000 | 98.05 / 93.7 | 92.75 / 82.3 | 73.8 / 70.0 | 85.4 | ~86 | **4.4** |
 | r4 top-100 + trigram 25 | 98.30 / 94.4 | 93.55 / 84.1 | 74.4 / 71.2 | 87.0 | ~136 | 7.4 |
 Findings: caps move recall < 1 pt; the hole is **copies with no address (~72%)** → new arm 7 (name tokens of no-address records indexed on their own; local sample 0.905 → 0.967), full-scale check running (r5–r7). df cap 2000 is 2.3× faster for −0.1/−0.2 pt.
-Full-mode test US pool: 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m.
+Full-mode test pools: US 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m; India 810k → 71.7M (88.5/S1) in 2h18m.
+
+**Cross-encoder (bge-reranker-v2-m3, fine-tuned on A-split pairs, eval on C-split top-15 + aux):** AUC 0.9997 (zero-shot 0.992; Qwen3-Reranker-0.6B zero-shot 0.980; blocking score 0.941); top-1 0.998; singletons: best candidate p ≥ 0.5 for 22% → needs number features / has-match head (stacking).
 
 **Artefacts (full data, `kaggle/artifacts`)**
 - Indic lexicon 1,318 words (consistency 0.998). Sibling lexicon on hidden train words: coverage 100%, accuracy 100% (fallback 52%). Test unseen Indic words: 200 (5.3% of tokens): 25 via siblings, 175 via fallback (mostly decoy qualifiers).
