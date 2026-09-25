@@ -33,17 +33,17 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [!] Interpretation: a **bi-encoder / embedding retriever inside blocking** counts as candidate generation, not a "scoring model" (the organisers list "embedder" as a normal model). A **cross-encoder or GBDT that prunes** would make its input the candidate set. Document this clearly.
 - [!] Pool compute across **each teammate's own** accounts: fine. **Don't** use extra accounts to multiply leaderboard submissions or probes; that's a fair-play violation and risks disqualification.
 
-## C. Pipeline status (master plan: `strategy_v3.md`)
+## C. Pipeline status (current state: `research/CONTEXT.md`; old master plan: `archive/strategy_v3.md`)
 | # | Step | Status |
 |---|---|---|
 | 0 | EDA, hypotheses, leakage check | [x] |
-| 1 | Learned artefacts (Indic dictionary + fallback, state aliases, noise/decoy words, pseudo-word alias detector) + small hand tables (FR/US/IN) | [~] package `ber` built; full fit running on Kaggle `er-artifacts` |
-| 2 | Blocking v5 "tight" (cluster closure + deterministic pruning) + frontier sweep | [ ] |
+| 1 | Learned artefacts (Indic dictionary + fallback, state aliases, noise/decoy words, pseudo-word alias detector) + small hand tables (FR/US/IN) | [x] v1 done; [~] v2 adds test-time per-country address synonyms (Kaggle `er-artifacts` v2) |
+| 2 | Blocking v5 "tight" (cluster closure + deterministic pruning) + frontier sweep | [~] running (`er-blocking-v5`) |
 | 2b | Fine-tuned bi-encoder in blocking (distilled from the cross-encoder) | [ ] |
 | 3 | Full train-shard + full-test candidate generation, writer, validator | [ ] |
 | 4 | Level-1 models: hand-feature GBDT · cross-encoder (0.6B → 4B/8B) · listwise LLM judge · bi-encoder cosine | [ ] |
 | 5 | Level-2 stacker (GBDT on out-of-fold level-1 outputs + features) + calibration | [ ] |
-| 6 | Decision: has-match head, cluster choice, global assignment, expected F0.5, per-source caps | [ ] |
+| 6 | Decision: has-match head, cluster choice, global assignment, expected F0.5, per-source caps | [~] `ber/decide.py` (exact expected-F0.5 top-k, at-most-one-owner posterior, caps); compared in matcher v1 |
 | 7 | Second pass ("re-crossing"): profile-enriched re-retrieval for missed copies | [ ] |
 | 8 | France: hand table, self-training, synthetic pairs, LB probe | [ ] |
 | 9 | Final fits, package, documentation (every model + licence + params) | [ ] |
@@ -67,13 +67,13 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [ ] Closed vocabularies: Indian-script words, noise words, decoy words, legal forms → exact tables learned from train.
 - [ ] Pseudo-word detector for "Xyzqwe F/K/A Real Name" aliases (made-up names like Nexarcriza, Tavobrix): strip the fake part.
 - [ ] Number-perturbation signatures: true copies = dropped digit / leading zero / bad ordinal suffix / missing; twins = shift ≤ 25 / 1-digit edit. Feature + gate.
-- [ ] Per-source caps (S2 ≤ 5, S3 ≤ 6) and total ≤ 11 in decoding.
+- [x] Per-source caps (S2 ≤ 5, S3 ≤ 6) in decoding (`decide.source_caps`); total ≤ 11 still to add.
 - [ ] Twin structure: measure at full scale whether each orphan cluster is the twin of exactly one S1; if so, use "exactly two nearby clusters" reasoning.
 - [ ] S1×S1 look-alikes on test (S1 is deduplicated) = guaranteed negatives for self-training.
 - [ ] Global exclusivity across all test S1s: each record assigned once (greedy / min-cost flow).
 
 **Leaderboard probes (within our own submission budget)**
-- [ ] All-empty → exact test singleton rate.
+- [~] All-empty → exact test singleton rate (file passes the validator; **awaiting the user's upload**).
 - [ ] France on/off → France contribution.
 - [!] Don't over-tune to the public LB (it's a subset); prefer CV plus the country-holdout check.
 
@@ -100,6 +100,15 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] Adopt a stricter acceptance gate: V1 ≥ +0.002, V2 not worse by > 0.002, no slice worse by > 0.010.
 - [-] Its threshold table (θ = 0.84 → F0.5 0.99323), "98.5% recall at ≤ 25", "< 1.5 GB RAM", "< 4 min inference": unmeasured and internally inconsistent; not used.
 - [-] "False positive costs 4× a false negative": actually ~2.7× with 4 true matches, and a total loss on singletons; we use the rank-aware decision layer instead of one global θ.
+
+**Phase-2 findings (2026-09-25 evening)**
+- [x] `ber/decide.py`: exact expected-F0.5 top-k decoding (Poisson-binomial DP, equal to brute-force enumeration; 0.16 s per 50k S1), at-most-one-owner posterior, per-source caps. Matcher v1 compares rank-threshold / expected-F / + exclusivity / + has-match head on holdout C.
+- [x] **Normaliser bug fixed:** address words were length-filtered (≥ 3) BEFORE street-abbreviation mapping, so `St`, `Rd`, `R`, `Bd`, `Av` and **all 2-letter state codes** were dropped, and the learned state code↔name synonyms never fired on the code side. A/B on 52k true train pairs: US address-word jaccard **0.617 → 0.863** (identical 21% → 54%), random negatives 0.027 → 0.050; India 0.701 → 0.758. `No 15` no longer counted as a unit (India false unit mismatch on true pairs 4.9% → 2.75%). French `St` = Saint (per-country override). Name function words (de/du/la/and/of…) join the noise set; `compagnie` = legal form.
+- [x] France test patterns: `R`/`R.` for rue (25% of S2/S3 addresses), `Rte`, `Bd`, `Av`, `N°`/`No`, region on one side vs department on the other (Nouvelle-Aquitaine ↔ Gironde…), random accents added (Mâison, SÊRVICE), `Cie` ↔ `Compagnie`, dotted legal forms, no postcodes (only house numbers).
+- [x] **Label-free pseudo-pairs** (same first address number + same core-name set + ≥ 3 shared address words): precision on train **US 0.9975, India 0.914**, recall ~0.5; cover 90% of France test S1. Use: test-time synonyms (done), France self-training / calibration (to do).
+- [x] **Test-time per-country address synonyms** mined from pseudo-pairs (`artifacts.fit_country_addr_synonyms`): France recovers region↔department (aquitaine/gironde, hauts/nord, pays/atlantique, pas) + street abbreviations; France name+house pairs address jaccard 0.648 → 0.705.
+- [ ] India pseudo-pairs are only 91% precise: require the full number set to be equal before using them for self-training.
+- [ ] France self-training: pseudo-pairs as positives + S1×S1 look-alikes as negatives → France-specific calibration of the matcher.
 
 ## E. Rejected (with reasons)
 - [-] Ranking each search method separately (v2): recall dropped 87.3% → 84.5%.

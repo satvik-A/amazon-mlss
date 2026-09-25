@@ -1,5 +1,5 @@
 # CONTEXT: current state (single source of truth; read this first)
-Updated 2026-09-25. Older docs are in `research/archive/` (history only). Detailed ledger: `research/CHECKLIST.md` (older entries reference archived paths). Rules: `research/organiser_answers.md`.
+Updated 2026-09-25 (evening). Older docs are in `research/archive/` (history only). Detailed ledger: `research/CHECKLIST.md` (older entries reference archived paths). Rules: `research/organiser_answers.md`.
 
 ## 1. Task and scoring
 - Match S2/S3 records to each S1 business (S1 is deduplicated). Output `matching_results.tsv` (LB-scored) + `candidate_pairs.tsv` (final zip).
@@ -26,10 +26,11 @@ Updated 2026-09-25. Older docs are in `research/archive/` (history only). Detail
 | `translit.py` | Rule-based Indic → Latin (fallback only) |
 | `tables.py` | Small hand dictionaries: street types (US/IN/FR), number words, legal forms, alias markers, honorific noise words, leet map |
 | `text.py` | fold (NFKD), dot collapse, tokenise, skeleton, leet fix |
-| `artifacts.py` | Learned from provided data: Indic lexicon, sibling-based lexicon extension (test-legal), OOV fallback, address/name synonym pairs, vocab |
-| `normalize.py` | `Normalizer(art_dir).transform(df)` → nw, core, alias, legal, decoy, sk, aw (synonym-expanded), ad, au, noaddr. Same for all sources/splits |
+| `artifacts.py` | Learned from provided data: Indic lexicon, sibling-based lexicon extension (test-legal), OOV fallback, address/name synonym pairs, vocab; label-free `pseudo_pairs` + test-time per-country address synonyms |
+| `normalize.py` | `Normalizer(art_dir).transform(df)` → nw, core, alias, legal, decoy, sk, aw (street types mapped before the length filter; global + per-country synonyms expanded), ad, au, noaddr. Same for all sources/splits |
 | `blocking.py` | `Index` (per-country inverted index, IDF, freq cap 5000 / keys 200), arms: primary combined (name+skeleton+address+numbers+units+number×word+word pairs+name×word), namepair, keys, nameonly, trigram; `expand` (sibling signatures); `number_relation`; `prune` (alpha, G, gate, beta) |
 | `features.py` | `pair_features(P, QN, RN)`: 49 features (rapidfuzz batch ratios, token/skeleton sets, numbers/house/unit relations, address, blocking, context), ~60k pairs/s |
+| `decide.py` | Decision layer: exact expected-F0.5 top-k decoding (Poisson-binomial DP), at-most-one-owner posterior per record, per-source caps, rank-threshold baseline |
 | `metrics.py` | Exact macro F0.5 (self-tested on the brief's example) |
 | `io.py` | Validator-safe writer (asserts every rule; matches ⊆ candidates) |
 
@@ -49,14 +50,20 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 - Indic lexicon 1,318 words (consistency 0.998). Sibling lexicon on hidden train words: coverage 100%, accuracy 100% (fallback 52%). Test unseen Indic words: 200 (5.3% of tokens): 25 via siblings, 175 via fallback (mostly decoy qualifiers).
 - Address synonyms learned (st/street, state codes ↔ names, transliterated states); union-find merging rejected (ct, tn, "new" ambiguities).
 
+**Normaliser fix (A/B, 52k true train pairs):** street abbreviations and 2-letter state codes were dropped before mapping. US address-word jaccard 0.617 → **0.863** (negatives 0.027 → 0.050); India 0.701 → 0.758; false unit mismatch (India) 4.9% → 2.75%. Commit a4c1490.
+
+**Label-free pseudo-pairs** (same house number + same core name + ≥ 3 shared address words): train precision US **0.9975**, India 0.914, recall ~0.5; cover 90% of France test S1. Test-time per-country synonyms from them: France region↔department + street abbreviations; France address jaccard 0.648 → 0.705 (commit 46e2965).
+
 **Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
 
 **Validation:** exact scorer OK; all-empty probe file passes the official validator (`output/probe_all_empty_matching_results.tsv`; its LB score = test singleton rate; **awaiting the user's upload**).
 
 ## 5. Running / next
-1. `er-blocking-v5` (running): frontier table (recall / completeness vs cands/S1) + labelled candidate pool `cand_train_sample.parquet`.
-2. `er-matcher-v1` (ready; launch after v5): LightGBM, split blending A 60 / B 30 / C 10 by S1, rank-aware cut-offs tuned on B, held-out F0.5 on C, **end-to-end F0.5 per blocking policy** → choose the operating point.
-3. Then: full train/test candidate generation + first real LB submission; cluster/context stage-2 + has-match head + global assignment; decoy-word stats from the pool; France hardening (hand table, self-training); heavy models (cross-encoder, Qwen3-8B judge) as features to a GBDT combiner; bi-encoder distilled into blocking; second-pass re-retrieval; packaging.
+1. `er-blocking-v5` (running; code = pre-fix normaliser): frontier table (recall / completeness vs cands/S1) + labelled candidate pool `cand_train_sample.parquet`.
+2. `er-artifacts` v2 (running): adds `addr_synonyms_country.parquet` (test-time per-country synonyms).
+3. `er-matcher-v1` (ready; launch after v5; **pinned to 8764e93** = baseline normaliser): LightGBM, split blending A 60 / B 30 / C 10 by S1, 4 decision rules compared on holdout C, **end-to-end F0.5 per blocking policy** → choose the operating point.
+4. `er-matcher-v2` = same job on the fixed normaliser (a4c1490 + 46e2965) → acceptance gate vs v1.
+5. Then: full train/test candidate generation + first real LB submission; cluster/context stage-2 + has-match head + global assignment; decoy-word stats from the pool; France hardening (hand table, self-training); heavy models (cross-encoder, Qwen3-8B judge) as features to a GBDT combiner; bi-encoder distilled into blocking; second-pass re-retrieval; packaging.
 
 ## 6. Kaggle jobs (folder → kernel)
 `kaggle/artifacts` → er-artifacts · `kaggle/blocking_v5` → er-blocking-v5 · `kaggle/matcher_v1` → er-matcher-v1. Push: `.venv/bin/kaggle kernels push -p <folder>`; results: `kaggle kernels output satvikaderla/<kernel> -p <folder>/kout`.
