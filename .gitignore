@@ -15,3 +15,4 @@ skills-lock.json
 kaggle.json
 __pycache__/
 *.egg-info/
+kaggle/cands_full/jobs/
