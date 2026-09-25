@@ -1,0 +1,74 @@
+US: pool 85.5/S1, recall 0.9813  583s
+India: pool 84.3/S1, recall 0.9238  1044s
+pairs: train 299708 (pos 0.277), eval 163329 (pos 0.079)  1048s
+GPUs: 2
+worker exit codes [1, 0]
+--- qwen
+model Qwen/Qwen3-Reranker-0.6B on cuda (Tesla T4)
+
+--- bge
+
+zero-shot scored 6000 in 23s
+trainable params 567.8M
+step 200 seen 4800 loss 0.1212 43.9 pairs/s
+step 400 seen 9600 loss 0.0845 43.2 pairs/s
+step 600 seen 14400 loss 0.0702 43.1 pairs/s
+step 800 seen 19200 loss 0.0723 43.0 pairs/s
+step 1000 seen 24000 loss 0.0507 43.0 pairs/s
+step 1200 seen 28800 loss 0.0590 43.0 pairs/s
+step 1400 seen 33600 loss 0.0489 43.0 pairs/s
+step 1600 seen 38400 loss 0.0588 43.0 pairs/s
+step 1800 seen 43200 loss 0.0543 43.0 pairs/s
+step 2000 seen 48000 loss 0.0575 42.9 pairs/s
+step 2200 seen 52800 loss 0.0390 43.0 pairs/s
+step 2400 seen 57600 loss 0.0500 43.0 pairs/s
+step 2600 seen 62400 loss 0.0438 43.0 pairs/s
+step 2800 seen 67200 loss 0.0518 43.0 pairs/s
+step 3000 seen 72000 loss 0.0427 43.0 pairs/s
+step 3200 seen 76800 loss 0.0400 42.9 pairs/s
+step 3400 seen 81600 loss 0.0394 42.9 pairs/s
+step 3600 seen 86400 loss 0.0419 42.9 pairs/s
+step 3800 seen 91200 loss 0.0439 42.9 pairs/s
+step 4000 seen 96000 loss 0.0379 42.9 pairs/s
+step 4200 seen 100800 loss 0.0415 42.9 pairs/s
+step 4400 seen 105600 loss 0.0559 42.9 pairs/s
+step 4600 seen 110400 loss 0.0391 42.9 pairs/s
+step 4800 seen 115200 loss 0.0416 42.9 pairs/s
+step 5000 seen 120000 loss 0.0386 42.9 pairs/s
+step 5200 seen 124800 loss 0.0358 42.9 pairs/s
+step 5400 seen 129600 loss 0.0409 42.9 pairs/s
+step 5600 seen 134400 loss 0.0308 43.0 pairs/s
+step 5800 seen 139200 loss 0.0395 43.0 pairs/s
+step 6000 seen 144000 loss 0.0338 43.0 pairs/s
+step 6200 seen 148800 loss 0.0463 43.0 pairs/s
+step 6400 seen 153600 loss 0.0391 43.0 pairs/s
+step 6600 seen 158400 loss 0.0361 43.0 pairs/s
+step 6800 seen 163200 loss 0.0542 43.0 pairs/s
+step 7000 seen 168000 loss 0.0386 43.0 pairs/s
+step 7200 seen 172800 loss 0.0511 43.0 pairs/s
+step 7400 seen 177600 loss 0.0361 43.0 pairs/s
+step 7600 seen 182400 loss 0.0416 43.0 pairs/s
+step 7800 seen 187200 loss 0.0398 43.0 pairs/s
+step 8000 seen 192000 loss 0.0298 43.0 pairs/s
+step 8200 seen 196800 loss 0.0353 43.0 pairs/s
+step 8400 seen 201600 loss 0.0307 43.0 pairs/s
+step 8600 seen 206400 loss 0.0467 43.0 pairs/s
+step 8800 seen 211200 loss 0.0421 43.0 pairs/s
+step 9000 seen 216000 loss 0.0387 43.0 pairs/s
+step 9200 seen 220800 loss 0.0358 43.0 pairs/s
+step 9400 seen 225600 loss 0.0357 43.0 pairs/s
+step 9600 seen 230400 loss 0.0339 43.1 pairs/s
+step 9800 seen 235200 loss 0.0322 43.1 pairs/s
+step 10000 seen 240000 loss 0.0345 43.1 pairs/s
+step 10200 seen 244800 loss 0.0455 43.1 pairs/s
+step 10400 seen 249600 loss 0.0393 43.1 pairs/s
+step 10600 seen 254400 loss 0.0334 43.1 pairs/s
+step 10800 seen 259200 loss 0.0403 43.1 pairs/s
+step 11000 seen 264000 loss 0.0344 43.1 pairs/s
+step 11200 seen 268800 loss 0.0280 43.1 pairs/s
+trained 11322 steps, 271728 pairs (0.91 epoch) in 105.0 min
+eval scored 163329 pairs in 654s (250 pairs/s)
+FINE-TUNED {"auc": 0.9997029275033362, "logloss": 0.023905258321999, "top1_acc_nonsingleton": 0.9981298423724285, "singleton_max_p_below_0.5": 0.7782101167315175, "auc_India": 0.9997287288885799, "auc_US": 0.9996808943599039}
+
+baseline blocking-score AUC on eval: 0.9410
+DONE 8095s

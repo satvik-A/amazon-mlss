@@ -1,0 +1,21 @@
+{
+ "zero_shot": {
+  "auc": 0.991723717338097,
+  "logloss": 0.10315592871928266,
+  "top1_acc_nonsingleton": 0.9977628635346756,
+  "singleton_max_p_below_0.5": 0.9429223744292238,
+  "auc_US": 0.9923761377978015,
+  "auc_India": 0.9949456244689889
+ },
+ "fine_tuned": {
+  "auc": 0.9997029275033362,
+  "logloss": 0.023905258321999,
+  "top1_acc_nonsingleton": 0.9981298423724285,
+  "singleton_max_p_below_0.5": 0.7782101167315175,
+  "auc_India": 0.9997287288885799,
+  "auc_US": 0.9996808943599039
+ },
+ "pairs_seen": 271728,
+ "steps": 11322,
+ "model": "BAAI/bge-reranker-v2-m3"
+}

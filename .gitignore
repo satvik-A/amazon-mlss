@@ -20,3 +20,5 @@ kaggle/*/build/
 kaggle/.orchestrator_state.json
 kaggle/orchestrator.log
 kaggle2/*/jobs/
+kaggle/**/kout/*.log
+kaggle2/**/kout/*.log

@@ -1,0 +1,16 @@
+[{"stream_name":"stderr","time":6.125924394,"data":"  WARNING: Did not find branch or tag '988ce1d', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":13.731235506,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 20.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":13.795517525,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 57.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.333506482,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 32.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":21.538327891,"data":"test_US: ref 988ce1d  country synonyms yes\n"}
+,{"stream_name":"stdout","time":28.272264983,"data":"S1 663106  R 3817031  7s\n"}
+,{"stream_name":"stdout","time":6518.001498692,"data":"  queried 663106 S1 -\u003e 83049675 raw candidates\n"}
+,{"stream_name":"stdout","time":6823.077433039,"data":"  cands 58776995 (88.6/S1)\n"}
+,{"stream_name":"stdout","time":6838.455642082,"data":"wrote pool_test_US.parquet 58776995 rows  DONE 6817s\n"}
+,{"stream_name":"stderr","time":6842.44715601,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":6842.447198633,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":6842.82821526,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":6842.828246855,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":6843.799154618,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":6845.446002172,"data":"[NbConvertApp] Writing 304043 bytes to __results__.html\n"}
+]

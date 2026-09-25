@@ -1,4 +1,4 @@
-true pairs 7638365  S1 2206821  R 10320219  13s
+true pairs 7638365  S1 2206821  R 10320219  12s
 
 [1] Indic lexicon: 1318 words; mean share 0.9979
 shape: (12, 4)
@@ -23,56 +23,56 @@ shape: (12, 4)
 
 [2] vocab tokens 126112
 siblings on TRAIN hidden words (395): coverage 1.000, accuracy 1.000
-skeleton/fuzzy fallback on the same hidden words: accuracy 0.522
+skeleton/fuzzy fallback on the same hidden words: accuracy 0.514
 test Indic word types 1518; unseen 200 = 0.0533 of tokens
 test unseen words: 25 via siblings, 175 via fallback
 shape: (40, 3)
-┌────────────┬──────────────┬──────────┐
-│ indic      ┆ latin        ┆ how      │
-│ ---        ┆ ---          ┆ ---      │
-│ str        ┆ str          ┆ str      │
-╞════════════╪══════════════╪══════════╡
-│ জয়         ┆ jay          ┆ siblings │
-│ ಶ್ರೀ         ┆ sree         ┆ siblings │
-│ लक्ष्मी      ┆ laxmi        ┆ siblings │
-│ ଶିବ         ┆ shiva        ┆ siblings │
-│ ଜୟ         ┆ jay          ┆ siblings │
-│ శ్రీ         ┆ shree        ┆ siblings │
-│ జై          ┆ jay          ┆ siblings │
-│ లక్ష్మి       ┆ lakshmi      ┆ siblings │
-│ ਲਕਸ਼ਮੀ      ┆ lakshmi      ┆ siblings │
-│ ஜெய்        ┆ jai          ┆ siblings │
-│ શ્રી        ┆ shree        ┆ siblings │
-│ લક્ષ્મી      ┆ laxmi        ┆ siblings │
-│ ଲକ୍ଷ୍ମୀ      ┆ lakshmi      ┆ siblings │
-│ শিব        ┆ shiva        ┆ siblings │
-│ ಲಕ್ಷ್ಮಿ       ┆ lakshmi      ┆ siblings │
-│ जय         ┆ jay          ┆ siblings │
-│ ਸ੍ਰੀ        ┆ sree         ┆ siblings │
-│ ജയ്         ┆ jai          ┆ siblings │
-│ লক্ষ্মী      ┆ lakshmi      ┆ siblings │
-│ ଅଲ୍         ┆ all          ┆ siblings │
-│ শ্রী        ┆ shree        ┆ siblings │
-│ જય         ┆ jay          ┆ siblings │
-│ ਜੈ          ┆ jai          ┆ siblings │
-│ లక్ష్మీ       ┆ laxmi        ┆ siblings │
-│ ଶ୍ରୀ        ┆ sree         ┆ siblings │
-│ బేకరీ        ┆ bakery       ┆ skeleton │
-│ സ്റ്റീൽ      ┆ shree        ┆ skeleton │
-│ मेडिकल्स     ┆ medicals     ┆ skeleton │
-│ ஸ்டீல்        ┆ steel        ┆ skeleton │
-│ ಟೆಕ್ಸ್‌ಟೈಲ್ಸ್     ┆ retails      ┆ fuzzy    │
-│ स्वीट्स      ┆ sweets       ┆ skeleton │
-│ ସ୍ୱିଟ୍ସ୍       ┆ states       ┆ skeleton │
-│ ज्वेलर्स      ┆ jewelers     ┆ skeleton │
-│ ఆటోమొబైల్స్     ┆ automobiles  ┆ skeleton │
-│ ઓટોમોબાઇલ્સ ┆ automobiles  ┆ fuzzy    │
-│ ஆட்டோமொபைல்ஸ் ┆ aattomopails ┆ translit │
-│ ಜ್ಯುವೆಲರ್ಸ್    ┆ jewelers     ┆ skeleton │
-│ സ്റ്റോർസ്     ┆ source       ┆ skeleton │
-│ స్టోర్స్       ┆ stores       ┆ skeleton │
-│ ਟ੍ਰੇਡਰਜ਼      ┆ traders      ┆ skeleton │
-└────────────┴──────────────┴──────────┘
+┌────────────┬─────────────┬──────────┐
+│ indic      ┆ latin       ┆ how      │
+│ ---        ┆ ---         ┆ ---      │
+│ str        ┆ str         ┆ str      │
+╞════════════╪═════════════╪══════════╡
+│ లక్ష్మీ       ┆ laxmi       ┆ siblings │
+│ జై          ┆ jay         ┆ siblings │
+│ લક્ષ્મી      ┆ laxmi       ┆ siblings │
+│ ಶ್ರೀ         ┆ sree        ┆ siblings │
+│ ಲಕ್ಷ್ಮಿ       ┆ lakshmi     ┆ siblings │
+│ ਲਕਸ਼ਮੀ      ┆ lakshmi     ┆ siblings │
+│ লক্ষ্মী      ┆ lakshmi     ┆ siblings │
+│ শ্রী        ┆ shree       ┆ siblings │
+│ लक्ष्मी      ┆ laxmi       ┆ siblings │
+│ ਸ੍ਰੀ        ┆ sree        ┆ siblings │
+│ శ్రీ         ┆ shree       ┆ siblings │
+│ শিব        ┆ shiva       ┆ siblings │
+│ जय         ┆ jay         ┆ siblings │
+│ શ્રી        ┆ shree       ┆ siblings │
+│ ଲକ୍ଷ୍ମୀ      ┆ lakshmi     ┆ siblings │
+│ ଅଲ୍         ┆ all         ┆ siblings │
+│ లక్ష్మి       ┆ lakshmi     ┆ siblings │
+│ ਜੈ          ┆ jai         ┆ siblings │
+│ જય         ┆ jay         ┆ siblings │
+│ ଜୟ         ┆ jay         ┆ siblings │
+│ ଶିବ         ┆ shiva       ┆ siblings │
+│ ଶ୍ରୀ        ┆ sree        ┆ siblings │
+│ ஜெய்        ┆ jai         ┆ siblings │
+│ ജയ്         ┆ jai         ┆ siblings │
+│ জয়         ┆ jay         ┆ siblings │
+│ கார்மென்ட்ஸ்    ┆ apartments  ┆ fuzzy    │
+│ इलेक्ट्रॉनिक्स ┆ elektronik  ┆ fuzzy    │
+│ स्टोर्स      ┆ stores      ┆ skeleton │
+│ ஸ்டீல்        ┆ steel       ┆ skeleton │
+│ ഫർണിച്ചർ    ┆ finch       ┆ skeleton │
+│ मेडिकल्स     ┆ medicals    ┆ skeleton │
+│ ଜେନେରାଲ୍     ┆ general     ┆ fuzzy    │
+│ ಜ್ಯುವೆಲರ್ಸ್    ┆ jewelers    ┆ skeleton │
+│ മെഡിക്കൽസ്   ┆ medicos     ┆ skeleton │
+│ ଷ୍ଟୋର୍ସ୍      ┆ stores      ┆ skeleton │
+│ ਆਟੋਮੋਬਾਈਲਜ਼   ┆ automobiles ┆ skeleton │
+│ இனிப்பகம்    ┆ inika       ┆ fuzzy    │
+│ टेक्सटाइल्स   ┆ teksataails ┆ translit │
+│ ਜਨਰਲ       ┆ janardan    ┆ fuzzy    │
+│ பேக்கரி     ┆ packer      ┆ skeleton │
+└────────────┴─────────────┴──────────┘
 
 [3a] address synonym edges 159
 shape: (70, 7)
@@ -327,4 +327,134 @@ shape: (1, 4)
 │ 146916      ┆ 0.999952     ┆ 0.000014    ┆ 0.996583        │
 └─────────────┴──────────────┴─────────────┴─────────────────┘
 
-DONE 133s
+[6] test-time per-country address synonyms: 700 (pseudo-pairs per country: [('India', 1555491), ('France', 681160), ('US', 1203775)])
+-- France
+shape: (24, 9)
+┌─────────────┬────────────┬───────┬───────┬───┬──────────┬──────────┬─────────┬──────────┐
+│ da          ┆ db         ┆ n_ab  ┆ n_a   ┆ … ┆ p_b_a    ┆ p_a_b    ┆ country ┆ n_pseudo │
+│ ---         ┆ ---        ┆ ---   ┆ ---   ┆   ┆ ---      ┆ ---      ┆ ---     ┆ ---      │
+│ str         ┆ str        ┆ u32   ┆ u32   ┆   ┆ f64      ┆ f64      ┆ str     ┆ i32      │
+╞═════════════╪════════════╪═══════╪═══════╪═══╪══════════╪══════════╪═════════╪══════════╡
+│ nouvelle    ┆ gironde    ┆ 60324 ┆ 90149 ┆ … ┆ 0.669159 ┆ 0.999901 ┆ France  ┆ 681160   │
+│ aquitaine   ┆ gironde    ┆ 60293 ┆ 90089 ┆ … ┆ 0.66926  ┆ 0.999387 ┆ France  ┆ 681160   │
+│ hauts       ┆ nord       ┆ 42068 ┆ 65866 ┆ … ┆ 0.638691 ┆ 0.999477 ┆ France  ┆ 681160   │
+│ france      ┆ nord       ┆ 41814 ┆ 65402 ┆ … ┆ 0.639338 ┆ 0.993443 ┆ France  ┆ 681160   │
+│ pays        ┆ atlantique ┆ 38524 ┆ 43525 ┆ … ┆ 0.885101 ┆ 0.999326 ┆ France  ┆ 681160   │
+│ avenue      ┆ av         ┆ 14148 ┆ 25771 ┆ … ┆ 0.548989 ┆ 0.942634 ┆ France  ┆ 681160   │
+│ hauts       ┆ pas        ┆ 10951 ┆ 65866 ┆ … ┆ 0.166262 ┆ 0.996361 ┆ France  ┆ 681160   │
+│ france      ┆ pas        ┆ 10845 ┆ 65402 ┆ … ┆ 0.165821 ┆ 0.986716 ┆ France  ┆ 681160   │
+│ avenue      ┆ ave        ┆ 7114  ┆ 25771 ┆ … ┆ 0.276047 ┆ 0.955797 ┆ France  ┆ 681160   │
+│ allee       ┆ all        ┆ 6864  ┆ 8721  ┆ … ┆ 0.787066 ┆ 0.918753 ┆ France  ┆ 681160   │
+│ saint       ┆ st         ┆ 4681  ┆ 5716  ┆ … ┆ 0.818929 ┆ 0.977652 ┆ France  ┆ 681160   │
+│ boulevard   ┆ bd         ┆ 3600  ┆ 6653  ┆ … ┆ 0.541109 ┆ 0.928314 ┆ France  ┆ 681160   │
+│ impasse     ┆ imp        ┆ 3142  ┆ 4144  ┆ … ┆ 0.758205 ┆ 0.893629 ┆ France  ┆ 681160   │
+│ route       ┆ rte        ┆ 2972  ┆ 3438  ┆ … ┆ 0.864456 ┆ 0.965562 ┆ France  ┆ 681160   │
+│ chemin      ┆ ch         ┆ 2016  ┆ 2736  ┆ … ┆ 0.736842 ┆ 0.921811 ┆ France  ┆ 681160   │
+│ place       ┆ pl         ┆ 1895  ┆ 2841  ┆ … ┆ 0.667019 ┆ 0.866484 ┆ France  ┆ 681160   │
+│ cours       ┆ crs        ┆ 1796  ┆ 2112  ┆ … ┆ 0.850379 ┆ 0.976618 ┆ France  ┆ 681160   │
+│ boulevard   ┆ blvd       ┆ 1687  ┆ 6653  ┆ … ┆ 0.25357  ┆ 0.953646 ┆ France  ┆ 681160   │
+│ residence   ┆ res        ┆ 191   ┆ 256   ┆ … ┆ 0.746094 ┆ 0.905213 ┆ France  ┆ 681160   │
+│ passage     ┆ psg        ┆ 175   ┆ 586   ┆ … ┆ 0.298635 ┆ 0.670498 ┆ France  ┆ 681160   │
+│ passage     ┆ pass       ┆ 144   ┆ 586   ┆ … ┆ 0.245734 ┆ 0.778378 ┆ France  ┆ 681160   │
+│ appartement ┆ appt       ┆ 89    ┆ 445   ┆ … ┆ 0.2      ┆ 0.577922 ┆ France  ┆ 681160   │
+│ appartement ┆ app        ┆ 89    ┆ 445   ┆ … ┆ 0.2      ┆ 0.978022 ┆ France  ┆ 681160   │
+│ appartement ┆ apt        ┆ 87    ┆ 445   ┆ … ┆ 0.195506 ┆ 0.805556 ┆ France  ┆ 681160   │
+└─────────────┴────────────┴───────┴───────┴───┴──────────┴──────────┴─────────┴──────────┘
+-- India
+shape: (40, 9)
+┌─────────────┬────────────────┬───────┬────────┬───┬──────────┬──────────┬─────────┬──────────┐
+│ da          ┆ db             ┆ n_ab  ┆ n_a    ┆ … ┆ p_b_a    ┆ p_a_b    ┆ country ┆ n_pseudo │
+│ ---         ┆ ---            ┆ ---   ┆ ---    ┆   ┆ ---      ┆ ---      ┆ ---     ┆ ---      │
+│ str         ┆ str            ┆ u32   ┆ u32    ┆   ┆ f64      ┆ f64      ┆ str     ┆ i32      │
+╞═════════════╪════════════════╪═══════╪════════╪═══╪══════════╪══════════╪═════════╪══════════╡
+│ maharashtra ┆ mh             ┆ 73981 ┆ 133660 ┆ … ┆ 0.553501 ┆ 0.997977 ┆ India   ┆ 1555491  │
+│ maharashtra ┆ mahaaraashtr   ┆ 59500 ┆ 133660 ┆ … ┆ 0.445159 ┆ 0.998557 ┆ India   ┆ 1555491  │
+│ karnataka   ┆ ka             ┆ 27135 ┆ 49355  ┆ … ┆ 0.549792 ┆ 0.99567  ┆ India   ┆ 1555491  │
+│ nadu        ┆ tn             ┆ 25493 ┆ 45516  ┆ … ┆ 0.560089 ┆ 0.997769 ┆ India   ┆ 1555491  │
+│ tamil       ┆ tn             ┆ 25488 ┆ 45514  ┆ … ┆ 0.560004 ┆ 0.997573 ┆ India   ┆ 1555491  │
+│ pradesh     ┆ up             ┆ 24634 ┆ 44426  ┆ … ┆ 0.554495 ┆ 0.994429 ┆ India   ┆ 1555491  │
+│ uttar       ┆ up             ┆ 24630 ┆ 24716  ┆ … ┆ 0.99652  ┆ 0.994268 ┆ India   ┆ 1555491  │
+│ karnataka   ┆ karnaatak      ┆ 22212 ┆ 49355  ┆ … ┆ 0.450046 ┆ 0.997261 ┆ India   ┆ 1555491  │
+│ bengal      ┆ wb             ┆ 21783 ┆ 38105  ┆ … ┆ 0.571657 ┆ 0.995294 ┆ India   ┆ 1555491  │
+│ west        ┆ wb             ┆ 21692 ┆ 48471  ┆ … ┆ 0.447525 ┆ 0.991136 ┆ India   ┆ 1555491  │
+│ gujarat     ┆ gj             ┆ 21629 ┆ 38769  ┆ … ┆ 0.557894 ┆ 0.996453 ┆ India   ┆ 1555491  │
+│ tamil       ┆ tamilnaatu     ┆ 20018 ┆ 45514  ┆ … ┆ 0.439821 ┆ 0.997409 ┆ India   ┆ 1555491  │
+│ nadu        ┆ tamilnaatu     ┆ 20015 ┆ 45516  ┆ … ┆ 0.439735 ┆ 0.99726  ┆ India   ┆ 1555491  │
+│ telangana   ┆ tg             ┆ 19402 ┆ 49121  ┆ … ┆ 0.394984 ┆ 0.99702  ┆ India   ┆ 1555491  │
+│ gujarat     ┆ gujaraat       ┆ 17146 ┆ 38769  ┆ … ┆ 0.442261 ┆ 0.995818 ┆ India   ┆ 1555491  │
+│ bengal      ┆ pashchimabangg ┆ 16316 ┆ 38105  ┆ … ┆ 0.428185 ┆ 0.99591  ┆ India   ┆ 1555491  │
+│ west        ┆ pashchimabangg ┆ 16224 ┆ 48471  ┆ … ┆ 0.334716 ┆ 0.990295 ┆ India   ┆ 1555491  │
+│ telangana   ┆ telangaan      ┆ 15353 ┆ 49121  ┆ … ┆ 0.312555 ┆ 0.997466 ┆ India   ┆ 1555491  │
+│ telangana   ┆ pradesh        ┆ 14355 ┆ 49121  ┆ … ┆ 0.292238 ┆ 0.996252 ┆ India   ┆ 1555491  │
+│ telangana   ┆ andhra         ┆ 14315 ┆ 49121  ┆ … ┆ 0.291423 ┆ 0.996103 ┆ India   ┆ 1555491  │
+│ haryana     ┆ hr             ┆ 13422 ┆ 24180  ┆ … ┆ 0.555087 ┆ 0.989823 ┆ India   ┆ 1555491  │
+│ rajasthan   ┆ rj             ┆ 12014 ┆ 21235  ┆ … ┆ 0.565764 ┆ 0.997012 ┆ India   ┆ 1555491  │
+│ kerala      ┆ kl             ┆ 11046 ┆ 28552  ┆ … ┆ 0.386873 ┆ 0.997472 ┆ India   ┆ 1555491  │
+│ haryana     ┆ hariyaanaa     ┆ 10735 ┆ 24180  ┆ … ┆ 0.443962 ┆ 0.988672 ┆ India   ┆ 1555491  │
+│ rajasthan   ┆ raajasthaan    ┆ 9220  ┆ 21235  ┆ … ┆ 0.434189 ┆ 0.997512 ┆ India   ┆ 1555491  │
+│ kerala      ┆ keralam        ┆ 8746  ┆ 28552  ┆ … ┆ 0.306318 ┆ 0.996355 ┆ India   ┆ 1555491  │
+│ kerala      ┆ keralan        ┆ 8737  ┆ 28552  ┆ … ┆ 0.306003 ┆ 0.99601  ┆ India   ┆ 1555491  │
+│ pradesh     ┆ mp             ┆ 7955  ┆ 44426  ┆ … ┆ 0.179062 ┆ 0.998368 ┆ India   ┆ 1555491  │
+│ madhya      ┆ mp             ┆ 7952  ┆ 14905  ┆ … ┆ 0.533512 ┆ 0.997992 ┆ India   ┆ 1555491  │
+│ madhya      ┆ madhy          ┆ 6896  ┆ 14905  ┆ … ┆ 0.462664 ┆ 0.999131 ┆ India   ┆ 1555491  │
+│ pradesh     ┆ ap             ┆ 6683  ┆ 44426  ┆ … ┆ 0.15043  ┆ 0.987003 ┆ India   ┆ 1555491  │
+│ andhra      ┆ ap             ┆ 6675  ┆ 11684  ┆ … ┆ 0.571294 ┆ 0.985822 ┆ India   ┆ 1555491  │
+│ orissa      ┆ odisha         ┆ 4889  ┆ 11482  ┆ … ┆ 0.425797 ┆ 0.995723 ┆ India   ┆ 1555491  │
+│ pradesh     ┆ aandhrapradesh ┆ 4881  ┆ 44426  ┆ … ┆ 0.109868 ┆ 0.990463 ┆ India   ┆ 1555491  │
+│ andhra      ┆ aandhrapradesh ┆ 4869  ┆ 11684  ┆ … ┆ 0.416724 ┆ 0.988028 ┆ India   ┆ 1555491  │
+│ bihar       ┆ br             ┆ 4397  ┆ 7856   ┆ … ┆ 0.5597   ┆ 0.994571 ┆ India   ┆ 1555491  │
+│ punjab      ┆ pb             ┆ 4268  ┆ 7545   ┆ … ┆ 0.565673 ┆ 0.986137 ┆ India   ┆ 1555491  │
+│ delhi       ┆ dillii         ┆ 3881  ┆ 5738   ┆ … ┆ 0.676368 ┆ 0.172351 ┆ India   ┆ 1555491  │
+│ orissa      ┆ od             ┆ 3762  ┆ 11482  ┆ … ┆ 0.327643 ┆ 0.998673 ┆ India   ┆ 1555491  │
+│ bihar       ┆ bihaar         ┆ 3450  ┆ 7856   ┆ … ┆ 0.439155 ┆ 0.995097 ┆ India   ┆ 1555491  │
+└─────────────┴────────────────┴───────┴────────┴───┴──────────┴──────────┴─────────┴──────────┘
+-- US
+shape: (40, 9)
+┌───────────┬───────────────┬────────┬────────┬───┬──────────┬──────────┬─────────┬──────────┐
+│ da        ┆ db            ┆ n_ab   ┆ n_a    ┆ … ┆ p_b_a    ┆ p_a_b    ┆ country ┆ n_pseudo │
+│ ---       ┆ ---           ┆ ---    ┆ ---    ┆   ┆ ---      ┆ ---      ┆ ---     ┆ ---      │
+│ str       ┆ str           ┆ u32    ┆ u32    ┆   ┆ f64      ┆ f64      ┆ str     ┆ i32      │
+╞═══════════╪═══════════════╪════════╪════════╪═══╪══════════╪══════════╪═════════╪══════════╡
+│ street    ┆ st            ┆ 103398 ┆ 116228 ┆ … ┆ 0.889614 ┆ 0.986594 ┆ US      ┆ 1203775  │
+│ road      ┆ rd            ┆ 101297 ┆ 103112 ┆ … ┆ 0.982398 ┆ 0.999635 ┆ US      ┆ 1203775  │
+│ drive     ┆ dr            ┆ 93988  ┆ 95648  ┆ … ┆ 0.982645 ┆ 0.999926 ┆ US      ┆ 1203775  │
+│ avenue    ┆ ave           ┆ 75081  ┆ 76566  ┆ … ┆ 0.980605 ┆ 0.99988  ┆ US      ┆ 1203775  │
+│ tx        ┆ texas         ┆ 54867  ┆ 55017  ┆ … ┆ 0.997274 ┆ 0.999982 ┆ US      ┆ 1203775  │
+│ lane      ┆ ln            ┆ 40217  ┆ 40971  ┆ … ┆ 0.981597 ┆ 0.999901 ┆ US      ┆ 1203775  │
+│ oh        ┆ ohio          ┆ 33525  ┆ 33570  ┆ … ┆ 0.99866  ┆ 0.999911 ┆ US      ┆ 1203775  │
+│ nc        ┆ north         ┆ 32814  ┆ 32954  ┆ … ┆ 0.995752 ┆ 0.915467 ┆ US      ┆ 1203775  │
+│ nc        ┆ carolina      ┆ 32807  ┆ 32954  ┆ … ┆ 0.995539 ┆ 0.968272 ┆ US      ┆ 1203775  │
+│ ny        ┆ york          ┆ 32459  ┆ 32768  ┆ … ┆ 0.99057  ┆ 0.999846 ┆ US      ┆ 1203775  │
+│ ny        ┆ new           ┆ 31955  ┆ 32768  ┆ … ┆ 0.975189 ┆ 0.880667 ┆ US      ┆ 1203775  │
+│ il        ┆ illinois      ┆ 30641  ┆ 30685  ┆ … ┆ 0.998566 ┆ 0.999967 ┆ US      ┆ 1203775  │
+│ tn        ┆ tennessee     ┆ 24315  ┆ 24344  ┆ … ┆ 0.998809 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ court     ┆ ct            ┆ 23421  ┆ 23961  ┆ … ┆ 0.977463 ┆ 0.999957 ┆ US      ┆ 1203775  │
+│ ma        ┆ massachusetts ┆ 22609  ┆ 22650  ┆ … ┆ 0.99819  ┆ 0.999823 ┆ US      ┆ 1203775  │
+│ az        ┆ arizona       ┆ 21148  ┆ 21232  ┆ … ┆ 0.996044 ┆ 0.999905 ┆ US      ┆ 1203775  │
+│ in        ┆ indiana       ┆ 20049  ┆ 20092  ┆ … ┆ 0.99786  ┆ 1.0      ┆ US      ┆ 1203775  │
+│ va        ┆ virginia      ┆ 19020  ┆ 19952  ┆ … ┆ 0.953288 ┆ 0.7692   ┆ US      ┆ 1203775  │
+│ wa        ┆ washington    ┆ 16691  ┆ 16717  ┆ … ┆ 0.998445 ┆ 0.979864 ┆ US      ┆ 1203775  │
+│ md        ┆ maryland      ┆ 16229  ┆ 16245  ┆ … ┆ 0.999015 ┆ 0.999754 ┆ US      ┆ 1203775  │
+│ ca        ┆ california    ┆ 14891  ┆ 14904  ┆ … ┆ 0.999128 ┆ 0.999933 ┆ US      ┆ 1203775  │
+│ al        ┆ alabama       ┆ 13247  ┆ 13251  ┆ … ┆ 0.999698 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ mn        ┆ minnesota     ┆ 12568  ┆ 12576  ┆ … ┆ 0.999364 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ circle    ┆ cir           ┆ 11516  ┆ 11727  ┆ … ┆ 0.982007 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ or        ┆ oregon        ┆ 11501  ┆ 11621  ┆ … ┆ 0.989674 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ ky        ┆ kentucky      ┆ 11501  ┆ 11525  ┆ … ┆ 0.997918 ┆ 0.979642 ┆ US      ┆ 1203775  │
+│ ar        ┆ arkansas      ┆ 10874  ┆ 10886  ┆ … ┆ 0.998898 ┆ 0.997066 ┆ US      ┆ 1203775  │
+│ place     ┆ pl            ┆ 10810  ┆ 11103  ┆ … ┆ 0.973611 ┆ 0.999815 ┆ US      ┆ 1203775  │
+│ mo        ┆ missouri      ┆ 9958   ┆ 9966   ┆ … ┆ 0.999197 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ wi        ┆ wisconsin     ┆ 9343   ┆ 9398   ┆ … ┆ 0.994148 ┆ 0.998184 ┆ US      ┆ 1203775  │
+│ ok        ┆ oklahoma      ┆ 9010   ┆ 9032   ┆ … ┆ 0.997564 ┆ 0.996351 ┆ US      ┆ 1203775  │
+│ boulevard ┆ blvd          ┆ 8524   ┆ 8864   ┆ … ┆ 0.961643 ┆ 0.999765 ┆ US      ┆ 1203775  │
+│ ut        ┆ utah          ┆ 8458   ┆ 8480   ┆ … ┆ 0.997406 ┆ 1.0      ┆ US      ┆ 1203775  │
+│ ia        ┆ iowa          ┆ 8455   ┆ 8605   ┆ … ┆ 0.982568 ┆ 0.999645 ┆ US      ┆ 1203775  │
+│ ct        ┆ connecticut   ┆ 7861   ┆ 7870   ┆ … ┆ 0.998856 ┆ 0.991674 ┆ US      ┆ 1203775  │
+│ wv        ┆ virginia      ┆ 5699   ┆ 5735   ┆ … ┆ 0.993723 ┆ 0.230477 ┆ US      ┆ 1203775  │
+│ ks        ┆ kansas        ┆ 5695   ┆ 6070   ┆ … ┆ 0.938221 ┆ 0.999298 ┆ US      ┆ 1203775  │
+│ wv        ┆ west          ┆ 5694   ┆ 5735   ┆ … ┆ 0.992851 ┆ 0.824023 ┆ US      ┆ 1203775  │
+│ trail     ┆ trl           ┆ 5319   ┆ 5461   ┆ … ┆ 0.973997 ┆ 0.999812 ┆ US      ┆ 1203775  │
+│ me        ┆ maine         ┆ 5057   ┆ 5062   ┆ … ┆ 0.999012 ┆ 0.99783  ┆ US      ┆ 1203775  │
+└───────────┴───────────────┴────────┴────────┴───┴──────────┴──────────┴─────────┴──────────┘
+
+DONE 391s

@@ -1,0 +1,5 @@
+test_India: ref 988ce1d  country synonyms yes
+S1 809986  R 4717565  5s
+  queried 809986 S1 -> 99896078 raw candidates
+  cands 71679772 (88.5/S1)
+wrote pool_test_India.parquet 71679772 rows  DONE 8269s

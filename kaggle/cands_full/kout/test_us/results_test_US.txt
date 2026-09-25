@@ -1,0 +1,5 @@
+test_US: ref 988ce1d  country synonyms yes
+S1 663106  R 3817031  7s
+  queried 663106 S1 -> 83049675 raw candidates
+  cands 58776995 (88.6/S1)
+wrote pool_test_US.parquet 58776995 rows  DONE 6817s
