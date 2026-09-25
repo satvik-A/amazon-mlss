@@ -24,7 +24,7 @@ def norm_chunks(nz, df: pl.DataFrame, chunk: int = 1_000_000) -> pl.DataFrame:
 
 
 def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame, nz, log=print, keep_prk: int = 60,
-               rev_cap: int = 3) -> pl.DataFrame:
+               rev_cap: int = 3, rel_chunk: int = 10_000_000) -> pl.DataFrame:
     """S_raw: S1s to query; R_raw: the country's S2/S3 records; S_all_raw: ALL S1s of the country (reverse lookups).
     Deterministic: inputs are put in entity_id order, so row ids (rank tie-breaks) do not depend on input order."""
     S_raw, R_raw, S_all_raw = (x.sort("entity_id") for x in (S_raw, R_raw, S_all_raw))
@@ -32,6 +32,7 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
     idx = B.Index(R)
     Q = norm_chunks(nz, S_raw).with_columns(pl.Series("id", np.arange(S_raw.height, dtype=np.uint32)))
     cand = idx.query(Q)
+    log(f"  queried {Q.height} S1 -> {cand.height} raw candidates")
     sig = B.signatures(R)
     ex = B.expand(cand, sig)
     del idx; gc.collect()
@@ -44,7 +45,11 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
         pl.when(pl.col("kind") == "none").then(pl.col("id_r").cast(pl.UInt64) + (1 << 62)).otherwise(pl.col("sig")).alias("gid")).drop("sig", "kind")
     cand = cand.with_columns(pl.col("sc").max().over(["id", "gid"]).alias("_g")).with_columns(
         pl.when(pl.col("exp")).then(pl.col("_g") * 0.999).otherwise(pl.col("sc")).alias("sc")).drop("_g")
-    cand = cand.join(B.number_relation(cand.select("id", "id_r"), Q, R), on=["id", "id_r"], how="left")
+    # number relation in slices (joins two number lists onto every pair: the memory peak at ~100M pairs)
+    pr = cand.select("id", "id_r")
+    rel = pl.concat([B.number_relation(pr.slice(i, rel_chunk), Q, R) for i in range(0, pr.height, rel_chunk)])
+    cand = cand.join(rel, on=["id", "id_r"], how="left")
+    del pr, rel; gc.collect()
     same = S_all_raw.height == S_raw.height and S_all_raw["entity_id"].equals(S_raw["entity_id"])
     if same:
         # FULL mode (every S1 of the country queried): reverse preference from the forward candidates themselves.
