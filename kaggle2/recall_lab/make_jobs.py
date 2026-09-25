@@ -11,6 +11,9 @@ VARIANTS = [
     {"name": "r5_arm7", "cap": 5000, "key_cap": 200, "caps": {}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7]},
     {"name": "r6_arm7_cap20", "cap": 5000, "key_cap": 200, "caps": {"7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7]},
     {"name": "r7_arm7_aux2_df2k", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7]},
+    # round 3: + arm 8 (core-name key x address number / word)
+    {"name": "r8_arm78", "cap": 5000, "key_cap": 200, "caps": {}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8]},
+    {"name": "r9_arm78_aux2_df2k", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8]},
 ]
 for v in VARIANTS:
     d = f"{here}/jobs/{v['name']}"; os.makedirs(d, exist_ok=True)
