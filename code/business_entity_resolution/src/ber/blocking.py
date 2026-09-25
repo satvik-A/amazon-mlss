@@ -87,19 +87,43 @@ class Index:
         dfc = Rt.group_by("h").agg(pl.len().alias("df"), pl.col("arm").first())
         dfc = dfc.filter(pl.when(pl.col("arm") == 4).then(pl.col("df") <= key_cap).otherwise(pl.col("df") <= cap))
         # idf quantised to 1/1024 and summed as integers: exact in any summation order (deterministic ranks)
-        self.dfc = dfc.select("h", ((np.log(N.height) - pl.col("df").cast(pl.Float64).log()) * 1024).round().cast(pl.Int32).alias("idf"))
-        self.Rt = Rt.join(self.dfc.select("h"), on="h", how="semi").select("id_r", "h")
+        self.dfc = dfc.select("h", ((np.log(N.height) - pl.col("df").cast(pl.Float64).log()) * 1024).round().cast(pl.Int32).alias("idf"),
+                              pl.col("df").cast(pl.UInt32))
+        Rt = Rt.join(self.dfc.select("h"), on="h", how="semi").select("id_r", "h").sort(["h", "id_r"])
+        # postings as sorted arrays: a query chunk gathers only its own tokens' postings (binary search), never the whole index
+        self._H = Rt["h"].to_numpy(); self._I = Rt["id_r"].to_numpy()
         del Rt; gc.collect()
         self.arms = arms
 
-    def query(self, Q: pl.DataFrame, chunk: int = 1500, caps=None) -> pl.DataFrame:
-        """Q: normalised query frame with uint32 'id'. Returns [id, id_r, sc, prk, xrk, a0..a6]."""
+    @property
+    def Rt(self) -> pl.DataFrame:  # compatibility (postings as a frame)
+        return pl.DataFrame({"id_r": self._I, "h": self._H})
+
+    def _postings(self, hs: np.ndarray) -> pl.DataFrame:
+        uh = np.unique(hs)
+        lo = np.searchsorted(self._H, uh, "left"); hi = np.searchsorted(self._H, uh, "right")
+        cnt = hi - lo; keep = cnt > 0; uh, lo, cnt = uh[keep], lo[keep], cnt[keep]
+        start = np.repeat(lo - np.concatenate([[0], np.cumsum(cnt)[:-1]]), cnt)
+        pos = start + np.arange(cnt.sum())
+        return pl.DataFrame({"h": np.repeat(uh, cnt), "id_r": self._I[pos]})
+
+    def query(self, Q: pl.DataFrame, chunk: int = 20000, caps=None, budget: int = 30_000_000) -> pl.DataFrame:
+        """Q: normalised query frame with uint32 'id'. Returns [id, id_r, sc, prk, xrk, a0..a6].
+        Chunks hold at most `chunk` queries and ~`budget` joined posting rows (sum of token df)."""
         caps = caps or CAP
-        St = tokens(Q, query=True).filter(pl.col("arm").is_in(list(self.arms))).join(self.dfc, on="h")
-        ids = np.sort(Q["id"].to_numpy()); res = []
-        for c0 in range(0, len(ids), chunk):
-            ch = St.filter(pl.col("id").is_in(ids[c0:c0 + chunk].tolist()))
-            a = ch.join(self.Rt, on="h").group_by(["id", "arm", "id_r"]).agg((pl.col("idf").cast(pl.Int64).sum() / 1024).cast(pl.Float32).alias("sc"))
+        St = tokens(Q, query=True).filter(pl.col("arm").is_in(list(self.arms))).join(self.dfc, on="h").sort("id")
+        per = St.group_by("id").agg(pl.len().alias("n"), pl.col("df").cast(pl.Int64).sum().alias("cost")).sort("id")
+        n, cost = per["n"].to_numpy(), per["cost"].to_numpy()
+        row0 = np.concatenate([[0], np.cumsum(n)])
+        res, i = [], 0
+        while i < len(n):
+            j = i + 1
+            cc = cost[i]
+            while j < len(n) and j - i < chunk and cc + cost[j] <= budget:
+                cc += cost[j]; j += 1
+            ch = St.slice(int(row0[i]), int(row0[j] - row0[i]))
+            post = self._postings(ch["h"].to_numpy())
+            a = ch.join(post, on="h").group_by(["id", "arm", "id_r"]).agg((pl.col("idf").cast(pl.Int64).sum() / 1024).cast(pl.Float32).alias("sc"))
             # deterministic: ties (records with identical token sets are common) broken by record id
             a = a.sort("id_r").with_columns(pl.col("sc").rank("ordinal", descending=True).over(["id", "arm"]).alias("rk"))
             a = a.filter(pl.col("rk") <= pl.col("arm").replace_strict(caps, default=10, return_dtype=pl.UInt32))
@@ -109,6 +133,10 @@ class Index:
                 pl.col("rk").filter(pl.col("arm") != 0).min().alias("xrk"),
                 *[(pl.col("arm") == k).any().alias(f"a{k}") for k in ARMS])
             res.append(f)
+            i = j
+        if not res:
+            return pl.DataFrame(schema={"id": pl.UInt32, "id_r": pl.UInt32, "sc": pl.Float32, "prk": pl.UInt32, "xrk": pl.UInt32,
+                                        **{f"a{k}": pl.Boolean for k in ARMS}})
         return pl.concat(res)
 
 
