@@ -1,0 +1,104 @@
+TRAIN S1=2206821 R=10320219
+-- country India
+  prep pool 4133346: 88s
+  pool tokens 199809477
+  pool postings after df cap 143753535  222s
+  retrieved 1459086, expansion adds 103429  301s
+-- country US
+  prep pool 6186873: 26s
+  pool tokens 236314727
+  pool postings after df cap 175399603  504s
+  retrieved 2191340, expansion adds 145219  613s
+
+=== v3 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===
+expansion: mean added per S1 8.29
+K=  5 all=0.8023 +exp=0.8058  indic=0.625/0.653  noaddr=0.025/0.030  web=0.569/0.573  alias=0.966/0.966  US=0.8367/0.8381  India=0.7504/0.7569
+K= 10 all=0.8843 +exp=0.8878  indic=0.728/0.755  noaddr=0.074/0.079  web=0.795/0.799  alias=0.993/0.993  US=0.9233/0.9246  India=0.8254/0.8320
+K= 20 all=0.9044 +exp=0.9079  indic=0.767/0.794  noaddr=0.133/0.138  web=0.854/0.858  alias=0.997/0.997  US=0.9395/0.9408  India=0.8514/0.8580
+K= 30 all=0.9124 +exp=0.9159  indic=0.781/0.808  noaddr=0.166/0.171  web=0.876/0.880  alias=0.999/0.999  US=0.9455/0.9469  India=0.8624/0.8690
+K= 50 all=0.9213 +exp=0.9248  indic=0.797/0.825  noaddr=0.209/0.214  web=0.894/0.898  alias=1.000/1.000  US=0.9512/0.9526  India=0.8762/0.8827
+K=100 all=0.9312 +exp=0.9347  indic=0.821/0.849  noaddr=0.271/0.276  web=0.914/0.918  alias=1.000/1.000  US=0.9567/0.9581  India=0.8927/0.8993
+
+=== UNION recall: primary topK + aux(top15/20 each) + sibling expansion ===
+K= 20 union=0.9547 (cands/S1=51.9)  indic=0.805  noaddr=0.737  web=0.922  alias=0.999  US=0.9760  India=0.9226
+      entity-complete: 0.8735
+K= 30 union=0.9583 (cands/S1=61.5)  indic=0.818  noaddr=0.737  web=0.935  alias=1.000  US=0.9787  India=0.9275
+      entity-complete: 0.8828
+K= 50 union=0.9621 (cands/S1=81.0)  indic=0.833  noaddr=0.739  web=0.945  alias=1.000  US=0.9809  India=0.9336
+      entity-complete: 0.8926
+K=100 union=0.9663 (cands/S1=130.0)  indic=0.856  noaddr=0.742  web=0.956  alias=1.000  US=0.9829  India=0.9413
+      entity-complete: 0.9037
+
+=== entity completeness (ALL matches of the S1 retrieved) ===
+  top20+exp: 0.7441    top20 only: 0.7377
+  top30+exp: 0.7642    top30 only: 0.7577
+  top50+exp: 0.7860    top50 only: 0.7792
+
+=== per-arm: share of found positives hit by arm, and unique finds ===
+  primary   hit 0.967  unique 34876
+  namepair  hit 0.538  unique 250
+  keys      hit 0.565  unique 678
+  nameonly  hit 0.304  unique 81
+  expansion-only finds: 355
+
+=== sample of remaining misses (not in top30, not expanded) ===
+  rk=- | All Food Private Limited | 104, Mumbai, Bldg No-2C, Harmony Chs Ltd, Link Road, Pa  ==>  ऑल फूड प्राइवेट लिमिटेड | 104, MUMBAI CITY, MUMBAI, Maharashtra
+  rk=37 | Candice N. Desouza, Ph.D. | 801 Pennsylvania Street, Unit APT D, Indianapolis, IN  ==>  CALOVEOZETA | IN, 801 PENNSYLVANIA ST, INDIANAPOLIS
+  rk=- | Arihant Technology Private Limited | Mumbai, Mastermind-1 Royal Palm Estate, Nr. Unit No.29,  ==>  अरिहंत टेक्नोलॉजी प्राइवेट लिमिटेड | MUMBAI, MUMBAI CITY, Maharashtra, 144/A WING
+  rk=- | Abm Enterprises | Bhikaji Cama Place, B - 321, New Delhi, Somdutt Chamber  ==>  ABM-SERVICES | None
+  rk=49 | Pava Fortunex | 5718 Tahoe Drive, Village Of Mount Pleasant, WI  ==>  PAVA  CENTER | TAHOE DR, RACINE, WI
+  rk=38 | Aadinath Consultancy | 11-1/57/10K/1, First Floor, Opp Srirama Gardens, Above   ==>  Aadinath Services | TG, Nizamabad, #349 11-1/57/10K/1, Nizamabad
+  rk=- | Green Aberdeen LLC | KY, Unit 914, Louisville, 211 W Oak St  ==>  Green LLC Center Enterprises | None
+  rk=- | Dio, LLC | 164 Pleasant Street, East Longmeadow, MA  ==>  Dorb,o LLC | 164 PLEASANT ST, E. LONGEADOW, MA
+  rk=71 | Baba Jai Ventures Private Limited | 4/2429, Gf, Gali No-15 Bihari Colony, Sahadara, Delhi,   ==>  8aba Jai Ventures Private | 4/2429, North East, Delhi, दिल्ली
+  rk=- | Blue Massage LLC | 7605 17th Avenue, Portland, OR  ==>  Blue Massage L.L.C. | None
+  rk=66 | Smart Investments Private Limited | Be-372, First Floor Hari Nagar, New Delhi, West Delhi,   ==>  ... Smart Investments Private | Be-372, New Delhi, West Delhi, DL
+  rk=- | South Endocrinology | 6771 Aire Libre Lane, Phoenix, AZ  ==>  South Endocrinology Enterprises | None
+  rk=- | Pune Foundation Co | Flat No 11, Kedar Co-Op Hsg Soc H No 216 Shanwar Peth,   ==>  [(Co)] Pune Foundation | Flat No 11, Pune, MH
+  rk=- | Krishna Care Private Limited | Sn.124/2B, Pl-12/B Parvati Shivprasad Society, Pune, Ma  ==>  Krishna Private Limited Center Center | Sn.124/2b, Poona, Pune, महाराष्ट्र
+  rk=- | National Initiative | NY, Riverhead, 49 20th Street  ==>  National Initiative Inc. | 49 Twentieth St, Waing River, New York
+  rk=- | Jupiter Hotels Private Limited | 113, Sai Paradise, Daruthenga, Kiss Road Kiit, Bhubanes  ==>  Sri >> Jupiter Private Limited Center | BHUBANESWAR, Odisha, KHORDHA, H.NO 379 113
+  rk=- | Lotus Estate Limited | Build No. 03, Flat No. 302, Trimurti Park, Nr. Saket Co  ==>  लोटस एस्टेट लिमिटेड | BUILD NO. 003, KALYAN EAST, THANE, महाराष्ट्र
+  rk=- | Celestial Roadways | 113, First Floor, Machhar Tower 1St B Road, Sardarpura,  ==>  Celestial Roiawys | H.no 284 113, Jodhpur, RJ
+  rk=- | Shiva Care LLP | #No. B - 03, Gopalan Urban Woods Apt Sree Krishna Templ  ==>  Shiva Care | #No. B - 03, Mahadevapura, KA, Bangalore
+  rk=- | Hotel Foundation LLP | E-66, Uttar Pradesh, Agra, Upsidc, Industrial Area  ==>  Hotel Foundation | None
+  rk=- | Great Engineering Private Limited | Ft No 101, 1-10-98/A, Saptagiri Residency Dwarakapuri S  ==>  గ్రేట్ ఇంజనీరింగ్ ప్రైవేట్ లిమిటెడ్ | Ft No 101, Hyderabad, TG
+  rk=37 | Lakshmi Services Private Limited | House No.49, Ekjotaptts, Pitampura, Delhi, North Delhi,  ==>  लक्ष्मी सर्विसेज प्राइवेट लिमिटेड | HOUSE NO.49, DELHI, NORTH DELHI, Delhi
+  rk=31 | Fortune Software Private Limited | Off. No-15A, Fourth Floor, A-Building, City Vista, Pune  ==>  Fortune Software Private Limited | Off. No-15a, Pune City, Pune, MH
+  rk=- | O+ Aktiengesellschaft Inc | 100 Stanley Drive, Frederick County, VA  ==>  O+ Inc Service | 100 STANLEY DR, WINCHESTER, VA
+  rk=- | City Of | 115 Biloxi Street, Pond Creek, OK  ==>  City Of Of | None
+
+train: mean candidates(top30) 30.0; mean 'strong' (>=2 arms) 3.73; exp/S1 8.29
+
+TEST France: S1 sample 10000, pool 1434993
+  prep pool 1434993: 8s
+  pool tokens 56195980
+  pool postings after df cap 37228248  684s
+France: mean candidates(top30) 30.0; mean 'strong' (>=2 arms) 3.40; exp/S1 6.74
+France: sample top-5 candidates for 4 S1s:
+  ## Membres Centre (France) SA | 46 Rue de Douai, Lille, Hauts-de-France
+      1 Membres Centre (France) | 46 RUE DE DOUAI, LILLE, Hauts-de-France
+      2 Membres Centre (France) | 46 Rue De Douai, Lille, Hauts-de-France
+      3 Membres Centre  (France) SA | 46 Rue De Douai, Lille, Hauts-de-France
+      4 Membres SA (France) Centre | 46 R. DE DOUAI, LILLE, Hauts-de-France
+      5 Membres Ecole (France) | 46 R De Douai, Lille, Hauts-de-France
+  ## Association de Pierres | 34 Rue de Saint-Genès, Bordeaux, Nouvelle-Aquitaine
+      1 Association  de Pierres SASU | #34 R. DE SAINT-GENÈS, BORDEAUX, Nouvelle-Aquitaine
+      2 Association de Pierres Distribution | No 55 Rue De Saint-genès, Bordeaux
+      3 Barat Ecole | 34 R. De Saint-genes, Bordeaux, Nouvelle-Aquitaine
+      4 Barat Primaire Holding SARL | 34 R. De Saint-genès, Bordeaux, Nouvelle-Aquitaine
+      5 Novimira F/K/A Association du Dispositif | 87 Rue de Saint-Genès, Bordeaux, Nouvelle-Aquitaine
+  ## Arsene Foyer | 31 Rue d'Ostende, Tourcoing, Hauts-de-France
+      1 Arsene Foyer | 31 Rue D'ostende, Nord, Tourcoing
+      2 Arsene Union | 44 Rue D'ostende, Tourcoing
+      3 Arsene Pharmacie | 44 R. D'OSTENDE, TOURCOING
+      4 Alphonse Foyer | 36 Rue D'ostende, Tourcoing, Nord
+      5 Alphonse Foyer S.A.R.L. | Nord, 36 Rue D'ostende, Tourcoing
+  ## SLY Sportif SAS | 9 Allée François Dandreau Cazaux, La Teste-de-Buch, Nouvelle-Aquitaine
+      1 SLY Sportif SAS | 9 Allée François Dandreau Cazaux, La Teste-de-buch, Gironde
+      2 SLY Sportif-SAS | 9 ALLÉE FRANÇOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde
+      3 SLY  Sportif SAS | 9 ALLÉE FRANÇOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde
+      4 SLY Spôrtif SAS | 9 Allee Francois Dandreau Cazaux, Gironde, La Teste-de-buch
+      5 SLY SPÔRTIF SAS | 9 ALLEE FARNCOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde
+
+DONE 741s

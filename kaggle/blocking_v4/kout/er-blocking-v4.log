@@ -1,0 +1,111 @@
+[{"stream_name":"stdout","time":9.051500333,"data":"TRAIN S1=2206821 R=10320219\n"}
+,{"stream_name":"stdout","time":9.293004934,"data":"-- country India\n"}
+,{"stream_name":"stdout","time":97.596805777,"data":"  prep pool 4133346: 88s\n"}
+,{"stream_name":"stdout","time":198.479345113,"data":"  pool tokens 199809477\n"}
+,{"stream_name":"stdout","time":224.136627682,"data":"  pool postings after df cap 143753535  222s\n"}
+,{"stream_name":"stdout","time":303.124689055,"data":"  retrieved 1459086, expansion adds 103429  301s\n"}
+,{"stream_name":"stdout","time":303.145387021,"data":"-- country US\n"}
+,{"stream_name":"stdout","time":329.654343481,"data":"  prep pool 6186873: 26s\n"}
+,{"stream_name":"stdout","time":472.8022928,"data":"  pool tokens 236314727\n"}
+,{"stream_name":"stdout","time":506.170932284,"data":"  pool postings after df cap 175399603  504s\n"}
+,{"stream_name":"stdout","time":614.705108858,"data":"  retrieved 2191340, expansion adds 145219  613s\n"}
+,{"stream_name":"stdout","time":618.308739601,"data":"\n"}
+,{"stream_name":"stdout","time":618.308783714,"data":"=== v3 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===\n"}
+,{"stream_name":"stdout","time":618.321109545,"data":"expansion: mean added per S1 8.29\n"}
+,{"stream_name":"stdout","time":618.331415769,"data":"K=  5 all=0.8023 +exp=0.8058  indic=0.625/0.653  noaddr=0.025/0.030  web=0.569/0.573  alias=0.966/0.966  US=0.8367/0.8381  India=0.7504/0.7569\n"}
+,{"stream_name":"stdout","time":618.337898066,"data":"K= 10 all=0.8843 +exp=0.8878  indic=0.728/0.755  noaddr=0.074/0.079  web=0.795/0.799  alias=0.993/0.993  US=0.9233/0.9246  India=0.8254/0.8320\n"}
+,{"stream_name":"stdout","time":618.344491461,"data":"K= 20 all=0.9044 +exp=0.9079  indic=0.767/0.794  noaddr=0.133/0.138  web=0.854/0.858  alias=0.997/0.997  US=0.9395/0.9408  India=0.8514/0.8580\n"}
+,{"stream_name":"stdout","time":618.350710943,"data":"K= 30 all=0.9124 +exp=0.9159  indic=0.781/0.808  noaddr=0.166/0.171  web=0.876/0.880  alias=0.999/0.999  US=0.9455/0.9469  India=0.8624/0.8690\n"}
+,{"stream_name":"stdout","time":618.356697071,"data":"K= 50 all=0.9213 +exp=0.9248  indic=0.797/0.825  noaddr=0.209/0.214  web=0.894/0.898  alias=1.000/1.000  US=0.9512/0.9526  India=0.8762/0.8827\n"}
+,{"stream_name":"stdout","time":618.362533062,"data":"K=100 all=0.9312 +exp=0.9347  indic=0.821/0.849  noaddr=0.271/0.276  web=0.914/0.918  alias=1.000/1.000  US=0.9567/0.9581  India=0.8927/0.8993\n"}
+,{"stream_name":"stdout","time":618.362577288,"data":"\n"}
+,{"stream_name":"stdout","time":618.362584919,"data":"=== UNION recall: primary topK + aux(top15/20 each) + sibling expansion ===\n"}
+,{"stream_name":"stdout","time":618.391796965,"data":"K= 20 union=0.9547 (cands/S1=51.9)  indic=0.805  noaddr=0.737  web=0.922  alias=0.999  US=0.9760  India=0.9226\n"}
+,{"stream_name":"stdout","time":618.399092886,"data":"      entity-complete: 0.8735\n"}
+,{"stream_name":"stdout","time":618.428754044,"data":"K= 30 union=0.9583 (cands/S1=61.5)  indic=0.818  noaddr=0.737  web=0.935  alias=1.000  US=0.9787  India=0.9275\n"}
+,{"stream_name":"stdout","time":618.435088496,"data":"      entity-complete: 0.8828\n"}
+,{"stream_name":"stdout","time":618.463617612,"data":"K= 50 union=0.9621 (cands/S1=81.0)  indic=0.833  noaddr=0.739  web=0.945  alias=1.000  US=0.9809  India=0.9336\n"}
+,{"stream_name":"stdout","time":618.469794491,"data":"      entity-complete: 0.8926\n"}
+,{"stream_name":"stdout","time":618.479895488,"data":"K=100 union=0.9663 (cands/S1=130.0)  indic=0.856  noaddr=0.742  web=0.956  alias=1.000  US=0.9829  India=0.9413\n"}
+,{"stream_name":"stdout","time":618.486347392,"data":"      entity-complete: 0.9037\n"}
+,{"stream_name":"stdout","time":618.486380381,"data":"\n"}
+,{"stream_name":"stdout","time":618.486404064,"data":"=== entity completeness (ALL matches of the S1 retrieved) ===\n"}
+,{"stream_name":"stdout","time":618.497073548,"data":"  top20+exp: 0.7441    top20 only: 0.7377\n"}
+,{"stream_name":"stdout","time":618.507872965,"data":"  top30+exp: 0.7642    top30 only: 0.7577\n"}
+,{"stream_name":"stdout","time":618.520342103,"data":"  top50+exp: 0.7860    top50 only: 0.7792\n"}
+,{"stream_name":"stdout","time":618.520383359,"data":"\n"}
+,{"stream_name":"stdout","time":618.520389238,"data":"=== per-arm: share of found positives hit by arm, and unique finds ===\n"}
+,{"stream_name":"stdout","time":618.523050194,"data":"  primary   hit 0.967  unique 34876\n"}
+,{"stream_name":"stdout","time":618.524032357,"data":"  namepair  hit 0.538  unique 250\n"}
+,{"stream_name":"stdout","time":618.525029637,"data":"  keys      hit 0.565  unique 678\n"}
+,{"stream_name":"stdout","time":618.525855773,"data":"  nameonly  hit 0.304  unique 81\n"}
+,{"stream_name":"stdout","time":618.526370248,"data":"  expansion-only finds: 355\n"}
+,{"stream_name":"stdout","time":618.729077109,"data":"\n"}
+,{"stream_name":"stdout","time":618.729108713,"data":"=== sample of remaining misses (not in top30, not expanded) ===\n"}
+,{"stream_name":"stdout","time":618.729873308,"data":"  rk=- | All Food Private Limited | 104, Mumbai, Bldg No-2C, Harmony Chs Ltd, Link Road, Pa  ==\u003e  ऑल फूड प्राइवेट लिमिटेड | 104, MUMBAI CITY, MUMBAI, Maharashtra\n"}
+,{"stream_name":"stdout","time":618.730112334,"data":"  rk=37 | Candice N. Desouza, Ph.D. | 801 Pennsylvania Street, Unit APT D, Indianapolis, IN  ==\u003e  CALOVEOZETA | IN, 801 PENNSYLVANIA ST, INDIANAPOLIS\n"}
+,{"stream_name":"stdout","time":618.730285645,"data":"  rk=- | Arihant Technology Private Limited | Mumbai, Mastermind-1 Royal Palm Estate, Nr. Unit No.29,  ==\u003e  अरिहंत टेक्नोलॉजी प्राइवेट लिमिटेड | MUMBAI, MUMBAI CITY, Maharashtra, 144/A WING\n"}
+,{"stream_name":"stdout","time":618.730441609,"data":"  rk=- | Abm Enterprises | Bhikaji Cama Place, B - 321, New Delhi, Somdutt Chamber  ==\u003e  ABM-SERVICES | None\n"}
+,{"stream_name":"stdout","time":618.730546575,"data":"  rk=49 | Pava Fortunex | 5718 Tahoe Drive, Village Of Mount Pleasant, WI  ==\u003e  PAVA  CENTER | TAHOE DR, RACINE, WI\n"}
+,{"stream_name":"stdout","time":618.730608491,"data":"  rk=38 | Aadinath Consultancy | 11-1/57/10K/1, First Floor, Opp Srirama Gardens, Above   ==\u003e  Aadinath Services | TG, Nizamabad, #349 11-1/57/10K/1, Nizamabad\n"}
+,{"stream_name":"stdout","time":618.730653979,"data":"  rk=- | Green Aberdeen LLC | KY, Unit 914, Louisville, 211 W Oak St  ==\u003e  Green LLC Center Enterprises | None\n"}
+,{"stream_name":"stdout","time":618.730754791,"data":"  rk=- | Dio, LLC | 164 Pleasant Street, East Longmeadow, MA  ==\u003e  Dorb,o LLC | 164 PLEASANT ST, E. LONGEADOW, MA\n"}
+,{"stream_name":"stdout","time":618.730846565,"data":"  rk=71 | Baba Jai Ventures Private Limited | 4/2429, Gf, Gali No-15 Bihari Colony, Sahadara, Delhi,   ==\u003e  8aba Jai Ventures Private | 4/2429, North East, Delhi, दिल्ली\n"}
+,{"stream_name":"stdout","time":618.730944621,"data":"  rk=- | Blue Massage LLC | 7605 17th Avenue, Portland, OR  ==\u003e  Blue Massage L.L.C. | None\n"}
+,{"stream_name":"stdout","time":618.731022299,"data":"  rk=66 | Smart Investments Private Limited | Be-372, First Floor Hari Nagar, New Delhi, West Delhi,   ==\u003e  ... Smart Investments Private | Be-372, New Delhi, West Delhi, DL\n"}
+,{"stream_name":"stdout","time":618.731143537,"data":"  rk=- | South Endocrinology | 6771 Aire Libre Lane, Phoenix, AZ  ==\u003e  South Endocrinology Enterprises | None\n"}
+,{"stream_name":"stdout","time":618.731188005,"data":"  rk=- | Pune Foundation Co | Flat No 11, Kedar Co-Op Hsg Soc H No 216 Shanwar Peth,   ==\u003e  [(Co)] Pune Foundation | Flat No 11, Pune, MH\n"}
+,{"stream_name":"stdout","time":618.731193949,"data":"  rk=- | Krishna Care Private Limited | Sn.124/2B, Pl-12/B Parvati Shivprasad Society, Pune, Ma  ==\u003e  Krishna Private Limited Center Center | Sn.124/2b, Poona, Pune, महाराष्ट्र\n"}
+,{"stream_name":"stdout","time":618.731285642,"data":"  rk=- | National Initiative | NY, Riverhead, 49 20th Street  ==\u003e  National Initiative Inc. | 49 Twentieth St, Waing River, New York\n"}
+,{"stream_name":"stdout","time":618.731374256,"data":"  rk=- | Jupiter Hotels Private Limited | 113, Sai Paradise, Daruthenga, Kiss Road Kiit, Bhubanes  ==\u003e  Sri \u003e\u003e Jupiter Private Limited Center | BHUBANESWAR, Odisha, KHORDHA, H.NO 379 113\n"}
+,{"stream_name":"stdout","time":618.73151062,"data":"  rk=- | Lotus Estate Limited | Build No. 03, Flat No. 302, Trimurti Park, Nr. Saket Co  ==\u003e  लोटस एस्टेट लिमिटेड | BUILD NO. 003, KALYAN EAST, THANE, महाराष्ट्र\n"}
+,{"stream_name":"stdout","time":618.731798841,"data":"  rk=- | Celestial Roadways | 113, First Floor, Machhar Tower 1St B Road, Sardarpura,  ==\u003e  Celestial Roiawys | H.no 284 113, Jodhpur, RJ\n"}
+,{"stream_name":"stdout","time":618.731947702,"data":"  rk=- | Shiva Care LLP | #No. B - 03, Gopalan Urban Woods Apt Sree Krishna Templ  ==\u003e  Shiva Care | #No. B - 03, Mahadevapura, KA, Bangalore\n"}
+,{"stream_name":"stdout","time":618.73213545,"data":"  rk=- | Hotel Foundation LLP | E-66, Uttar Pradesh, Agra, Upsidc, Industrial Area  ==\u003e  Hotel Foundation | None\n"}
+,{"stream_name":"stdout","time":618.732248627,"data":"  rk=- | Great Engineering Private Limited | Ft No 101, 1-10-98/A, Saptagiri Residency Dwarakapuri S  ==\u003e  గ్రేట్ ఇంజనీరింగ్ ప్రైవేట్ లిమిటెడ్ | Ft No 101, Hyderabad, TG\n"}
+,{"stream_name":"stdout","time":618.732363003,"data":"  rk=37 | Lakshmi Services Private Limited | House No.49, Ekjotaptts, Pitampura, Delhi, North Delhi,  ==\u003e  लक्ष्मी सर्विसेज प्राइवेट लिमिटेड | HOUSE NO.49, DELHI, NORTH DELHI, Delhi\n"}
+,{"stream_name":"stdout","time":618.732493637,"data":"  rk=31 | Fortune Software Private Limited | Off. No-15A, Fourth Floor, A-Building, City Vista, Pune  ==\u003e  Fortune Software Private Limited | Off. No-15a, Pune City, Pune, MH\n"}
+,{"stream_name":"stdout","time":618.732951774,"data":"  rk=- | O+ Aktiengesellschaft Inc | 100 Stanley Drive, Frederick County, VA  ==\u003e  O+ Inc Service | 100 STANLEY DR, WINCHESTER, VA\n"}
+,{"stream_name":"stdout","time":618.732965141,"data":"  rk=- | City Of | 115 Biloxi Street, Pond Creek, OK  ==\u003e  City Of Of | None\n"}
+,{"stream_name":"stdout","time":618.809962175,"data":"\n"}
+,{"stream_name":"stdout","time":618.810007477,"data":"train: mean candidates(top30) 30.0; mean 'strong' (\u003e=2 arms) 3.73; exp/S1 8.29\n"}
+,{"stream_name":"stdout","time":623.116620908,"data":"\n"}
+,{"stream_name":"stdout","time":623.116673665,"data":"TEST France: S1 sample 10000, pool 1434993\n"}
+,{"stream_name":"stdout","time":630.740648261,"data":"  prep pool 1434993: 8s\n"}
+,{"stream_name":"stdout","time":682.262210745,"data":"  pool tokens 56195980\n"}
+,{"stream_name":"stdout","time":686.320631131,"data":"  pool postings after df cap 37228248  684s\n"}
+,{"stream_name":"stdout","time":742.990672174,"data":"France: mean candidates(top30) 30.0; mean 'strong' (\u003e=2 arms) 3.40; exp/S1 6.74\n"}
+,{"stream_name":"stdout","time":743.06426151,"data":"France: sample top-5 candidates for 4 S1s:\n"}
+,{"stream_name":"stdout","time":743.070638297,"data":"  ## Membres Centre (France) SA | 46 Rue de Douai, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.071434248,"data":"      1 Membres Centre (France) | 46 RUE DE DOUAI, LILLE, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.071472242,"data":"      2 Membres Centre (France) | 46 Rue De Douai, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.071502495,"data":"      3 Membres Centre  (France) SA | 46 Rue De Douai, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.071519727,"data":"      4 Membres SA (France) Centre | 46 R. DE DOUAI, LILLE, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.071524893,"data":"      5 Membres Ecole (France) | 46 R De Douai, Lille, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.072936508,"data":"  ## Association de Pierres | 34 Rue de Saint-Genès, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.07305947,"data":"      1 Association  de Pierres SASU | #34 R. DE SAINT-GENÈS, BORDEAUX, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.073137797,"data":"      2 Association de Pierres Distribution | No 55 Rue De Saint-genès, Bordeaux\n"}
+,{"stream_name":"stdout","time":743.073149203,"data":"      3 Barat Ecole | 34 R. De Saint-genes, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.073180592,"data":"      4 Barat Primaire Holding SARL | 34 R. De Saint-genès, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.073198672,"data":"      5 Novimira F/K/A Association du Dispositif | 87 Rue de Saint-Genès, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.074276683,"data":"  ## Arsene Foyer | 31 Rue d'Ostende, Tourcoing, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":743.074394516,"data":"      1 Arsene Foyer | 31 Rue D'ostende, Nord, Tourcoing\n"}
+,{"stream_name":"stdout","time":743.074410664,"data":"      2 Arsene Union | 44 Rue D'ostende, Tourcoing\n"}
+,{"stream_name":"stdout","time":743.074579382,"data":"      3 Arsene Pharmacie | 44 R. D'OSTENDE, TOURCOING\n"}
+,{"stream_name":"stdout","time":743.074619016,"data":"      4 Alphonse Foyer | 36 Rue D'ostende, Tourcoing, Nord\n"}
+,{"stream_name":"stdout","time":743.074626117,"data":"      5 Alphonse Foyer S.A.R.L. | Nord, 36 Rue D'ostende, Tourcoing\n"}
+,{"stream_name":"stdout","time":743.075843341,"data":"  ## SLY Sportif SAS | 9 Allée François Dandreau Cazaux, La Teste-de-Buch, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":743.075992681,"data":"      1 SLY Sportif SAS | 9 Allée François Dandreau Cazaux, La Teste-de-buch, Gironde\n"}
+,{"stream_name":"stdout","time":743.076176702,"data":"      2 SLY Sportif-SAS | 9 ALLÉE FRANÇOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde\n"}
+,{"stream_name":"stdout","time":743.076185537,"data":"      3 SLY  Sportif SAS | 9 ALLÉE FRANÇOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde\n"}
+,{"stream_name":"stdout","time":743.076190605,"data":"      4 SLY Spôrtif SAS | 9 Allee Francois Dandreau Cazaux, Gironde, La Teste-de-buch\n"}
+,{"stream_name":"stdout","time":743.076195265,"data":"      5 SLY SPÔRTIF SAS | 9 ALLEE FARNCOIS DANDREAU CAZAUX, LA TESTE-DE-BUCH, Gironde\n"}
+,{"stream_name":"stdout","time":743.076416419,"data":"\n"}
+,{"stream_name":"stdout","time":743.076434167,"data":"DONE 741s\n"}
+,{"stream_name":"stderr","time":747.465072547,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":747.46520729,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":747.856597416,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":747.856651232,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":749.477606711,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":751.331739788,"data":"[NbConvertApp] Writing 441241 bytes to __results__.html\n"}
+]

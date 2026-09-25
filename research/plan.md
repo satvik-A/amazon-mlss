@@ -193,3 +193,18 @@ Method: IDF token overlap + name word pairs + name keys + (number, street) key; 
   3. **Split website/handle names** against S1 names with the spaces removed.
   4. **Rank per arm, then combine**, instead of summing IDF across arms (the address tokens swamp the name signal).
 - **Kaggle has no internet** on this account (pip failed); phone verification probably needed. Otherwise upload the needed wheels (rapidfuzz, lightgbm) as a Kaggle dataset.
+
+## 9. Candidate-search iterations v2 → v4 (Kaggle, 30k train S1 vs the full 10.3M S2/S3 pool)
+| Version | Main score, recall at 30 | **Full set, recall** (candidates/S1) | S1s with all matches found | Indian script | No address | Website | US / India |
+|---|---|---|---|---|---|---|---|
+| v1 IDF token overlap | 87.3% | — | 72.2% | 39% | 74% | 69% | 91.5 / 80.8 |
+| v2 per-method ranking (dropped) | 84.5% | — | 67.7% | 57% | 72% | 77% | — |
+| v3 combined score + skeleton + unit codes + number×word | 89.0% | 94.1% (51) | 84.0% | 82% | 73% | 92% | 95.3 / 92.2 |
+| **v4** + street×city pairs, name×street pairs, digit-drop variants, name-only list; per-country index | **91.2%** | **95.8% (61.5)** | **88.3%** | 82% | 74% | 94% | **97.9 / 92.8** |
+
+(Full set = main score top 30 + extra lists top 15–20 + sibling expansion.)
+
+- Lesson from v2: **keep one combined score.** Ranking methods separately throws away the joint evidence.
+- Lesson from the v4 OOM: build the index per country, in chunks, and count frequencies on a u64 hash only (436M tokens is fine that way).
+- Remaining gaps: **no-address copies (74%)** with generic names ("Hotel Foundation", "Blue Massage LLC"); Indian-script names whose S1 address is long but whose copy has only a fragment ("104, MUMBAI CITY"); addresses given as landmarks only.
+- France (test, no labels): the true copies rank first, and twins at nearby numbers sit right below (Arsene Foyer 31 vs 44 / 36 Rue d'Ostende). Methods agreeing ≥ 2 per S1: France 3.4 vs train 3.7, so the search behaves the same way.
