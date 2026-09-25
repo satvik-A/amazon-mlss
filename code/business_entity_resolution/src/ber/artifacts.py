@@ -175,3 +175,37 @@ def fit_vocab(names: pl.DataFrame, min_n: int = 2) -> pl.DataFrame:
     """names: [business_name, country] (S1 train+test). Returns [country, token, n]."""
     d = names.select("country", tokens(pl.col("business_name")).alias("token")).explode("token").drop_nulls("token")
     return d.group_by(["country", "token"]).len().rename({"len": "n"}).filter(pl.col("n") >= min_n)
+
+
+# ---- test-time (unsupervised) ---------------------------------------------------------------------------------------
+def pseudo_pairs(QN: pl.DataFrame, RN: pl.DataFrame, min_shared: int = 3) -> pl.DataFrame:
+    """High-precision S1->R pairs WITHOUT labels: same first address number, same core-name set, >= min_shared common
+    address words. Train check (300k S1): US precision 0.9975 / recall 0.52; India 0.914 / 0.50.
+    QN/RN: normalised frames. Returns [s1, r]."""
+    k = lambda N: N.filter((pl.col("ad").list.len() > 0) & (pl.col("core").list.len() > 0)).select(
+        "entity_id", pl.col("ad").list.first().alias("hn"), pl.col("core").list.sort().list.join(" ").alias("ck"), "aw")
+    j = k(QN).rename({"entity_id": "s1"}).join(k(RN).rename({"entity_id": "r", "aw": "aw_r"}), on=["hn", "ck"])
+    return j.filter(pl.col("aw").list.set_intersection(pl.col("aw_r")).list.len() >= min_shared).select("s1", "r")
+
+
+def fit_country_addr_synonyms(nz, s1: pl.DataFrame, R: pl.DataFrame, min_n: int = 50, chunk: int = 500_000,
+                              stop: set[str] | None = None) -> tuple[pl.DataFrame, pl.DataFrame]:
+    """Per country: address token equivalences mined from pseudo_pairs (no labels), e.g. France region <-> department,
+    'r' <-> 'rue'. nz: a Normalizer built on the base artefacts. s1/R: raw records incl. business_address.
+    Returns (edges with country, synonyms[country, token, equiv, n_ab])."""
+    edges, syns = [], []
+    for c in s1["country"].unique().sort().to_list():
+        S, Rc = s1.filter(pl.col("country") == c), R.filter(pl.col("country") == c)
+        RN = pl.concat([nz.transform(Rc.slice(i, chunk)) for i in range(0, Rc.height, chunk)])
+        pp = pseudo_pairs(nz.transform(S), RN)
+        if pp.height < min_n:
+            continue
+        raw = pp.join(S.select(pl.col("entity_id").alias("s1"), pl.col("business_address").alias("a")), on="s1") \
+                .join(Rc.select(pl.col("entity_id").alias("r"), pl.col("business_address").alias("b")), on="r")
+        e, syn = fit_equivalences(raw, "a", "b", min_n=min_n)
+        ok = lambda col: (pl.col(col).str.len_chars() >= 2) & ~pl.col(col).is_in(list(stop or ()))
+        edges.append(e.filter(ok("da") & ok("db")).with_columns(pl.lit(c).alias("country"), pl.lit(pp.height).alias("n_pseudo")))
+        syns.append(syn.filter(ok("token") & ok("equiv")).with_columns(pl.lit(c).alias("country")))
+    if not syns:
+        return pl.DataFrame(), pl.DataFrame(schema={"country": pl.String, "token": pl.String, "equiv": pl.String, "n_ab": pl.UInt32})
+    return pl.concat(edges, how="vertical_relaxed"), pl.concat(syns, how="vertical_relaxed").select("country", "token", "equiv", "n_ab")

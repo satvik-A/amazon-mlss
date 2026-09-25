@@ -87,4 +87,14 @@ log("MISSING token (in S1, dropped from R):"); log(xw["missing"].filter(pl.col("
 
 # 5. alias side --------------------------------------------------------------------------------------------------------
 log("\n[5] alias side stats:"); log(A.alias_side_stats(pairs.select("s1_name", "r_name")))
+# 6. TEST-TIME per-country address synonyms from pseudo-pairs (unsupervised; covers countries absent from train) ------
+from ber.normalize import Normalizer
+from ber.tables import ADDR_STOP
+NZ = Normalizer(OUT)
+ce, csyn = A.fit_country_addr_synonyms(NZ, t1, tR, min_n=20 if LOCAL else 50, stop=ADDR_STOP)
+csyn.write_parquet(f"{OUT}/addr_synonyms_country.parquet"); ce.write_parquet(f"{OUT}/addr_edges_country.parquet")
+log(f"\n[6] test-time per-country address synonyms: {csyn.height} (pseudo-pairs per country: "
+    f"{ce.group_by('country').agg(pl.col('n_pseudo').first()).rows()})")
+for c in ce["country"].unique().sort().to_list():
+    log(f"-- {c}"); log(ce.filter(pl.col("country") == c).head(40))
 log(f"\nDONE {time.time()-T0:.0f}s")

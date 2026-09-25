@@ -43,6 +43,9 @@ class Normalizer:
         self.decoy = set(pl.read_parquet(dp)["t"].to_list()) if os.path.exists(dp) else set()
         syn = rd("addr_synonyms.parquet")
         self.addr_syn = syn.group_by("token").agg(pl.col("equiv"))
+        # per-country synonyms mined at test time from pseudo-pairs (artifacts.fit_country_addr_synonyms), optional
+        cp = os.path.join(art_dir, "addr_synonyms_country.parquet")
+        self.addr_syn_c = pl.read_parquet(cp).group_by(["country", "token"]).agg(pl.col("equiv")) if os.path.exists(cp) else None
         v = rd("vocab.parquet").group_by(["country", "token"]).agg(pl.col("n").sum())
         self.vocab = {}
         for c, g in v.partition_by("country", as_dict=True).items():
@@ -127,8 +130,12 @@ class Normalizer:
         for c, ov in STREET_COUNTRY.items():
             aw = pl.when(pl.col("country") == c).then(pl.col("aw0").list.eval(pl.element().replace({**STREET, **ov}))).otherwise(aw)
         d = d.with_columns(aw.list.eval(pl.element().filter((pl.element().str.len_chars() >= 2) & ~pl.element().is_in(stop))).alias("aw0"))
-        ex = d.select("entity_id", "aw0").explode("aw0").join(self.addr_syn.rename({"token": "aw0"}), on="aw0", how="left") \
-              .with_columns(pl.concat_list(pl.col("aw0"), pl.col("equiv").fill_null(pl.lit([], dtype=pl.List(pl.String)))).alias("x")) \
-              .group_by("entity_id", maintain_order=True).agg(pl.col("x").flatten().unique().alias("aw"))
+        ex = d.select("entity_id", "country", "aw0").explode("aw0").join(self.addr_syn.rename({"token": "aw0"}), on="aw0", how="left")
+        empty = pl.lit([], dtype=pl.List(pl.String))
+        if self.addr_syn_c is not None:
+            ex = ex.join(self.addr_syn_c.rename({"token": "aw0", "equiv": "equiv_c"}), on=["country", "aw0"], how="left") \
+                   .with_columns(pl.concat_list(pl.col("equiv").fill_null(empty), pl.col("equiv_c").fill_null(empty)).alias("equiv"))
+        ex = ex.with_columns(pl.concat_list(pl.col("aw0"), pl.col("equiv").fill_null(empty)).alias("x")) \
+               .group_by("entity_id", maintain_order=True).agg(pl.col("x").flatten().unique().alias("aw"))
         d = d.join(ex, on="entity_id", how="left").with_columns(pl.col("aw").list.drop_nulls())
         return d.select("entity_id", "country", "nw", "core", "alias", "legal", "decoy", "sk", "aw", "ad", "au", "noaddr")
