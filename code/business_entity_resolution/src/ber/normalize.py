@@ -91,8 +91,8 @@ class Normalizer:
             pl.struct("n0", "country").map_elements(lambda x: self._web(x["n0"] or "", x["country"] or ""), return_dtype=pl.String)).otherwise(pl.col("n0")).alias("n0"))
         # alias split: 'X f/k/a Y' -> main Y (right side), alias X
         parts = pl.col("n0").str.replace(ALIAS_RE, "\x00").str.split("\x00")
-        d = d.with_columns(pl.when(parts.list.len() == 2).then(parts.list.get(1)).otherwise(pl.col("n0")).alias("nmain"),
-                           pl.when(parts.list.len() == 2).then(parts.list.get(0)).otherwise(pl.lit("")).alias("nalias"))
+        d = d.with_columns(pl.when(parts.list.len() == 2).then(parts.list.get(1, null_on_oob=True)).otherwise(pl.col("n0")).alias("nmain"),
+                           pl.when(parts.list.len() == 2).then(parts.list.get(0, null_on_oob=True)).otherwise(pl.lit("")).alias("nalias"))
         tok = lambda e: base_clean(e).str.replace_all(r"#\s*\d+|\(id:?\s*\d+\)", " ").str.extract_all(r"[a-z0-9]+")
         d = d.with_columns(tok(pl.col("nmain")).alias("nw"), tok(pl.col("nalias")).alias("alias"))
         # leet fix, only on rows whose name mixes letters and digits inside a word

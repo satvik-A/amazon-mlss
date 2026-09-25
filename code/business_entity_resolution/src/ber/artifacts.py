@@ -161,8 +161,8 @@ def alias_side_stats(pairs: pl.DataFrame) -> pl.DataFrame:
     d = d.with_columns(pl.col("r_name").str.replace(pat, "\x00").str.split("\x00").alias("parts"))
     d = d.filter(pl.col("parts").list.len() == 2).with_columns(
         _name_toks(pl.col("s1_name")).alias("S"),
-        _name_toks(pl.col("parts").list.get(0)).alias("L"),
-        _name_toks(pl.col("parts").list.get(1)).alias("Rt"))
+        _name_toks(pl.col("parts").list.get(0, null_on_oob=True)).alias("L"),
+        _name_toks(pl.col("parts").list.get(1, null_on_oob=True)).alias("Rt"))
     d = d.with_columns(pl.col("S").list.set_intersection(pl.col("L")).list.len().alias("ov_left"),
                        pl.col("S").list.set_intersection(pl.col("Rt")).list.len().alias("ov_right"))
     return d.select(pl.len().alias("alias_pairs"),
