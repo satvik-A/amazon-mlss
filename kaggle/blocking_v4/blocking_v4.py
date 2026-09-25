@@ -99,7 +99,7 @@ def tokens(p, idcol, query=False):
         (0, pl.concat_list(pl.col("nw").list.eval(pl.lit("n:") + pl.element()), pl.col("sk").list.eval(pl.lit("k:") + pl.element()),
                            pl.col("aw").list.eval(pl.lit("a:") + pl.element()), pl.col("ad").list.eval(pl.lit("#:") + pl.element()),
                            pl.col("au").list.eval(pl.lit("u:") + pl.element()))),
-        (5, pl.concat_list(pl.col("nw").list.eval(pl.lit("n:") + pl.element()), pl.col("sk").list.eval(pl.lit("k:") + pl.element()))),
+        (5, pl.concat_list(pl.col("nw").list.eval(pl.lit("m:") + pl.element()), pl.col("sk").list.eval(pl.lit("q:") + pl.element()))),
         (3, pl.concat_list(*prs).list.drop_nulls().list.eval(pl.lit("p:") + pl.element())),
         (4, pl.concat_list(pl.lit("N:") + pl.col("nw").list.sort().list.join(" "),
                            pl.lit("C:") + pl.col("nw").list.join(""),
@@ -108,28 +108,28 @@ def tokens(p, idcol, query=False):
     ]
     out = []
     for a, e in arms:
-        t = d.select(pl.col(idcol).alias("id"), "country", e.list.unique().alias("t")).explode("t").drop_nulls("t") \
+        t = d.select(pl.col(idcol).alias("id"), e.list.unique().alias("t")).explode("t").drop_nulls("t") \
              .filter(pl.col("t").str.len_chars() > 3)
-        out.append(t.select("id", "country", pl.col("t").hash().alias("h"), pl.lit(a, dtype=pl.UInt8).alias("arm")))
+        out.append(t.select("id", pl.col("t").hash().alias("h"), pl.lit(a, dtype=pl.UInt8).alias("arm")))
     # combos: (first 2 numbers) x (first 6 address words) -> very specific tokens in the primary arm
-    nums = d.select(pl.col(idcol).alias("id"), "country", pl.col("ad").list.head(2).alias("x")).explode("x").drop_nulls("x")
+    nums = d.select(pl.col(idcol).alias("id"), pl.col("ad").list.head(2).alias("x")).explode("x").drop_nulls("x")
     wrds = d.select(pl.col(idcol).alias("id"), pl.col("aw").list.unique(maintain_order=True).list.head(6).alias("w")).explode("w").drop_nulls("w")
-    cmb = nums.join(wrds, on="id").select("id", "country", (pl.lit("x:") + pl.col("x") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm"))
+    cmb = nums.join(wrds, on="id").select("id", (pl.lit("x:") + pl.col("x") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm"))
     out.append(cmb)
     # address word pairs (street x city etc.): rare even when both words are common
-    aw5 = d.select(pl.col(idcol).alias("id"), "country", pl.col("aw").list.unique(maintain_order=True).list.head(5).alias("w")).explode("w").drop_nulls("w")
+    aw5 = d.select(pl.col(idcol).alias("id"), pl.col("aw").list.unique(maintain_order=True).list.head(5).alias("w")).explode("w").drop_nulls("w")
     wp = aw5.join(aw5.select("id", pl.col("w").alias("w2")), on="id").filter(pl.col("w") < pl.col("w2"))
-    out.append(wp.select("id", "country", (pl.lit("w:") + pl.col("w") + "|" + pl.col("w2")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
+    out.append(wp.select("id", (pl.lit("w:") + pl.col("w") + "|" + pl.col("w2")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     # name word x address word
     nw3 = d.select(pl.col(idcol).alias("id"), pl.col("nw").list.head(3).alias("n")).explode("n").drop_nulls("n")
     aw4 = aw5.with_columns(pl.col("w")).group_by("id").head(4)
     ny = nw3.join(aw4, on="id")
-    out.append(ny.select("id", "country", (pl.lit("y:") + pl.col("n") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
+    out.append(ny.select("id", (pl.lit("y:") + pl.col("n") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     if query:   # digit-drop variants of the house number (generator drops a first or last digit)
         dn = nums.filter(pl.col("x").str.len_chars() >= 3)
         dv = pl.concat([dn.with_columns(pl.col("x").str.slice(1)), dn.with_columns(pl.col("x").str.slice(0, pl.col("x").str.len_chars() - 1))])
         dv = dv.join(wrds, on="id")
-        out.append(dv.select("id", "country", (pl.lit("x:") + pl.col("x") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
+        out.append(dv.select("id", (pl.lit("x:") + pl.col("x") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     return pl.concat(out)
 
 def sigs(p, idcol):
@@ -143,11 +143,12 @@ def sigs(p, idcol):
 
 CAP = {0: 100, 3: 15, 4: 15, 5: 20}
 def retrieve(Sp, Rt, dfc, chunk=1500):
-    St = tokens(Sp, "sid", query=True).join(dfc, on=["country", "h", "arm"])
+    St = tokens(Sp, "sid", query=True).join(dfc, on="h")
     res = []
-    for c0 in range(0, Sp.height, chunk):
-        ch = St.filter((pl.col("id") >= c0) & (pl.col("id") < c0 + chunk))
-        j = ch.join(Rt, on=["country", "h", "arm"], suffix="_r")
+    ids = np.sort(Sp["sid"].to_numpy())
+    for c0 in range(0, len(ids), chunk):
+        ch = St.filter(pl.col("id").is_in(ids[c0:c0 + chunk].tolist()))
+        j = ch.join(Rt, on="h")
         a = j.group_by(["id", "arm", "id_r"]).agg(pl.col("idf").sum().alias("sc"))
         a = a.with_columns(pl.col("sc").rank("ordinal", descending=True).over(["id", "arm"]).alias("rk"))
         a = a.filter(pl.col("rk") <= pl.col("arm").replace_strict(CAP, return_dtype=pl.UInt32))
@@ -166,16 +167,20 @@ def expand(cand, Rsig, M=10, maxgrp=12):
     s = top.join(Rsig.rename({"id": "id_r"}), on="id_r").join(grp, on=["country", "sig"]).select("id", pl.col("mem")).explode("mem").rename({"mem": "id_r"}).unique()
     return s.join(cand.select("id", "id_r"), on=["id", "id_r"], how="anti")
 
-def build_pool(R):
-    t = time.time(); P = prep(R.with_row_index("rid").rename({"rid": "rid"}).select("rid", "entity_id", "business_name", "business_address", "country"))
-    P = P.with_columns(pl.Series("rid", np.arange(R.height, dtype=np.uint32)))
-    log(f"  prep pool {R.height}: {time.time()-t:.0f}s")
-    Rt = tokens(P, "rid"); log(f"  pool tokens {Rt.height}")
-    dfc = Rt.group_by(["country", "h", "arm"]).len().rename({"len": "df"})
-    N = P.group_by("country").len().rename({"len": "N"})
-    dfc = dfc.join(N, on="country").with_columns((pl.col("N") / pl.col("df")).log().alias("idf")) \
-             .filter(pl.when(pl.col("arm") == 4).then(pl.col("df") <= 200).otherwise(pl.col("df") <= 5000)).select("country", "h", "arm", "idf")
-    Rt = Rt.join(dfc.select("country", "h", "arm"), on=["country", "h", "arm"]).rename({"id": "id_r"})
+def build_pool(Rc, chunk=1_500_000):
+    """ONE country. Rc must carry a global uint32 'rid'. Tokens built in record chunks; df on the hash only."""
+    t = time.time(); P = prep(Rc).with_columns(Rc["rid"])
+    log(f"  prep pool {Rc.height}: {time.time()-t:.0f}s")
+    parts = []
+    for c0 in range(0, P.height, chunk):
+        tk = tokens(P.slice(c0, chunk), "rid")
+        parts.append(tk.select(pl.col("id").cast(pl.UInt32).alias("id_r"), "h", "arm")); del tk; gc.collect()
+    Rt = pl.concat(parts); del parts; gc.collect()
+    log(f"  pool tokens {Rt.height}")
+    dfc = Rt.group_by("h").agg(pl.len().alias("df"), pl.col("arm").first())
+    dfc = dfc.filter(pl.when(pl.col("arm") == 4).then(pl.col("df") <= 200).otherwise(pl.col("df") <= 5000)) \
+             .select("h", (np.log(P.height) - pl.col("df").cast(pl.Float64).log()).cast(pl.Float32).alias("idf"))
+    Rt = Rt.join(dfc.select("h"), on="h", how="semi").select("id_r", "h"); gc.collect()
     log(f"  pool postings after df cap {Rt.height}  {time.time()-T0:.0f}s")
     return P, Rt, dfc, sigs(P, "rid")
 
@@ -185,13 +190,22 @@ if LOCAL: s1 = s1.head(100000); R = R.head(400000)
 g = rd("gt_rows").with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
     .filter(pl.col("matched_entity_ids") != "").rename({"source1_entity_id": "s1", "matched_entity_ids": "r"})
 log(f"TRAIN S1={s1.height} R={R.height}")
-P, Rt, dfc, Rsig = build_pool(R)
+R = R.with_row_index("rid").with_columns(pl.col("rid").cast(pl.UInt32))
 samp = s1.sample(2000 if LOCAL else 30000, seed=11)
-Sp = prep(samp).with_columns(pl.Series("sid", np.arange(samp.height, dtype=np.uint32)))
-cand = retrieve(Sp, Rt, dfc); log(f"retrieved {cand.height}  {time.time()-T0:.0f}s")
-ex = expand(cand, Rsig); log(f"expansion adds {ex.height}")
+Sp_all = prep(samp).with_columns(pl.Series("sid", np.arange(samp.height, dtype=np.uint32)))
+cands, exps, idr = [], [], []
+for c in samp["country"].unique().to_list():
+    log(f"-- country {c}")
+    P, Rt, dfc, Rsig = build_pool(R.filter(pl.col("country") == c))
+    Sp = Sp_all.filter(pl.col("country") == c)
+    cand = retrieve(Sp, Rt, dfc); ex = expand(cand, Rsig)
+    log(f"  retrieved {cand.height}, expansion adds {ex.height}  {time.time()-T0:.0f}s")
+    cands.append(cand); exps.append(ex); idr.append(P.select(pl.col("rid").alias("id_r"), pl.col("entity_id").alias("r")))
+    del P, Rt, dfc, Rsig; gc.collect()
+cand = pl.concat(cands); ex = pl.concat(exps); P = pl.concat(idr); Rt = dfc = Rsig = None
+Sp = Sp_all
 idmap_s = Sp.select(pl.col("sid").alias("id"), pl.col("entity_id").alias("s1"))
-idmap_r = P.select(pl.col("rid").alias("id_r"), pl.col("entity_id").alias("r"))
+idmap_r = P
 Rraw = R.select(pl.col("entity_id").alias("r"), pl.col("business_name").fill_null("").str.contains(INDIC).alias("indic"),
                 (pl.col("business_address").is_null() | (pl.col("business_address") == "None")).alias("noaddr"),
                 pl.col("business_name").fill_null("").str.contains(r"(?i)\.(com|in|net|org)\b|^@|www\.").alias("web"),
@@ -247,12 +261,12 @@ for r in miss.sample(min(25, miss.height), seed=1).iter_rows(named=True):
 # candidate volume stats on train for later comparison with France
 vol = C.filter(pl.col("frk") <= 30).group_by("s1").agg(pl.len().alias("n"), (pl.sum_horizontal(*[pl.col(f"a{k}").cast(pl.Int8) for k in (0, 3, 4, 5)]) >= 2).sum().alias("strong"))
 log(f"\ntrain: mean candidates(top30) {vol['n'].mean():.1f}; mean 'strong' (>=2 arms) {vol['strong'].mean():.2f}; exp/S1 {float(exp_per.sum())/samp.height:.2f}")
-del P, Rt, dfc, Rsig, cand, ex, C, E, Pos, R; gc.collect()
+del P, cand, ex, C, E, Pos, R; gc.collect()
 
 # ------------------------------ TEST France sanity ------------------------------
 t1 = rd("test_s1"); tR = pl.concat([rd("test_s2"), rd("test_s3")])
 for c in (["France"] if not LOCAL else []):
-    Rc = tR.filter(pl.col("country") == c); Sc = t1.filter(pl.col("country") == c).sample(10000, seed=3)
+    Rc = tR.filter(pl.col("country") == c).with_row_index("rid").with_columns(pl.col("rid").cast(pl.UInt32)); Sc = t1.filter(pl.col("country") == c).sample(10000, seed=3)
     log(f"\nTEST {c}: S1 sample {Sc.height}, pool {Rc.height}")
     P, Rt, dfc, Rsig = build_pool(Rc)
     Sp = prep(Sc).with_columns(pl.Series("sid", np.arange(Sc.height, dtype=np.uint32)))
