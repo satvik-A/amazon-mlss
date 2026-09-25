@@ -86,7 +86,8 @@ class Index:
         self.n_tokens = Rt.height
         dfc = Rt.group_by("h").agg(pl.len().alias("df"), pl.col("arm").first())
         dfc = dfc.filter(pl.when(pl.col("arm") == 4).then(pl.col("df") <= key_cap).otherwise(pl.col("df") <= cap))
-        self.dfc = dfc.select("h", (np.log(N.height) - pl.col("df").cast(pl.Float64).log()).cast(pl.Float32).alias("idf"))
+        # idf quantised to 1/1024 and summed as integers: exact in any summation order (deterministic ranks)
+        self.dfc = dfc.select("h", ((np.log(N.height) - pl.col("df").cast(pl.Float64).log()) * 1024).round().cast(pl.Int32).alias("idf"))
         self.Rt = Rt.join(self.dfc.select("h"), on="h", how="semi").select("id_r", "h")
         del Rt; gc.collect()
         self.arms = arms
@@ -98,8 +99,9 @@ class Index:
         ids = np.sort(Q["id"].to_numpy()); res = []
         for c0 in range(0, len(ids), chunk):
             ch = St.filter(pl.col("id").is_in(ids[c0:c0 + chunk].tolist()))
-            a = ch.join(self.Rt, on="h").group_by(["id", "arm", "id_r"]).agg(pl.col("idf").sum().alias("sc"))
-            a = a.with_columns(pl.col("sc").rank("ordinal", descending=True).over(["id", "arm"]).alias("rk"))
+            a = ch.join(self.Rt, on="h").group_by(["id", "arm", "id_r"]).agg((pl.col("idf").cast(pl.Int64).sum() / 1024).cast(pl.Float32).alias("sc"))
+            # deterministic: ties (records with identical token sets are common) broken by record id
+            a = a.sort("id_r").with_columns(pl.col("sc").rank("ordinal", descending=True).over(["id", "arm"]).alias("rk"))
             a = a.filter(pl.col("rk") <= pl.col("arm").replace_strict(caps, default=10, return_dtype=pl.UInt32))
             f = a.group_by(["id", "id_r"]).agg(
                 pl.col("sc").filter(pl.col("arm") == 0).max().fill_null(0.0).alias("sc"),
@@ -144,7 +146,7 @@ def prune(ann: pl.DataFrame, alpha: float = 0.0, G: int = 99, gate: bool = False
     """ann: [id, id_r, sc, gid, rel, a4, rev_margin]. Group-level deterministic rules; returns kept [id, id_r]."""
     g = ann.group_by(["id", "gid"]).agg(pl.col("sc").max().alias("gsc"), pl.col("a4").any().alias("gkey"),
                                         (pl.col("rel").is_in(["disjoint"])).all().alias("gconf"))
-    g = g.with_columns((pl.col("gsc") / pl.col("gsc").max().over("id")).alias("ratio"),
+    g = g.sort("gid").with_columns((pl.col("gsc") / pl.col("gsc").max().over("id")).alias("ratio"),
                        pl.col("gsc").rank("ordinal", descending=True).over("id").alias("grk"))
     keep = (pl.col("ratio") >= alpha) & (pl.col("grk") <= G)
     if gate:
@@ -152,4 +154,4 @@ def prune(ann: pl.DataFrame, alpha: float = 0.0, G: int = 99, gate: bool = False
     k = ann.join(g.filter(keep).select("id", "gid"), on=["id", "gid"])
     if beta is not None:
         k = k.filter(pl.col("rev_margin").fill_null(0.0) >= -beta)
-    return k.with_columns(pl.col("sc").rank("ordinal", descending=True).over("id").alias("_r")).filter(pl.col("_r") <= kmax).select("id", "id_r")
+    return k.sort("id_r").with_columns(pl.col("sc").rank("ordinal", descending=True).over("id").alias("_r")).filter(pl.col("_r") <= kmax).select("id", "id_r")

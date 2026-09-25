@@ -27,14 +27,14 @@ def exclusive_posterior(d: pl.DataFrame, p: str = "p", out: str = "q") -> pl.Dat
 
 
 def rank_threshold(d: pl.DataFrame, t1: float, t2: float, p: str = "p") -> pl.DataFrame:
-    d = d.with_columns(pl.col(p).rank("ordinal", descending=True).over("s1").alias("_rk"))
+    d = d.sort("r").with_columns(pl.col(p).rank("ordinal", descending=True).over("s1").alias("_rk"))
     return d.filter(((pl.col("_rk") == 1) & (pl.col(p) > t1)) | ((pl.col("_rk") > 1) & (pl.col(p) > t2))).select("s1", "r")
 
 
 def source_caps(sel: pl.DataFrame, d: pl.DataFrame, p: str = "p", caps: dict = CAPS, total: int = 11) -> pl.DataFrame:
     """Keep at most caps[source] accepted records per S1 and source, and `total` per S1 (highest p first)."""
     x = sel.join(d.select("s1", "r", p), on=["s1", "r"], how="left").with_columns(pl.col("r").str.slice(0, 2).alias("_src"))
-    x = x.with_columns(pl.col(p).rank("ordinal", descending=True).over(["s1", "_src"]).alias("_k"))
+    x = x.sort("r").with_columns(pl.col(p).rank("ordinal", descending=True).over(["s1", "_src"]).alias("_k"))
     cap = pl.col("_src").replace_strict(caps, default=99, return_dtype=pl.Int64)
     x = x.filter(pl.col("_k") <= cap)
     return x.filter(pl.col(p).rank("ordinal", descending=True).over("s1") <= total).select("s1", "r")
@@ -80,7 +80,7 @@ def expected_f_table(P: np.ndarray, h: np.ndarray | None = None, beta: float = 0
 def expected_f_decode(d: pl.DataFrame, p: str = "p", has: pl.DataFrame | None = None, M: int = 15, beta: float = 0.5,
                       chunk: int = 50_000) -> pl.DataFrame:
     """d: [s1, r, p]; has: optional [s1, h] (P(S1 has >= 1 match)). Returns accepted [s1, r] (top-k* per S1)."""
-    d = d.with_columns(pl.col(p).rank("ordinal", descending=True).over("s1").alias("_rk")).filter(pl.col("_rk") <= M)
+    d = d.sort("r").with_columns(pl.col(p).rank("ordinal", descending=True).over("s1").alias("_rk")).filter(pl.col("_rk") <= M)
     s1s = d["s1"].unique().sort()
     out = []
     for i in range(0, s1s.len(), chunk):

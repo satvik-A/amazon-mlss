@@ -45,7 +45,7 @@ def house_relation(a: str | None, b: str | None) -> int:
 
 def pair_features(P: pl.DataFrame, QN: pl.DataFrame, RN: pl.DataFrame) -> pl.DataFrame:
     """P: candidate pool with at least [s1, r] (+ blocking columns). QN/RN: normalised frames of the two sides."""
-    d = _join_side(_join_side(P, QN, "s1", "_s"), RN, "r", "_r")
+    d = _join_side(_join_side(P, QN, "s1", "_s"), RN, "r", "_r").sort(["s1", "r"])  # deterministic order (rank ties)
     j = lambda c: pl.col(c).list.join(" ")
     d = d.with_columns(j("nw_s").alias("nm_s"), j("nw_r").alias("nm_r"), j("core_s").alias("co_s"), j("core_r").alias("co_r"),
                        j("alias_r").alias("al_r"), j("aw_s").alias("ad_s_txt"), j("aw_r").alias("ad_r_txt"),
