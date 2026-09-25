@@ -80,3 +80,19 @@ def X(d: pl.DataFrame, fc: list[str]) -> np.ndarray:
 
 
 __all__ = ["RULES", "prune_pool", "pool_features", "s1_agg", "HEAD_FEATURES", "efd", "decide", "X", "feature_columns"]
+
+
+# ---- context features computed on the WHOLE country pool / S1 table (identically in training and at submission) ------
+def claim_features(pool: pl.DataFrame) -> pl.DataFrame:
+    """Per record: how many S1s retrieved it (n_s1_for_r) and how many score it within 5% of its best S1 (n_claim).
+    A no-address record with a common name ties across every same-name S1; the cross-encoder cannot see that."""
+    best = pl.col("sc").max().over("r")
+    return pool.with_columns(pl.len().over("r").cast(pl.Int32).alias("n_s1_for_r"),
+                             (pl.col("sc") >= 0.95 * best).cast(pl.Int32).sum().over("r").alias("n_claim"))
+
+
+def s1_name_freq(S_all: pl.DataFrame, nz, chunk: int = 1_000_000) -> pl.DataFrame:
+    """[s1, s1_name_freq]: number of S1s of the same country with exactly the same core-name set."""
+    N = pl.concat([nz.transform(S_all.slice(i, chunk)).select("entity_id", "country", pl.col("core").list.sort().list.join(" ").alias("k"))
+                   for i in range(0, S_all.height, chunk)])
+    return N.with_columns(pl.len().over(["country", "k"]).cast(pl.Int32).alias("s1_name_freq")).select(pl.col("entity_id").alias("s1"), "s1_name_freq")

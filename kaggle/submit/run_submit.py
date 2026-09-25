@@ -38,9 +38,10 @@ s1_all = pl.read_parquet(f"{IN}/test_s1.parquet")
 valid_r = pl.concat([pl.read_parquet(f"{IN}/test_s2.parquet", columns=["entity_id"]), pl.read_parquet(f"{IN}/test_s3.parquet", columns=["entity_id"])])["entity_id"]
 cands, matches = [], []
 for p in POOLS:
-    pool = pl.read_parquet(p); ctry = os.path.basename(p)[len("pool_test_"):-len(".parquet")]
+    pool = M.claim_features(pl.read_parquet(p)); ctry = os.path.basename(p)[len("pool_test_"):-len(".parquet")]
     kept = M.prune_pool(pool, cfg["policy"]); del pool
     S = s1_all.filter(pl.col("country") == ctry)
+    kept = kept.join(M.s1_name_freq(S, NZ), on="s1", how="left")
     R = pl.concat([pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()])
     F = M.pool_features(kept, S, R, NZ)
     F = F.with_columns(pl.Series("p", m.predict(M.X(F, fc))))

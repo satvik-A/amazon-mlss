@@ -32,14 +32,18 @@ NZ = Normalizer(ART)
 
 # ---- sample S1s per country (deterministic hash), features --------------------------------------------------------
 parts = []
+S1ALL = pl.read_parquet(f"{IN}/train_s1.parquet")
 for p in POOLS:
-    P = pl.read_parquet(p)
+    P = M.claim_features(pl.read_parquet(p))              # on the whole country pool, before sampling (as at test time)
     ids = P["s1"].unique().sort()
     ids = ids.filter((ids.hash(7) % 1_000_000) < int(1_000_000 * min(1.0, N_S1 / len(ids))))
     parts.append(P.filter(pl.col("s1").is_in(ids.implode())))
     log(f"{os.path.basename(p)}: {P.height} rows, {P['s1'].n_unique()} S1 -> sample {parts[-1]['s1'].n_unique()} S1 / {parts[-1].height} rows")
     del P
 pool = pl.concat(parts, how="vertical_relaxed"); del parts
+ctry = pool.select("s1").unique().join(S1ALL.select(pl.col("entity_id").alias("s1"), "country"), on="s1")["country"].unique().to_list()
+pool = pool.join(M.s1_name_freq(S1ALL.filter(pl.col("country").is_in(ctry)), NZ), on="s1", how="left")
+log(f"context features: n_claim, n_s1_for_r, s1_name_freq  {time.time()-T0:.0f}s")
 S1ids = pool["s1"].unique()
 s1 = pl.scan_parquet(f"{IN}/train_s1.parquet").filter(pl.col("entity_id").is_in(S1ids.implode())).collect()
 R = pl.scan_parquet([f"{IN}/train_s2.parquet", f"{IN}/train_s3.parquet"]).filter(pl.col("entity_id").is_in(pool["r"].unique().implode())).collect()
