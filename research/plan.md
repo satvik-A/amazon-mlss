@@ -1,5 +1,7 @@
 # Plan v2: based on the real data (2026-09-25)
 
+> **Superseded in priority by [strategy_v3.md](strategy_v3.md)** (after organiser answers: candidate-set size now counts toward ranking).
+
 This supersedes the priorities in `strategy.md`. The ideas there still apply, but the data re-ranked them.
 EDA scripts are in `research/eda/`. Run heavy jobs through `research/guard.sh 6 <cmd>`, which kills anything above 6 GB.
 
