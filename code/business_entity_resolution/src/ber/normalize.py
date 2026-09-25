@@ -9,7 +9,7 @@ Output columns (per record):
   legal  legal-form tokens found in the name
   decoy  learned decoy/qualifier tokens present in the name
   sk     consonant skeletons of core tokens
-  aw     address words (>=3 letters, synonyms expanded) ; ad  address numbers (no leading zeros)
+  aw     address words (street types mapped, function words dropped, >=2 letters, synonyms expanded) ; ad  numbers
   au     unit codes (c502, e6)  ; noaddr  address missing
 """
 from __future__ import annotations
@@ -20,7 +20,7 @@ import re
 
 import polars as pl
 
-from .tables import ALIAS_MARKERS, HONORIFIC, LEGAL, NUMBER_WORDS, STREET
+from .tables import ADDR_STOP, ALIAS_MARKERS, HONORIFIC, LEGAL, NAME_STOP, NUMBER_WORDS, STREET, STREET_COUNTRY, UNIT_EXCLUDE
 from .text import base_clean, leet_fix_token, skeleton
 from .translit import INDIC_RE, translit
 
@@ -38,7 +38,7 @@ class Normalizer:
         # Name-only extra-word stats are dominated by coincidental same-name businesses country-wide (exact-equal names
         # are the same business only 8.6% of the time), so noise words = small hand list; decoy words are learned later
         # from the address-conditioned blocking candidate pool (decoy_words.parquet, optional).
-        self.noise = set(HONORIFIC)
+        self.noise = set(HONORIFIC) | NAME_STOP
         dp = os.path.join(art_dir, "decoy_words.parquet")
         self.decoy = set(pl.read_parquet(dp)["t"].to_list()) if os.path.exists(dp) else set()
         syn = rd("addr_synonyms.parquet")
@@ -113,14 +113,20 @@ class Normalizer:
         for w, dgt in NUMBER_WORDS.items():
             a = a.str.replace_all(f"#{w}#", dgt)
         a = a.str.replace_all(r"\b(\d+)(st|nd|rd|th)\b", "$1")  # ordinals, incl. generator typos '7nd'
+        ux = list(UNIT_EXCLUDE)
         d = d.with_columns(
-            a.str.extract_all(r"[a-z]{3,}").alias("aw0"),
+            a.str.extract_all(r"[a-z]+").alias("aw0"),
             a.str.extract_all(r"\d+").list.eval(pl.element().str.strip_chars_start("0")).list.eval(pl.element().filter(pl.element() != "")).alias("ad"),
-            a.str.extract_all(r"\b[a-z]{1,3}[-/ ]?\d+[a-z]?\b").list.eval(pl.element().str.replace_all(r"[-/ ]", "").str.replace(r"^([a-z]+)0+", "$1")).alias("au"),
+            a.str.extract_all(r"\b[a-z]{1,3}[-/ ]?\d+[a-z]?\b").list.eval(pl.element().str.replace_all(r"[-/ ]", "").str.replace(r"^([a-z]+)0+", "$1"))
+             .list.eval(pl.element().filter(~pl.element().str.extract(r"^([a-z]+)").is_in(ux))).alias("au"),
             (pl.col("a0").str.strip_chars() == "").alias("noaddr"))
-        # street abbreviations (hand table) + learned address synonyms expanded as extra tokens
-        st = {k: v for k, v in STREET.items() if len(k) >= 2}
-        d = d.with_columns(pl.col("aw0").list.eval(pl.element().replace(st)).alias("aw0"))
+        # street abbreviations (hand table, per-country overrides) BEFORE the length filter so 'R', 'St', 'Bd' map;
+        # 2-letter tokens kept (state codes, so the learned code<->name synonyms apply on both sides)
+        stop = list(ADDR_STOP)
+        aw = pl.col("aw0").list.eval(pl.element().replace(STREET))
+        for c, ov in STREET_COUNTRY.items():
+            aw = pl.when(pl.col("country") == c).then(pl.col("aw0").list.eval(pl.element().replace({**STREET, **ov}))).otherwise(aw)
+        d = d.with_columns(aw.list.eval(pl.element().filter((pl.element().str.len_chars() >= 2) & ~pl.element().is_in(stop))).alias("aw0"))
         ex = d.select("entity_id", "aw0").explode("aw0").join(self.addr_syn.rename({"token": "aw0"}), on="aw0", how="left") \
               .with_columns(pl.concat_list(pl.col("aw0"), pl.col("equiv").fill_null(pl.lit([], dtype=pl.List(pl.String)))).alias("x")) \
               .group_by("entity_id", maintain_order=True).agg(pl.col("x").flatten().unique().alias("aw"))
