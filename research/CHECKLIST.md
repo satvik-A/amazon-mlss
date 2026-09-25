@@ -73,7 +73,7 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [ ] Global exclusivity across all test S1s: each record assigned once (greedy / min-cost flow).
 
 **Leaderboard probes (within our own submission budget)**
-- [~] All-empty → exact test singleton rate (file passes the validator; **awaiting the user's upload**).
+- [x] All-empty → **LB 0.05642 = test singleton rate 5.64%** (train 5.6%). (2026-09-25)
 - [ ] France on/off → France contribution.
 - [!] Don't over-tune to the public LB (it's a subset); prefer CV plus the country-holdout check.
 

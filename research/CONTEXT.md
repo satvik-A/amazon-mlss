@@ -58,7 +58,7 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 
 **Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
 
-**Validation:** exact scorer OK; all-empty probe file passes the official validator (`output/probe_all_empty_matching_results.tsv`; its LB score = test singleton rate; **awaiting the user's upload**).
+**Validation:** exact scorer OK. **LB probe (all-empty) = 0.05642 → test singleton rate 5.64%** (train 5.6%: consistent). A wrong non-empty prediction on a singleton costs its full 1/N; every non-singleton S1 needs ≥1 correct match to score anything.
 
 ## 5. Running / next
 1. `er-blocking-v5` (running; pre-fix normaliser, sample mode): frontier table (recall / completeness vs cands/S1) + labelled candidate pool `cand_train_sample.parquet`.
