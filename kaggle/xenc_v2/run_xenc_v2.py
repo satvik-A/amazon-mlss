@@ -1,4 +1,4 @@
-"""[v2: ByT5-base (bytes) on GPU0, gte-multilingual-reranker-base on GPU1] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
+"""[v2: ByT5-base (bytes) on GPU0, CANINE-c (characters) on GPU1] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
   GPU0  Qwen/Qwen3-Reranker-0.6B  (Apache-2.0)  LoRA, yes/no logit
   GPU1  BAAI/bge-reranker-v2-m3   (Apache-2.0, XLM-R base MIT)  full fine-tune
 Pairs are built here with our blocking (CPU): TRAIN on A-split S1s (hash(11)%100 < 60, same split as the matcher, so
@@ -23,7 +23,7 @@ def log(*a):
 N_A = int(os.environ.get("N_A", 300 if LOCAL else 12000))    # train S1 per country
 N_C = int(os.environ.get("N_C", 100 if LOCAL else 2000))     # eval S1 per country
 TRAIN_MIN = float(os.environ.get("TRAIN_MIN", 1 if LOCAL else 105))
-KINDS = os.environ.get("KINDS", "hf:google/byt5-base,hf:Alibaba-NLP/gte-multilingual-reranker-base").split(",")   # one model per GPU
+KINDS = os.environ.get("KINDS", "hf:google/byt5-base,hf:google/canine-c").split(",")   # one model per GPU
 
 # ------------------------------------------------ 1. pairs (CPU) ----------------------------------------------------
 def build_pairs():
@@ -130,7 +130,11 @@ else:
     def fwd(b):
         return model(**b).logits.squeeze(-1).float()
     def make_trainable():
-        return (1e-4, 24) if "t5" in name.lower() else (2e-5, 24)
+        if "t5" in name.lower():      # byte sequences are long: checkpointing + smaller batch (585M full FT OOMs at 24)
+            model.gradient_checkpointing_enable(); return 1e-4, 12
+        if "canine" in name.lower():
+            return 3e-5, 32
+        return 2e-5, 24
 
 @torch.no_grad()
 def score(d, bs=None):

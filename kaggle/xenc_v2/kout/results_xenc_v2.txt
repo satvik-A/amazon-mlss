@@ -1,0 +1,16 @@
+US: pool 85.5/S1, recall 0.9813  578s
+India: pool 84.3/S1, recall 0.9238  1024s
+pairs: train 299708 (pos 0.277), eval 163329 (pos 0.079)  1027s
+GPUs: 2
+worker exit codes [1, 1]
+--- hf:google/byt5-base
+model google/byt5-base on cuda (Tesla T4)
+ZERO-SHOT {"auc": 0.4758561841205934, "logloss": 0.8421339392927344, "top1_acc_nonsingleton": 0.5548098434004475, "singleton_max_p_below_0.5": 0.0030441400304414, "auc_US": 0.511779512236394, "auc_India": 0.49191163976210706}
+zero-shot scored 6000 in 184s
+trainable params 584.6M
+
+--- hf:Alibaba-NLP/gte-multilingual-reranker-base
+model Alibaba-NLP/gte-multilingual-reranker-base on cuda (Tesla T4)
+
+baseline blocking-score AUC on eval: 0.9410
+DONE 1273s

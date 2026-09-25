@@ -130,7 +130,11 @@ else:
     def fwd(b):
         return model(**b).logits.squeeze(-1).float()
     def make_trainable():
-        return (1e-4, 24) if "t5" in name.lower() else (2e-5, 24)
+        if "t5" in name.lower():      # byte sequences are long: checkpointing + smaller batch (585M full FT OOMs at 24)
+            model.gradient_checkpointing_enable(); return 1e-4, 12
+        if "canine" in name.lower():
+            return 3e-5, 32
+        return 2e-5, 24
 
 @torch.no_grad()
 def score(d, bs=None):
