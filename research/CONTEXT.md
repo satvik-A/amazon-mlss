@@ -53,7 +53,8 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 | r1 aux caps ×2 | 98.43 / 94.9 | 93.56 / 84.1 | 78.7 / 74.2 | 86.8 | ~117 | ~10 |
 | r3 df cap 2000 | 98.05 / 93.7 | 92.75 / 82.3 | 73.8 / 70.0 | 85.4 | ~86 | **4.4** |
 | r4 top-100 + trigram 25 | 98.30 / 94.4 | 93.55 / 84.1 | 74.4 / 71.2 | 87.0 | ~136 | 7.4 |
-Findings: caps move recall < 1 pt; the hole is **copies with no address (~72%)** → new arm 7 (name tokens of no-address records indexed on their own; local sample 0.905 → 0.967), full-scale check running (r5–r7). df cap 2000 is 2.3× faster for −0.1/−0.2 pt.
+| **r5 + arm 7 (no-address names)** | **98.80 / 96.1** | **93.72 / 84.8** | **87.6 / 90.7** | 85.9 | ~98 | 7.9 |
+Findings: caps move recall < 1 pt; the hole is **copies with no address (~72%)** → new arm 7 (name tokens of no-address records indexed on their own; local sample 0.905 → 0.967), **confirmed at full scale (r5): completeness +2.1 (US) / +2.2 (India), no-address copy recall +13 / +20 pts, +9 cands/S1** → adopted for the second candidate pass (current Kaggle pools = 988ce1d, without arm 7). df cap 2000 is 2.3× faster for −0.1/−0.2 pt.
 Full-mode test pools: US 663k S1 → 58.8M internal rows (88.6/S1) in 1h54m; India 810k → 71.7M (88.5/S1) in 2h18m.
 
 **Cross-encoder (bge-reranker-v2-m3, fine-tuned on A-split pairs, eval on C-split top-15 + aux):** AUC 0.9997 (zero-shot 0.992; Qwen3-Reranker-0.6B zero-shot 0.980; blocking score 0.941); top-1 0.998; singletons: best candidate p ≥ 0.5 for 22% → needs number features / has-match head (stacking).
