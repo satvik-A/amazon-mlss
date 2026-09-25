@@ -26,7 +26,13 @@ POOLS = sorted(glob.glob("../cands_full/pool_test_*.parquet")) if LOCAL else fin
 MD = "../matcher_full" if LOCAL else os.path.dirname(find("decision.json")[0])
 cfg = json.load(open(f"{MD}/decision.json")); m = lgb.Booster(model_file=f"{MD}/matcher.txt")
 head = lgb.Booster(model_file=f"{MD}/head.txt") if os.path.exists(f"{MD}/head.txt") else None
-fc = cfg["features"]; log(f"ref {REF}; model ref {cfg.get('ref')}; rule {cfg['rule']}; policy {cfg['policy']}; holdout {cfg.get('holdout_C')}")
+fc = cfg["features"]
+# optional level 2 (er-stack + cross-encoder scores on the test uncertain band from er-xenc-score)
+SJ = find("decision_stack.json") if not LOCAL else []
+stack = lgb.Booster(model_file=os.path.join(os.path.dirname(SJ[0]), "stack.txt")) if SJ else None
+if SJ:
+    cfg2 = json.load(open(SJ[0])); log(f"LEVEL 2 active: delta on C {cfg2.get('delta_C')}")
+log(f"ref {REF}; model ref {cfg.get('ref')}; rule {cfg['rule']}; policy {cfg['policy']}; holdout {cfg.get('holdout_C')}")
 NZ = Normalizer(ART)
 s1_all = pl.read_parquet(f"{IN}/test_s1.parquet")
 valid_r = pl.concat([pl.read_parquet(f"{IN}/test_s2.parquet", columns=["entity_id"]), pl.read_parquet(f"{IN}/test_s3.parquet", columns=["entity_id"])])["entity_id"]
@@ -38,7 +44,14 @@ for p in POOLS:
     R = pl.concat([pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()])
     F = M.pool_features(kept, S, R, NZ)
     F = F.with_columns(pl.Series("p", m.predict(M.X(F, fc))))
-    sel = M.decide(F, cfg, head)
+    F.write_parquet(f"{WD}/level1_test_{ctry}.parquet")   # for er-xenc-score (uncertain band) and level 2
+    xf = find(f"xenc_test_{ctry}.parquet") if not LOCAL else []
+    if stack is not None and xf:
+        F = F.join(pl.read_parquet(xf[0]), on=["s1", "r"], how="left")
+        F = F.with_columns(pl.Series("p", stack.predict(M.X(F, cfg2["stack_features"]))))
+        sel = M.decide(F, cfg2, head); log(f"  {ctry}: level-2 decisions ({F[cfg2['stack_features'][-1]].is_not_null().sum()} pairs with cross-encoder scores)")
+    else:
+        sel = M.decide(F, cfg, head)
     per = sel.group_by("s1").len()
     log(f"{ctry}: S1 {S.height}  candidates {kept.height} ({kept.height/S.height:.2f}/S1)  predicted matches {sel.height} "
         f"({sel.height/S.height:.2f}/S1)  S1 predicted empty {1 - per.height/S.height:.4f}  mean p {F['p'].mean():.4f}  {time.time()-T0:.0f}s")
