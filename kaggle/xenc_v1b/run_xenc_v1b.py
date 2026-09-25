@@ -1,4 +1,4 @@
-"""[v1b: Qwen3-Reranker-4B LoRA on GPU0, Qwen3-Reranker-0.6B full fine-tune on GPU1] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
+"""[v1b: Qwen3-Reranker-0.6B LoRA on GPU0, Qwen3-Reranker-4B LoRA on GPU1] Cross-encoder bake-off on Kaggle T4 x2 (one model per GPU, in parallel):
   GPU0  Qwen/Qwen3-Reranker-0.6B  (Apache-2.0)  LoRA, yes/no logit
   GPU1  BAAI/bge-reranker-v2-m3   (Apache-2.0, XLM-R base MIT)  full fine-tune
 Pairs are built here with our blocking (CPU): TRAIN on A-split S1s (hash(11)%100 < 60, same split as the matcher, so
@@ -21,7 +21,7 @@ def log(*a):
 N_A = int(os.environ.get("N_A", 300 if LOCAL else 12000))    # train S1 per country
 N_C = int(os.environ.get("N_C", 100 if LOCAL else 2000))     # eval S1 per country
 TRAIN_MIN = float(os.environ.get("TRAIN_MIN", 1 if LOCAL else 105))
-KINDS = os.environ.get("KINDS", "qwen4b,qwenfull").split(",")   # one model per GPU
+KINDS = os.environ.get("KINDS", "qwen,qwen4b").split(",")   # one model per GPU
 
 # ------------------------------------------------ 1. pairs (CPU) ----------------------------------------------------
 def build_pairs():
@@ -106,7 +106,8 @@ if kind.startswith("qwen"):
         return dict(input_ids=torch.tensor([[pad] * (m - len(i)) + i for i in ids], device=dev),
                     attention_mask=torch.tensor([[0] * (m - len(i)) + [1] * len(i) for i in ids], device=dev))
     def fwd(b):
-        lg = model(**b).logits[:, -1, :]
+        # only the last position's logits (full-sequence x 152k-vocab logits is ~7.6 GB per scoring batch)
+        lg = model(**b, logits_to_keep=1).logits[:, -1, :]
         return (lg[:, yes] - lg[:, no]).float()
     def make_trainable():
         global model

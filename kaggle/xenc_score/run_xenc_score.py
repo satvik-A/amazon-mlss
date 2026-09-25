@@ -40,7 +40,7 @@ if kind == "qwen":
         body = tok([f"<Instruct>: {INST}\n<Query>: {x}\n<Document>: {y}" for x, y in zip(a, b)], add_special_tokens=False)["input_ids"]
         ids = [pre + t[:200] + suf for t in body]; m = max(map(len, ids)); pad = tok.pad_token_id
         lg = model(input_ids=torch.tensor([[pad] * (m - len(i)) + i for i in ids], device=dev),
-                   attention_mask=torch.tensor([[0] * (m - len(i)) + [1] * len(i) for i in ids], device=dev)).logits[:, -1, :]
+                   attention_mask=torch.tensor([[0] * (m - len(i)) + [1] * len(i) for i in ids], device=dev), logits_to_keep=1).logits[:, -1, :]
         return (lg[:, yes] - lg[:, no]).float()
 else:
     from transformers import AutoModelForSequenceClassification

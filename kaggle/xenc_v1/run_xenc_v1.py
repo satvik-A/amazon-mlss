@@ -106,7 +106,8 @@ if kind.startswith("qwen"):
         return dict(input_ids=torch.tensor([[pad] * (m - len(i)) + i for i in ids], device=dev),
                     attention_mask=torch.tensor([[0] * (m - len(i)) + [1] * len(i) for i in ids], device=dev))
     def fwd(b):
-        lg = model(**b).logits[:, -1, :]
+        # only the last position's logits (full-sequence x 152k-vocab logits is ~7.6 GB per scoring batch)
+        lg = model(**b, logits_to_keep=1).logits[:, -1, :]
         return (lg[:, yes] - lg[:, no]).float()
     def make_trainable():
         global model
