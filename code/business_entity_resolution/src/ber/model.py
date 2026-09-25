@@ -107,3 +107,43 @@ def s1_name_freq(S_all: pl.DataFrame, nz, chunk: int = 1_000_000) -> pl.DataFram
     N = pl.concat([nz.transform(S_all.slice(i, chunk)).select("entity_id", "country", pl.col("core").list.sort().list.join(" ").alias("k"))
                    for i in range(0, S_all.height, chunk)])
     return N.with_columns(pl.len().over(["country", "k"]).cast(pl.Int32).alias("s1_name_freq")).select(pl.col("entity_id").alias("s1"), "s1_name_freq")
+
+
+# ---- deterministic candidate cut-offs (blocking rules on similarity features; thresholds tuned on train) ------------
+# Ordered OR-rules from a greedy search on the v5 train pool (6k S1, tuned on one half, checked on the other):
+# first n rules -> held-out share of in-pool positives kept: n=8: 8.4 cands/S1, 0.984 ; n=10: 11.9, 0.993 ;
+# n=11: 13.7, 0.9955 ; n=14: 26.4, 0.9975 (no cut-off: 91.5 cands/S1).
+def _cut_rules():
+    c = pl.col
+    return [
+        (c("house_rel") == 0) & (c("sk_jacc") >= 0.5),
+        c("sc_rank") <= 1,
+        (c("nm_tset") >= 90) & (c("ad_tset") >= 60),
+        (c("nm_tset") >= 90) & (c("noaddr_r") == 1),
+        c("sc_rank") <= 3,
+        (c("nm_tset") >= 80) & (c("noaddr_r") == 1),
+        (c("nm_tset") >= 80) & (c("ad_tset") >= 60),
+        c("sc_rank") <= 5,
+        (c("nm_tset") >= 70) & (c("noaddr_r") == 1),
+        c("num_rel") == 0,
+        (c("nm_tset") >= 70) & (c("ad_tset") >= 60),
+        c("num_rel").is_in([0, 1, 2]) & (c("sk_jacc") >= 0.5),
+        c("house_rel") == 0,
+        c("num_rel").is_in([0, 1, 2]),
+    ]
+
+
+def cutoff_mask(n: int) -> pl.Expr:
+    """True for candidates kept by the first n cut-off rules (feature frame from pool_features)."""
+    rules = _cut_rules()[:n]
+    e = rules[0]
+    for r in rules[1:]:
+        e = e | r
+    return e.fill_null(False)
+
+
+def apply_policy(F: pl.DataFrame, policy: dict) -> pl.DataFrame:
+    """Blocking policy on a FEATURE frame: {'cutoff': n} (feature rules) or a group policy (prune_pool)."""
+    if policy.get("cutoff"):
+        return F.filter(cutoff_mask(int(policy["cutoff"])))
+    return prune_pool(F, policy)

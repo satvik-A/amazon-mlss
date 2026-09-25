@@ -117,22 +117,23 @@ if FRONTS:
 else:   # no frontier sweep upstream: a few group limits without the (lossy) reverse-preference filter
     pts = [dict(alpha=0.0, G=g, beta=-1.0, cands=None, complete=None) for g in (5, 10, 20)]
 pts.append(dict(alpha=0.0, G=99, beta=-1.0, cands=None, complete=None))  # no pruning (internal pool)
+pts = [dict(cutoff=n) for n in (5, 8, 9, 10, 11, 12, 14)] + pts   # deterministic feature cut-offs (ber.model._cut_rules)
 rows = []
 for r in pts:
-    pol = dict(alpha=r["alpha"], G=int(r["G"]), gate=False, beta=r["beta"])
-    kb, kc = M.prune_pool(Bv, pol), M.prune_pool(Cv, pol)
+    pol = dict(cutoff=r["cutoff"]) if "cutoff" in r else dict(alpha=r["alpha"], G=int(r["G"]), gate=False, beta=r["beta"])
+    kb, kc = M.apply_policy(Bv, pol), M.apply_policy(Cv, pol)
     cfg = dict(cfg0, rule=rule)
-    rows.append(dict(**pol, cands_B=kb.height / len(sB), F_B=f05(M.decide(kb, cfg, head), gB, sB)["f05"],
-                     cands_C=kc.height / len(sC), F_C=f05(M.decide(kc, cfg, head), gC, sC)["f05"]))
+    rows.append(dict(policy=json.dumps(pol), cands_B=kb.height / len(sB), recall_B=kb["y"].sum() / max(gB.height, 1),
+                     F_B=f05(M.decide(kb, cfg, head), gB, sB)["f05"], cands_C=kc.height / len(sC), F_C=f05(M.decide(kc, cfg, head), gC, sC)["f05"]))
 E = pl.DataFrame(rows).sort("cands_B"); log("\n=== END-TO-END per blocking policy ==="); log(E)
 fmax = E["F_B"].max()
 pick = E.filter(pl.col("F_B") >= fmax - 0.0005).sort("cands_B").row(0, named=True)   # smallest set within 0.0005 of best
 log(f"policy chosen on B (smallest candidate set within 0.0005 of the best F): {pick}")
-dec = dict(cfg0, rule=rule, policy=dict(alpha=pick["alpha"], G=pick["G"], gate=False, beta=pick["beta"]), features=fc,
+dec = dict(cfg0, rule=rule, policy=json.loads(pick["policy"]), features=fc,
            head_features=M.HEAD_FEATURES, ref=REF, holdout_C=dict(F=pick["F_C"], cands=pick["cands_C"]))
 json.dump(dec, open(f"{WD}/decision.json", "w"), indent=1)
 # level-1 outputs for stacking: B/C rows kept by the chosen policy (+ raw ids so heavy models can score the same pairs)
 for nm, d in (("B", Bv), ("C", Cv)):
-    M.prune_pool(d, dec["policy"]).drop("h").write_parquet(f"{WD}/level1_{nm}.parquet")
+    M.apply_policy(d, dec["policy"]).drop("h").write_parquet(f"{WD}/level1_{nm}.parquet")
 log(f"wrote level1_B/C.parquet (policy-pruned rows with features, p, y)")
 log(json.dumps(dec)[:600]); log(f"\nDONE {time.time()-T0:.0f}s")

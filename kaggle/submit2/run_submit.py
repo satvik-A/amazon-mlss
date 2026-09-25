@@ -49,11 +49,15 @@ for p in POOLS:
     nf = M.s1_name_freq(S, NZ)
     for k in range(NSH):
         pool = pl.scan_parquet(p).filter(pl.col("s1").hash(3) % NSH == k).collect(engine="streaming").join(st, on="r", how="left")
-        kept = M.prune_pool(pool, cfg["policy"]); del pool
+        pol = cfg["policy"]
+        kept = pool if pol.get("cutoff") else M.prune_pool(pool, pol); del pool   # cut-off rules need the features first
         kept = kept.join(nf, on="s1", how="left")
         Sk = S.filter(pl.col("entity_id").is_in(kept["s1"].unique().implode()))
         R = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()
         F = M.pool_features(kept, Sk, R, NZ)
+        if pol.get("cutoff"):
+            F = F.filter(M.cutoff_mask(int(pol["cutoff"])))   # candidate_pairs = rows kept by the deterministic rules
+            kept = F.select("s1", "r")
         F = F.with_columns(pl.Series("p", m.predict(M.X(F, fc))))
         F.write_parquet(f"{WD}/level1_test_{ctry}_{k}.parquet")   # for er-xenc-score (uncertain band) and level 2
         xf = find(f"xenc_test_{ctry}_{k}.parquet") if not LOCAL else []
