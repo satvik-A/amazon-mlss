@@ -1,0 +1,4 @@
+{"id": "satvikaderla/er-matcher-v1", "title": "er-matcher-v1", "code_file": "run_matcher_v1.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data"], "competition_sources": [],
+ "kernel_sources": ["satvikaderla/er-artifacts", "satvikaderla/er-blocking-v5"]}
