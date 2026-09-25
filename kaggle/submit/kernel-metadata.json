@@ -1,0 +1,5 @@
+{"id": "satvikaderla/er-submit", "title": "er-submit", "code_file": "run_submit.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data"], "competition_sources": [],
+ "kernel_sources": ["satvikaderla/er-artifacts", "satvikaderla/er-cands-test-us", "satvikaderla/er-cands-test-india",
+                    "satvikaderla/er-cands-test-france", "satvikaderla/er-matcher-full"]}
