@@ -1,0 +1,97 @@
+[{"stream_name":"stdout","time":9.451691818,"data":"TRAIN S1=2206821 R=10320219\n"}
+,{"stream_name":"stdout","time":187.480298853,"data":"  prep pool 10320219: 178s\n"}
+,{"stream_name":"stdout","time":499.859679565,"data":"  pool tokens 174359132\n"}
+,{"stream_name":"stdout","time":536.620137937,"data":"  pool postings after df cap 102864092  534s\n"}
+,{"stream_name":"stdout","time":704.318652077,"data":"retrieved 3749022  702s\n"}
+,{"stream_name":"stdout","time":706.707879698,"data":"expansion adds 231510\n"}
+,{"stream_name":"stdout","time":709.858117208,"data":"\n"}
+,{"stream_name":"stdout","time":709.858167994,"data":"=== v2 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===\n"}
+,{"stream_name":"stdout","time":709.874220526,"data":"expansion: mean added per S1 7.72\n"}
+,{"stream_name":"stdout","time":709.884897682,"data":"K=  5 all=0.5749 +exp=0.5816  indic=0.057/0.083  noaddr=0.491/0.494  web=0.278/0.289  alias=0.529/0.531  US=0.6220/0.6265  India=0.5036/0.5136\n"}
+,{"stream_name":"stdout","time":709.890918649,"data":"K= 10 all=0.7000 +exp=0.7068  indic=0.231/0.257  noaddr=0.632/0.635  web=0.494/0.505  alias=0.753/0.755  US=0.7443/0.7489  India=0.6331/0.6430\n"}
+,{"stream_name":"stdout","time":709.896275048,"data":"K= 20 all=0.8085 +exp=0.8153  indic=0.504/0.530  noaddr=0.698/0.702  web=0.684/0.695  alias=0.885/0.888  US=0.8355/0.8401  India=0.7678/0.7777\n"}
+,{"stream_name":"stdout","time":709.901708855,"data":"K= 30 all=0.8445 +exp=0.8512  indic=0.567/0.593  noaddr=0.721/0.724  web=0.768/0.779  alias=0.914/0.916  US=0.8689/0.8734  India=0.8076/0.8175\n"}
+,{"stream_name":"stdout","time":709.907037604,"data":"K= 50 all=0.8698 +exp=0.8765  indic=0.603/0.629  noaddr=0.752/0.755  web=0.819/0.830  alias=0.940/0.942  US=0.8922/0.8967  India=0.8360/0.8460\n"}
+,{"stream_name":"stdout","time":709.912358575,"data":"K=100 all=0.8920 +exp=0.8987  indic=0.642/0.668  noaddr=0.789/0.792  web=0.850/0.861  alias=0.952/0.954  US=0.9111/0.9156  India=0.8632/0.8731\n"}
+,{"stream_name":"stdout","time":709.912390906,"data":"\n"}
+,{"stream_name":"stdout","time":709.912397004,"data":"=== entity completeness (ALL matches of the S1 retrieved) ===\n"}
+,{"stream_name":"stdout","time":709.925538076,"data":"  top20+exp: 0.6212    top20 only: 0.6095\n"}
+,{"stream_name":"stdout","time":709.937077151,"data":"  top30+exp: 0.6896    top30 only: 0.6770\n"}
+,{"stream_name":"stdout","time":709.948698077,"data":"  top50+exp: 0.7384    top50 only: 0.7248\n"}
+,{"stream_name":"stdout","time":709.948737919,"data":"\n"}
+,{"stream_name":"stdout","time":709.948743914,"data":"=== per-arm: share of found positives hit by arm, and unique finds ===\n"}
+,{"stream_name":"stdout","time":709.950898476,"data":"  name      hit 0.383  unique 548\n"}
+,{"stream_name":"stdout","time":709.952009643,"data":"  addr      hit 0.753  unique 22323\n"}
+,{"stream_name":"stdout","time":709.952832429,"data":"  skeleton  hit 0.232  unique 74\n"}
+,{"stream_name":"stdout","time":709.953755192,"data":"  namepair  hit 0.628  unique 1183\n"}
+,{"stream_name":"stdout","time":709.954803431,"data":"  keys      hit 0.651  unique 2713\n"}
+,{"stream_name":"stdout","time":709.955475332,"data":"  expansion-only finds: 696\n"}
+,{"stream_name":"stdout","time":710.11733674,"data":"\n"}
+,{"stream_name":"stdout","time":710.117403232,"data":"=== sample of remaining misses (not in top30, not expanded) ===\n"}
+,{"stream_name":"stdout","time":710.118204519,"data":"  rk=- | Ace Estate Private Limited | 23 A, Rajiv Gandhi Bridge, Sector 1, Nerul East, Navi M  ==\u003e  एस एस्टेट प्राइवेट लिमिटेड | ##23 A, GREATER BOMBAY, NAVI MUMBAI, Maharashtra\n"}
+,{"stream_name":"stdout","time":710.118236452,"data":"  rk=- | Uptown Auto Body | 1905 Noble Drive, Golden Valley, MN  ==\u003e  UPTOWN AUTO BODY  LTD Enterprises | None\n"}
+,{"stream_name":"stdout","time":710.11826649,"data":"  rk=- | Perfect Producer Private Limited | C-502, Suncrest Apartment, Accolade Galaxy, Near Lic Bu  ==\u003e  परफेक्ट प्रोड्यूसर प्राइवेट लिमिटेड | C-502, Thane, Thane I, MH\n"}
+,{"stream_name":"stdout","time":710.118273254,"data":"  rk=- | Kad Jewellery Pvt Ltd | No 2, 18Th Cross Malleswaram, Bangalore-55, Bangalore,   ==\u003e  Ltd Kad Pvt Center | NO 2, BANGALORE-55, ಕರ್ನಾಟಕ, BANGALORE\n"}
+,{"stream_name":"stdout","time":710.118278537,"data":"  rk=- | Shakti Engineering Private Limited | Plot No 05, N-11, Aurangabad, Maharashtra  ==\u003e  Shakti | Plot No 05, N-11, Aurangabad, Maharashtra\n"}
+,{"stream_name":"stdout","time":710.11854278,"data":"  rk=- | Classic Services Limited | Road No - 17, Rajivnagar, Patliputra, Patna, Bihar  ==\u003e  क्लासिक सर्विसेज लिमिटेड | PATNA, ROAD NO - 17, Bihar\n"}
+,{"stream_name":"stdout","time":710.118551367,"data":"  rk=- | QD India LLP | H.No. A/37, Balaji Nagar Housing Board Colony Goverdhan  ==\u003e  QD Indai (LLP) | Chittaurgarh, H.no. A/0037, RJ\n"}
+,{"stream_name":"stdout","time":710.118556123,"data":"  rk=- | Bazar Real Private Limited | 188, Bodh Vihar Colony, H/N Amra Vihar East Of Bhuth Na  ==\u003e  Shri Bazar Real Private | 1-88, Patna, BR\n"}
+,{"stream_name":"stdout","time":710.118561073,"data":"  rk=- | Future Estate Private Limited | Plot No-06, Sector - 05, Dwarka, New Delhi, Delhi, Sout  ==\u003e  फ्यूचर एस्टेट प्राइवेट लिमिटेड | Hn 560 Plot No-06, Sector - 05, Dwarka, New Delhi, Delh\n"}
+,{"stream_name":"stdout","time":710.118567432,"data":"  rk=86 | Future Engineering Private Limited | No.13/7, Dhandapani Street, T.Nagar, Chennai, Tamil Nad  ==\u003e  Future இன்ஜினியரிங் பிரைவேட் லிமிடெட் | NO.13/7, DHANDAPANI STREET, T.NAGAR, CHENNAI, தமிழ்நாடு\n"}
+,{"stream_name":"stdout","time":710.118573385,"data":"  rk=- | Orthopedic Center PLLC | 3372 75, Chalmers, IN  ==\u003e  Orthopedic  Center PLLC | None\n"}
+,{"stream_name":"stdout","time":710.118578703,"data":"  rk=33 | Sree Constructions Private Limited | Olisa House, 11Th Floor 4, Government Place (North), Ko  ==\u003e  শ্রী কনস্ট্রাকশনস প্রাইভেট লিমিটেড | Olisa House, 11Th Floor 4, Government Place (North), Ko\n"}
+,{"stream_name":"stdout","time":710.11874189,"data":"  rk=- | Bharat Infrastructure | Kali Krishna Tagore Street, 2Nd Floor, Kolkata, Kolkata  ==\u003e  ভারত Infrastructure | Kali Krishna Tagore Street, 2Nd Floor, Kolkata, Kolkata\n"}
+,{"stream_name":"stdout","time":710.118757033,"data":"  rk=- | National Animal Hospital | 1515 14th Avenue, Unit Unit 13, West Fargo, ND  ==\u003e  National Aenimal Hospital | 1515 FOURTEENTH AVENUE, W FARGGO, ND\n"}
+,{"stream_name":"stdout","time":710.118762807,"data":"  rk=- | Little Cleaning Service | 1432 Victoria Avenue, Unit APARTMENT 1, North Chicago,   ==\u003e  Little (Cleaning) | Unit Apartment 1, 143 Victoria Avenue, North Chicago, I\n"}
+,{"stream_name":"stdout","time":710.118778367,"data":"  rk=- | Eye Reliable Health Inc | 959 Stafford Forest Drive, Unit 201, Winston-salem, NC  ==\u003e  Eye Reliable Hmdlth Inc | Stafford Forest Dr, WINSTON-SALEM, NC\n"}
+,{"stream_name":"stdout","time":710.118783951,"data":"  rk=- | Global Services Private Limited | Plot No.16, Akbar Road, Sikh Village, Secunderabad-009.  ==\u003e  Global Services  Private Limited | None\n"}
+,{"stream_name":"stdout","time":710.118788738,"data":"  rk=- | Urban Cafe LLC | Stillwater, OK, 13 Summit Circle  ==\u003e  Urban Cafe | 13 SUMMIT CIR, STILLWATER, OK\n"}
+,{"stream_name":"stdout","time":710.118809658,"data":"  rk=31 | Summit Columbus Inc | 86 Highland Road, Unit 1, Brookline, MA  ==\u003e  Synnex DBA: Summit Columbus Inc | Brookline, 86 Highland Road, Unit 1, MA\n"}
+,{"stream_name":"stdout","time":710.118926001,"data":"  rk=- | Bright Estate Private Limited | Gujarat, Pl 1, Shed 3, St 3, Aji Ring Road, Kp Ind Zone  ==\u003e  બ્રાઇટ એસ્ટેટ પ્રાઇવેટ લિમિટેડ | KP IND ZONE-3, RAJKOT REGION, Gujarat\n"}
+,{"stream_name":"stdout","time":710.118997916,"data":"  rk=70 | Silver Projects | 3306 G/F Delhi Gate Main Bazar, Delhi, Central Delhi, D  ==\u003e  सिल्वर प्रोजेक्ट्स | 3306- G/F DELHI GATE MAIN BAZAR, CENTRAL DELHI, DELHI\n"}
+,{"stream_name":"stdout","time":710.119010436,"data":"  rk=- | High Consultants Private Limited | E-6, Ground Floor, Greater Kailash-1, New Delhi, Delhi,  ==\u003e  High Consultants Private Ltd | E-6, Ground Floor, Greater Kailash-1, New Delhi, South \n"}
+,{"stream_name":"stdout","time":710.119015912,"data":"  rk=36 | Mutual Asset Industries | 692 Niles Vienna Road, Vienna, OH  ==\u003e  Mutual Asfest [Industries] | Niles Vienna Rd, Vienna, Ohio\n"}
+,{"stream_name":"stdout","time":710.119170447,"data":"  rk=- | Vision Properties Private Limited | Unit611, 6Th Floor, Reliables Pride, Aanand Nagar Opp H  ==\u003e  विजन प्रॉपर्टीज प्राइवेट लिमिटेड | UNIT611, BOMBAY, MUMBAI CITY, Maharashtra\n"}
+,{"stream_name":"stdout","time":710.11928439,"data":"  rk=- | Blue Coffee | 800 Martin Street, Perry, MO  ==\u003e  Blue  Coffee Inc | 800-804 Martin Street, Perry, Missouri\n"}
+,{"stream_name":"stdout","time":710.185075203,"data":"\n"}
+,{"stream_name":"stdout","time":710.18511814,"data":"train: mean candidates(top30) 30.0; mean 'strong' (\u003e=3 arms) 3.44; exp/S1 7.72\n"}
+,{"stream_name":"stdout","time":714.389610802,"data":"\n"}
+,{"stream_name":"stdout","time":714.389710341,"data":"TEST France: S1 sample 10000, pool 1434993\n"}
+,{"stream_name":"stdout","time":720.932474875,"data":"  prep pool 1434993: 7s\n"}
+,{"stream_name":"stdout","time":761.201902188,"data":"  pool tokens 21309144\n"}
+,{"stream_name":"stdout","time":764.033544271,"data":"  pool postings after df cap 11495265  762s\n"}
+,{"stream_name":"stdout","time":784.777665733,"data":"France: mean candidates(top30) 30.0; mean 'strong' (\u003e=3 arms) 2.94; exp/S1 4.35\n"}
+,{"stream_name":"stdout","time":784.84078293,"data":"France: sample top-5 candidates for 4 S1s:\n"}
+,{"stream_name":"stdout","time":784.847400648,"data":"  ## Honore Club EURL | 4 Impasse Geometre, Mérignac, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":784.847587764,"data":"      1 HONORE CLUB  EURL | 4 IMP GEOMETRE, MERIGNAC, Gironde\n"}
+,{"stream_name":"stdout","time":784.847625469,"data":"      2 Honore Club (E.U.R.L.) | 4 IMP GEOMETRE, Gironde, MERIGNAC\n"}
+,{"stream_name":"stdout","time":784.847633046,"data":"      3 Honoré Club | 48 Rue Du Bout Des Digues, Calais, Pas-de-Calais\n"}
+,{"stream_name":"stdout","time":784.847639625,"data":"      4 Honoré Club SAS | 13 Cour2 Pasteur, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":784.847645736,"data":"      5 E.U.R.L. Honore Culturel | 9 Imp Geometre, Mérignac, Gironde\n"}
+,{"stream_name":"stdout","time":784.848848028,"data":"  ## Unis \u0026 Cie SARL | 3 Rue Delbos, Bordeaux, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":784.849041365,"data":"      1 Unis \u0026 Cie SARL | RUE DELBOS, BORDEAUX\n"}
+,{"stream_name":"stdout","time":784.84907027,"data":"      2 Union Des Unis Holding SCI | 86 Rue Turgot, Lille\n"}
+,{"stream_name":"stdout","time":784.84907702,"data":"      3 Unis \u0026 Cie SARL | BORDEAUX, RUE DELBRS\n"}
+,{"stream_name":"stdout","time":784.849103222,"data":"      4 Unis Service Sarl | None\n"}
+,{"stream_name":"stdout","time":784.849109146,"data":"      5 @unionasso | 24 RUE DE BÉTHUNE, ROUBAIX\n"}
+,{"stream_name":"stdout","time":784.850104957,"data":"  ## Ass Sportive SARL | 2 Allée des Templiers, Pornic, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":784.850137499,"data":"      1 Ass Sportive | N° 51 R. DOUDIN, LILLE, Nord\n"}
+,{"stream_name":"stdout","time":784.850192255,"data":"      2 SARL Ass Spôrtive | (2) ALLÉE DES TEMPLIERS, Pornic, Pays de la Loire\n"}
+,{"stream_name":"stdout","time":784.850207742,"data":"      3 SARL Ass Sportive | 2 All Des Templiers, Pornic, Loire-Atlantique\n"}
+,{"stream_name":"stdout","time":784.850212721,"data":"      4 Ass  Sportive (France) Holding SARL | 18 Rue Colette, Mérignac, Nouvelle-Aquitaine\n"}
+,{"stream_name":"stdout","time":784.850217716,"data":"      5 SARL Ass Sportive | 2 Allée Des Templiers, Pornic, Loire-Atlantique\n"}
+,{"stream_name":"stdout","time":784.851050137,"data":"  ## Dunkerque Club | Hauts-de-France, Dunkerque, 181 Rue de l’Hôtel de Ville\n"}
+,{"stream_name":"stdout","time":784.851214964,"data":"      1 Halte Societe SARL | 203 Rue De L’hôtel De Ville, Dunkerque, Nord\n"}
+,{"stream_name":"stdout","time":784.85123618,"data":"      2 Ectoxyloquo a/k/a Dunkerque Club SAS | 217 Quai des Corderies, Dunkerque, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":784.851241362,"data":"      3 DUNKERQUE CLUB SA | DUNKERQUE, 5 BIS RUE DUPOUY\n"}
+,{"stream_name":"stdout","time":784.85124598,"data":"      4 Eco Prîmaire SNC | N° 111 R DE L’HÔTEL DE VILLE, DUNKERQUE, Hauts-de-France\n"}
+,{"stream_name":"stdout","time":784.851251153,"data":"      5 Dunkerque Çlub SASU | N° 5 R. Blondez, Dunkerque\n"}
+,{"stream_name":"stdout","time":784.851284377,"data":"\n"}
+,{"stream_name":"stdout","time":784.851303227,"data":"DONE 783s\n"}
+,{"stream_name":"stderr","time":789.615292865,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":789.615431418,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":790.063686304,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":790.06373341,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":791.812585818,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":793.737872706,"data":"[NbConvertApp] Writing 404092 bytes to __results__.html\n"}
+]

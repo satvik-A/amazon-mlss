@@ -1,0 +1,90 @@
+TRAIN S1=2206821 R=10320219
+  prep pool 10320219: 178s
+  pool tokens 174359132
+  pool postings after df cap 102864092  534s
+retrieved 3749022  702s
+expansion adds 231510
+
+=== v2 recall (pairs) by fused rank K, and with sibling expansion (+exp from top-10) ===
+expansion: mean added per S1 7.72
+K=  5 all=0.5749 +exp=0.5816  indic=0.057/0.083  noaddr=0.491/0.494  web=0.278/0.289  alias=0.529/0.531  US=0.6220/0.6265  India=0.5036/0.5136
+K= 10 all=0.7000 +exp=0.7068  indic=0.231/0.257  noaddr=0.632/0.635  web=0.494/0.505  alias=0.753/0.755  US=0.7443/0.7489  India=0.6331/0.6430
+K= 20 all=0.8085 +exp=0.8153  indic=0.504/0.530  noaddr=0.698/0.702  web=0.684/0.695  alias=0.885/0.888  US=0.8355/0.8401  India=0.7678/0.7777
+K= 30 all=0.8445 +exp=0.8512  indic=0.567/0.593  noaddr=0.721/0.724  web=0.768/0.779  alias=0.914/0.916  US=0.8689/0.8734  India=0.8076/0.8175
+K= 50 all=0.8698 +exp=0.8765  indic=0.603/0.629  noaddr=0.752/0.755  web=0.819/0.830  alias=0.940/0.942  US=0.8922/0.8967  India=0.8360/0.8460
+K=100 all=0.8920 +exp=0.8987  indic=0.642/0.668  noaddr=0.789/0.792  web=0.850/0.861  alias=0.952/0.954  US=0.9111/0.9156  India=0.8632/0.8731
+
+=== entity completeness (ALL matches of the S1 retrieved) ===
+  top20+exp: 0.6212    top20 only: 0.6095
+  top30+exp: 0.6896    top30 only: 0.6770
+  top50+exp: 0.7384    top50 only: 0.7248
+
+=== per-arm: share of found positives hit by arm, and unique finds ===
+  name      hit 0.383  unique 548
+  addr      hit 0.753  unique 22323
+  skeleton  hit 0.232  unique 74
+  namepair  hit 0.628  unique 1183
+  keys      hit 0.651  unique 2713
+  expansion-only finds: 696
+
+=== sample of remaining misses (not in top30, not expanded) ===
+  rk=- | Ace Estate Private Limited | 23 A, Rajiv Gandhi Bridge, Sector 1, Nerul East, Navi M  ==>  एस एस्टेट प्राइवेट लिमिटेड | ##23 A, GREATER BOMBAY, NAVI MUMBAI, Maharashtra
+  rk=- | Uptown Auto Body | 1905 Noble Drive, Golden Valley, MN  ==>  UPTOWN AUTO BODY  LTD Enterprises | None
+  rk=- | Perfect Producer Private Limited | C-502, Suncrest Apartment, Accolade Galaxy, Near Lic Bu  ==>  परफेक्ट प्रोड्यूसर प्राइवेट लिमिटेड | C-502, Thane, Thane I, MH
+  rk=- | Kad Jewellery Pvt Ltd | No 2, 18Th Cross Malleswaram, Bangalore-55, Bangalore,   ==>  Ltd Kad Pvt Center | NO 2, BANGALORE-55, ಕರ್ನಾಟಕ, BANGALORE
+  rk=- | Shakti Engineering Private Limited | Plot No 05, N-11, Aurangabad, Maharashtra  ==>  Shakti | Plot No 05, N-11, Aurangabad, Maharashtra
+  rk=- | Classic Services Limited | Road No - 17, Rajivnagar, Patliputra, Patna, Bihar  ==>  क्लासिक सर्विसेज लिमिटेड | PATNA, ROAD NO - 17, Bihar
+  rk=- | QD India LLP | H.No. A/37, Balaji Nagar Housing Board Colony Goverdhan  ==>  QD Indai (LLP) | Chittaurgarh, H.no. A/0037, RJ
+  rk=- | Bazar Real Private Limited | 188, Bodh Vihar Colony, H/N Amra Vihar East Of Bhuth Na  ==>  Shri Bazar Real Private | 1-88, Patna, BR
+  rk=- | Future Estate Private Limited | Plot No-06, Sector - 05, Dwarka, New Delhi, Delhi, Sout  ==>  फ्यूचर एस्टेट प्राइवेट लिमिटेड | Hn 560 Plot No-06, Sector - 05, Dwarka, New Delhi, Delh
+  rk=86 | Future Engineering Private Limited | No.13/7, Dhandapani Street, T.Nagar, Chennai, Tamil Nad  ==>  Future இன்ஜினியரிங் பிரைவேட் லிமிடெட் | NO.13/7, DHANDAPANI STREET, T.NAGAR, CHENNAI, தமிழ்நாடு
+  rk=- | Orthopedic Center PLLC | 3372 75, Chalmers, IN  ==>  Orthopedic  Center PLLC | None
+  rk=33 | Sree Constructions Private Limited | Olisa House, 11Th Floor 4, Government Place (North), Ko  ==>  শ্রী কনস্ট্রাকশনস প্রাইভেট লিমিটেড | Olisa House, 11Th Floor 4, Government Place (North), Ko
+  rk=- | Bharat Infrastructure | Kali Krishna Tagore Street, 2Nd Floor, Kolkata, Kolkata  ==>  ভারত Infrastructure | Kali Krishna Tagore Street, 2Nd Floor, Kolkata, Kolkata
+  rk=- | National Animal Hospital | 1515 14th Avenue, Unit Unit 13, West Fargo, ND  ==>  National Aenimal Hospital | 1515 FOURTEENTH AVENUE, W FARGGO, ND
+  rk=- | Little Cleaning Service | 1432 Victoria Avenue, Unit APARTMENT 1, North Chicago,   ==>  Little (Cleaning) | Unit Apartment 1, 143 Victoria Avenue, North Chicago, I
+  rk=- | Eye Reliable Health Inc | 959 Stafford Forest Drive, Unit 201, Winston-salem, NC  ==>  Eye Reliable Hmdlth Inc | Stafford Forest Dr, WINSTON-SALEM, NC
+  rk=- | Global Services Private Limited | Plot No.16, Akbar Road, Sikh Village, Secunderabad-009.  ==>  Global Services  Private Limited | None
+  rk=- | Urban Cafe LLC | Stillwater, OK, 13 Summit Circle  ==>  Urban Cafe | 13 SUMMIT CIR, STILLWATER, OK
+  rk=31 | Summit Columbus Inc | 86 Highland Road, Unit 1, Brookline, MA  ==>  Synnex DBA: Summit Columbus Inc | Brookline, 86 Highland Road, Unit 1, MA
+  rk=- | Bright Estate Private Limited | Gujarat, Pl 1, Shed 3, St 3, Aji Ring Road, Kp Ind Zone  ==>  બ્રાઇટ એસ્ટેટ પ્રાઇવેટ લિમિટેડ | KP IND ZONE-3, RAJKOT REGION, Gujarat
+  rk=70 | Silver Projects | 3306 G/F Delhi Gate Main Bazar, Delhi, Central Delhi, D  ==>  सिल्वर प्रोजेक्ट्स | 3306- G/F DELHI GATE MAIN BAZAR, CENTRAL DELHI, DELHI
+  rk=- | High Consultants Private Limited | E-6, Ground Floor, Greater Kailash-1, New Delhi, Delhi,  ==>  High Consultants Private Ltd | E-6, Ground Floor, Greater Kailash-1, New Delhi, South 
+  rk=36 | Mutual Asset Industries | 692 Niles Vienna Road, Vienna, OH  ==>  Mutual Asfest [Industries] | Niles Vienna Rd, Vienna, Ohio
+  rk=- | Vision Properties Private Limited | Unit611, 6Th Floor, Reliables Pride, Aanand Nagar Opp H  ==>  विजन प्रॉपर्टीज प्राइवेट लिमिटेड | UNIT611, BOMBAY, MUMBAI CITY, Maharashtra
+  rk=- | Blue Coffee | 800 Martin Street, Perry, MO  ==>  Blue  Coffee Inc | 800-804 Martin Street, Perry, Missouri
+
+train: mean candidates(top30) 30.0; mean 'strong' (>=3 arms) 3.44; exp/S1 7.72
+
+TEST France: S1 sample 10000, pool 1434993
+  prep pool 1434993: 7s
+  pool tokens 21309144
+  pool postings after df cap 11495265  762s
+France: mean candidates(top30) 30.0; mean 'strong' (>=3 arms) 2.94; exp/S1 4.35
+France: sample top-5 candidates for 4 S1s:
+  ## Honore Club EURL | 4 Impasse Geometre, Mérignac, Nouvelle-Aquitaine
+      1 HONORE CLUB  EURL | 4 IMP GEOMETRE, MERIGNAC, Gironde
+      2 Honore Club (E.U.R.L.) | 4 IMP GEOMETRE, Gironde, MERIGNAC
+      3 Honoré Club | 48 Rue Du Bout Des Digues, Calais, Pas-de-Calais
+      4 Honoré Club SAS | 13 Cour2 Pasteur, Bordeaux, Nouvelle-Aquitaine
+      5 E.U.R.L. Honore Culturel | 9 Imp Geometre, Mérignac, Gironde
+  ## Unis & Cie SARL | 3 Rue Delbos, Bordeaux, Nouvelle-Aquitaine
+      1 Unis & Cie SARL | RUE DELBOS, BORDEAUX
+      2 Union Des Unis Holding SCI | 86 Rue Turgot, Lille
+      3 Unis & Cie SARL | BORDEAUX, RUE DELBRS
+      4 Unis Service Sarl | None
+      5 @unionasso | 24 RUE DE BÉTHUNE, ROUBAIX
+  ## Ass Sportive SARL | 2 Allée des Templiers, Pornic, Pays de la Loire
+      1 Ass Sportive | N° 51 R. DOUDIN, LILLE, Nord
+      2 SARL Ass Spôrtive | (2) ALLÉE DES TEMPLIERS, Pornic, Pays de la Loire
+      3 SARL Ass Sportive | 2 All Des Templiers, Pornic, Loire-Atlantique
+      4 Ass  Sportive (France) Holding SARL | 18 Rue Colette, Mérignac, Nouvelle-Aquitaine
+      5 SARL Ass Sportive | 2 Allée Des Templiers, Pornic, Loire-Atlantique
+  ## Dunkerque Club | Hauts-de-France, Dunkerque, 181 Rue de l’Hôtel de Ville
+      1 Halte Societe SARL | 203 Rue De L’hôtel De Ville, Dunkerque, Nord
+      2 Ectoxyloquo a/k/a Dunkerque Club SAS | 217 Quai des Corderies, Dunkerque, Hauts-de-France
+      3 DUNKERQUE CLUB SA | DUNKERQUE, 5 BIS RUE DUPOUY
+      4 Eco Prîmaire SNC | N° 111 R DE L’HÔTEL DE VILLE, DUNKERQUE, Hauts-de-France
+      5 Dunkerque Çlub SASU | N° 5 R. Blondez, Dunkerque
+
+DONE 783s
