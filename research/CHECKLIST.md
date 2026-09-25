@@ -37,7 +37,7 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 | # | Step | Status |
 |---|---|---|
 | 0 | EDA, hypotheses, leakage check | [x] |
-| 1 | Learned artefacts (Indic dictionary + fallback, state aliases, noise/decoy words, pseudo-word alias detector) + small hand tables (FR/US/IN) | [ ] |
+| 1 | Learned artefacts (Indic dictionary + fallback, state aliases, noise/decoy words, pseudo-word alias detector) + small hand tables (FR/US/IN) | [~] package `ber` built; full fit running on Kaggle `er-artifacts` |
 | 2 | Blocking v5 "tight" (cluster closure + deterministic pruning) + frontier sweep | [ ] |
 | 2b | Fine-tuned bi-encoder in blocking (distilled from the cross-encoder) | [ ] |
 | 3 | Full train-shard + full-test candidate generation, writer, validator | [ ] |
@@ -82,6 +82,18 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [ ] Listwise judge: Qwen3-8B, LoRA; input = S1 + its candidate clusters; output = which cluster(s), or none. First on the uncertain band, then on everything if it helps.
 - [ ] Bi-encoder: Qwen3-Embedding-4B/8B vs bge-m3 (dense + sparse + multi-vector).
 - [ ] Ensembling across seeds, folds and model families; order-swap test-time augmentation for the cross-encoders.
+
+**Phase-1 findings (local sample; full numbers pending)**
+- [x] Sibling-copy lexicon extension (unsupervised, test-legal): recovers hidden dictionary words with 81% coverage at 97.9% accuracy, vs 55% for the skeleton fallback.
+- [x] Exact same name ≠ same business: only 73.7% of exact-equal-name pairs are true (twins/decoys), so blocking must never auto-accept on name alone.
+- [x] Noise words (extra, still a true copy): company, smt, mr, dr, llp, sri/shri, the, limited, corporation (p_true 0.6–0.9). Decoy words (p_true ≈ 0): group, holdings, associates, care, private, dental, clinic, coastal, highland, metro, harbor…
+- [x] Address synonyms learned: st/street, rd/road, state codes ↔ names (US + India), transliterated Indian states ↔ Latin. **Union-find merging rejected** (ct = court/Connecticut, tn = Tennessee/Tamil Nadu, "new" = New York/New Delhi) → synonym pairs used as extra tokens.
+
+**From the friend's plan (reviewed 2026-09-25)**
+- [ ] Character-trigram / 4-char-prefix name search, for scrambled names with no address (our remaining misses).
+- [x] Adopt a stricter acceptance gate: V1 ≥ +0.002, V2 not worse by > 0.002, no slice worse by > 0.010.
+- [-] Its threshold table (θ = 0.84 → F0.5 0.99323), "98.5% recall at ≤ 25", "< 1.5 GB RAM", "< 4 min inference": unmeasured and internally inconsistent; not used.
+- [-] "False positive costs 4× a false negative": actually ~2.7× with 4 true matches, and a total loss on singletons; we use the rank-aware decision layer instead of one global θ.
 
 ## E. Rejected (with reasons)
 - [-] Ranking each search method separately (v2): recall dropped 87.3% → 84.5%.
