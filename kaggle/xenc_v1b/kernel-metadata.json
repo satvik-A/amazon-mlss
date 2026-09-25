@@ -1,0 +1,4 @@
+{"id": "satvikaderla/er-xenc-v1b", "title": "er-xenc-v1b", "code_file": "run_xenc_v1b.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": true, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data"], "competition_sources": [],
+ "kernel_sources": ["satvikaderla/er-artifacts"]}
