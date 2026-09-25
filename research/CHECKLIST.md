@@ -115,7 +115,8 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] **Determinism:** ties broken by record id, integer-quantised IDF, canonical input order → identical candidates regardless of batch composition / input order (was ~24% different). Required for reproducible candidate_pairs.
 - [x] **Scalable query:** sorted-array postings + adaptive chunks (identical output). FULL mode computes reverse preference from forward candidates (no S1 index); SAMPLE mode keeps the S1 index → train the final matcher on FULL-mode pools.
 - [~] Full-mode candidate pools for all train/test countries (Kaggle `er-cands-*`).
-- [ ] Per-arm df caps (trigram arm = 37% of join rows) — speed vs recall experiment.
+- [x] Recall lab (account 2): df cap 2000 = 2.3× faster for −0.1/−0.2 pt; df cap 20000 = 5× slower for +0.1/+0.4 pt (rejected); aux caps ×2 +0.3/+0.6 pt; **arm 7 (no-address names) +2.1/+2.2 pts completeness**; arm 7 cap 20 slightly better; arm 8 (name key × address) running.
+- [ ] **Deterministic feature cut-offs for the final candidate set** (number relation, name overlap, score ratio; thresholds tuned on train) — v5 shows group/beta pruning alone is lossy; candidate-set size counts in the ranking.
 - [ ] France self-training: pseudo-pairs as positives + S1×S1 look-alikes as negatives → France-specific calibration of the matcher.
 
 ## E. Rejected (with reasons)

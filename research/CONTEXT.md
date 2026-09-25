@@ -44,7 +44,7 @@ Operations: the laptop runs everything via `research/guard.sh 6 <cmd>` (6 GB kil
 | v2 per-arm RRF fusion | 84.5% @30 | 30 | 67.7% | **rejected**: loses joint evidence |
 | v3 combined primary + aux + siblings | 94.1% | 51 | 84.0% | Indian-script 82% |
 | **v4** + word pairs, name×word, digit-drop, name-only | **95.8%** | 61.5 | **88.3%** | US 97.9 / India 92.8; no-address 74% (weakest) |
-| v5 (normalised + trigram + groups + pruning sweep) | running | — | — | `kaggle/blocking_v5` |
+| v5 (normalised + trigram + groups, sample mode) | 96.2% (internal pool) | 91.6 | 89.6% | pruning sweep: reverse-preference filters (beta) are a cliff (→ ≤ 77% complete at ≤ 6 cands); no-beta + gate: 88.2% at 43 cands. Sample-mode rev lookups (top-3) miss many true S1s → rely on FULL-mode frontiers; shrink the set with deterministic feature cut-offs instead |
 
 **Recall lab (account 2; full S2/S3 pool, ~29k train S1 per country; internal pool = primary top-60 + aux + siblings)**
 | Variant | US recall / complete | India recall / complete | No-address copy recall US / IN | Indic copy recall | cands/S1 | ms/query |
