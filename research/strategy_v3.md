@@ -54,21 +54,37 @@ Gate (b) is the sensitive one. Twins mostly differ by a shift of ≤ 25 or a 1-d
 
 ---
 
-## 4. Matching cascade (runs only on the tight candidate set)
-1. **Pair features** (one symmetric function), with LightGBM stage 1:
-   - numbers: relation categories, house/unit match-conflict-missing;
-   - names: aliases, learned dictionary, skeleton, noise vs decoy words, Jaro-Winkler/token ratios via **RapidFuzz** (allowed; for Kaggle, upload wheels as a dataset);
-   - cluster: majority number of the candidate group, group size, group cohesion.
-2. **Cross-encoder logit** as a feature: Qwen3-Reranker-0.6B vs bge-reranker-v2-m3, decided by a test on the name-noise slice. Cheap now: about 7 candidates × 1.73M ≈ 12M test pairs.
-3. **Stage 2 context:** rival margins from out-of-fold stage-1 scores; the reverse-lookup margin.
-4. **Decision:**
-   - has-match head;
-   - pick the best cluster (keep every member above threshold, including content-identical copies, per answer 6);
-   - global assignment (each record → ≤ 1 S1);
-   - expected-F0.5 set choice.
-5. **Optional judge:** Qwen3-8B (allowed per model), LoRA, listwise select over ≤ 3 groups, uncertain band only.
+## 4. Matching: a heavy stack, with GBDT as the combiner (not the whole model)
+Compute is no longer the constraint (the team pools its own accounts), so every slot uses the strongest allowed model. **LightGBM stays, but as the level-2 stacker**, for reasons that have nothing to do with compute:
+- The decisive signals are **structured**: digit relations (5619 vs 5623), cluster majorities, rival margins, per-source counts. Hand-built features + GBDT capture these exactly; transformers compare digits unreliably.
+- GBDT combines heterogeneous scores (cross-encoder logit, LLM choice, bi-encoder cosine, 100+ hand features), handles missing values, calibrates well, and retrains in minutes, which the decision-layer tuning needs.
+- This is how comparable competitions were won (Foursquare 1st place: multi-stage LightGBM with BERT-family scores added in later stages).
 
----
+**Level 1** (all fine-tuned on provided data only; each ≤ 8B, MIT/Apache; out-of-fold predictions for training rows):
+| Model | Role | Starts at | Scales to |
+|---|---|---|---|
+| M1 hand-feature GBDT | numbers, names, clusters, rivals | LightGBM | + CatBoost |
+| M2 cross-encoder (pairwise, S1–R and R–R) | name noise, transliteration, aliases | Qwen3-Reranker-0.6B / bge-reranker-v2-m3 | Qwen3-Reranker-4B/8B |
+| M3 listwise LLM judge | sees S1 + **all** its candidate clusters at once, so exclusivity and "twin vs real" are judged in context | Qwen3-4B LoRA on the uncertain band | Qwen3-8B on every S1 |
+| M4 bi-encoder | cosine feature (also used in blocking, §3) | bge-m3 / Qwen3-Embedding-0.6B | Qwen3-Embedding-4B/8B |
+
+**Level 2:** LightGBM/CatBoost on [M1 features + M2 logit (and its rank/margin within the S1) + M3 choice probability + M4 cosine] → isotonic calibration → decision layer (has-match head, whole-cluster choice, global assignment, per-source caps S2 ≤ 5 / S3 ≤ 6, expected F0.5).
+
+**Compute notes:**
+- T4s have no bf16. 8B models need 2×T4 tensor parallelism or AWQ/4-bit for inference, and QLoRA for training.
+- M3 on all 1.73M test S1s ≈ 0.7B prompt tokens: roughly 60+ GPU-hours at 8B, so it's spread across accounts. Start with the uncertain band and widen only if CV shows the gain.
+- Model sizes are chosen by bake-off (CV F0.5 gain per GPU-hour), not assumed.
+
+## 4b. Cross-stage reuse ("re-crossing"): later knowledge fed back to earlier stages
+| Later asset | Fed back into | How |
+|---|---|---|
+| M2 cross-encoder | Blocking (bi-encoder) | Distil M2 into the M4 bi-encoder (it learns to rank like the cross-encoder) → smaller candidate set at the same recall. Blocking still uses **no pair-scoring model** |
+| Matcher's number-relation logic | Blocking gate B4b | The same parser/relations, as a deterministic rule |
+| Learned noise/decoy word lists | Normalisation (B1) and the gate | Noise words removed for retrieval; decoy words as rejection evidence |
+| Record clustering (unsupervised on test, allowed) | Blocking B3 | Retrieve **clusters**; siblings with Indian-script names or no address come along with their cluster |
+| Confident matches | Second pass | Merged S1 profile (every name variant + filled-in address parts) → re-retrieve → score only the new candidates. The new pairs are added to candidate_pairs because the model runs on them |
+| Out-of-fold errors | Normaliser + features | Weekly error-analysis loop (checklist D) |
+| Test France pseudo-labels | M1/M2 fine-tuning | Self-training (allowed) |
 
 ## 5. France (now with more tools allowed)
 - **Hand-written small French table** (allowed): rue/r, avenue/av, boulevard/bd/blvd, allée/all, impasse/imp, place/pl, chemin/ch, route/rte, quai, cours, faubourg/fbg; bis/ter/quater; Nº/N°; saint/st/ste; legal forms SARL/SAS/SASU/EURL/SA/SCI/SNC/EI; "& Cie".
