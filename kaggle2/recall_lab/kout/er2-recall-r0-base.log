@@ -1,0 +1,22 @@
+[{"stream_name":"stdout","time":11.627390027,"data":"variant {\"name\": \"r0_base\", \"cap\": 5000, \"key_cap\": 200, \"caps\": {}, \"keep_prk\": 60}; polars 1.44.2\n"}
+,{"stream_name":"stderr","time":12.632386397,"data":"/kaggle/src/script.py:29: DeprecationWarning: In Polars 2.0, the default behavior for `empty_as_null` will change to `False`. To keep the current behavior, explicitly set `empty_as_null=True`.\n"}
+,{"stream_name":"stderr","time":12.632969894,"data":"  .explode(\"matched_entity_ids\").filter(pl.col(\"matched_entity_ids\") != \"\") \\\n"}
+,{"stream_name":"stdout","time":906.673780178,"data":"{\"variant\": \"r0_base\", \"country\": \"US\", \"S1\": 29086, \"cands\": 88.54648284397992, \"p95\": 108.0, \"recall\": 0.9816451664277751, \"complete\": 0.9400676831265238, \"recall_r_indic\": null, \"recall_r_noaddr\": 0.741703656732192, \"complete_s1_noaddr\": null, \"build_s\": 556, \"query_s\": 300, \"ms_per_query\": 10.330786897155283}\n"}
+,{"stream_name":"stdout","time":1674.477774115,"data":"{\"variant\": \"r0_base\", \"country\": \"India\", \"S1\": 29051, \"cands\": 89.19359058207979, \"p95\": 108.0, \"recall\": 0.929224130216464, \"complete\": 0.8266603519253889, \"recall_r_indic\": 0.8576858580212409, \"recall_r_noaddr\": 0.7051087506322711, \"complete_s1_noaddr\": null, \"build_s\": 448, \"query_s\": 293, \"ms_per_query\": 10.075746249473056}\n"}
+,{"stream_name":"stdout","time":1674.515128834,"data":"shape: (2, 13)\n"}
+,{"stream_name":"stdout","time":1674.515170116,"data":"┌─────────┬─────────┬───────┬───────────┬───┬────────────────────┬─────────┬─────────┬──────────────┐\n"}
+,{"stream_name":"stdout","time":1674.515192184,"data":"│ variant ┆ country ┆ S1    ┆ cands     ┆ … ┆ complete_s1_noaddr ┆ build_s ┆ query_s ┆ ms_per_query │\n"}
+,{"stream_name":"stdout","time":1674.515197179,"data":"│ ---     ┆ ---     ┆ ---   ┆ ---       ┆   ┆ ---                ┆ ---     ┆ ---     ┆ ---          │\n"}
+,{"stream_name":"stdout","time":1674.515201319,"data":"│ str     ┆ str     ┆ i64   ┆ f64       ┆   ┆ null               ┆ i64     ┆ i64     ┆ f64          │\n"}
+,{"stream_name":"stdout","time":1674.515205296,"data":"╞═════════╪═════════╪═══════╪═══════════╪═══╪════════════════════╪═════════╪═════════╪══════════════╡\n"}
+,{"stream_name":"stdout","time":1674.515210312,"data":"│ r0_base ┆ US      ┆ 29086 ┆ 88.546483 ┆ … ┆ null               ┆ 556     ┆ 300     ┆ 10.330787    │\n"}
+,{"stream_name":"stdout","time":1674.515214276,"data":"│ r0_base ┆ India   ┆ 29051 ┆ 89.193591 ┆ … ┆ null               ┆ 448     ┆ 293     ┆ 10.075746    │\n"}
+,{"stream_name":"stdout","time":1674.515218539,"data":"└─────────┴─────────┴───────┴───────────┴───┴────────────────────┴─────────┴─────────┴──────────────┘\n"}
+,{"stream_name":"stdout","time":1674.515223066,"data":"DONE 1663s\n"}
+,{"stream_name":"stderr","time":1678.14383062,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1678.143904507,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1678.491845678,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1678.491931613,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1679.459562319,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1681.193422439,"data":"[NbConvertApp] Writing 311465 bytes to __results__.html\n"}
+]

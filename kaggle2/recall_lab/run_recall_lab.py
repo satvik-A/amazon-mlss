@@ -8,7 +8,9 @@ find = lambda pat: sorted(glob.glob(f"/kaggle/input/**/{pat}", recursive=True))
 if not LOCAL:
     W = os.path.dirname(find("polars-1.44.2*.whl")[0])
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-index", "--find-links", W, "polars==1.44.2", "rapidfuzz==3.14.6"], check=True)
-    sys.path.insert(0, os.path.dirname(os.path.dirname(find("ber/__init__.py")[0])))
+    # code: prefer the small, frequently updated er-src dataset over the copy inside er-bundle
+    cands = find("er-src/**/ber/__init__.py") or find("ber/__init__.py")
+    sys.path.insert(0, os.path.dirname(os.path.dirname(cands[0])))
     IN = os.path.dirname(find("train_s1.parquet")[0]); ART = os.path.dirname(find("indic_lexicon.parquet")[0]); WD = "/kaggle/working"
 else:
     sys.path.insert(0, os.path.abspath("../../code/business_entity_resolution/src"))
@@ -23,7 +25,7 @@ REP = open(f"{WD}/results_{VAR['name']}.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); REP.write(s + "\n"); REP.flush()
 pl.Config.set_tbl_rows(40); pl.Config.set_tbl_width_chars(200)
-log(f"variant {json.dumps(VAR)}; polars {pl.__version__}")
+log(f"variant {json.dumps(VAR)}; polars {pl.__version__}; ber from {os.path.dirname(B.__file__) if 'B' in dir() else '?'}")
 NZ = Normalizer(ART)
 gt = pl.read_parquet(f"{IN}/gt_rows.parquet").with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")) \
        .explode("matched_entity_ids").filter(pl.col("matched_entity_ids") != "") \
@@ -37,7 +39,8 @@ for c in ("US", "India"):
     Q = S.filter(pl.col("entity_id").hash(21) % 1000 < max(1, int(1000 * N_Q / S.height)))
     t = time.time()
     RN = norm_chunks(NZ, R).with_columns(pl.Series("id", np.arange(R.height, dtype=np.uint32)))
-    idx = B.Index(RN, cap=VAR.get("cap", 5000), key_cap=VAR.get("key_cap", 200)); tb = time.time() - t
+    arms = tuple(VAR.get("arms", [a for a in B.ARMS]))
+    idx = B.Index(RN, cap=VAR.get("cap", 5000), key_cap=VAR.get("key_cap", 200), arms=arms); tb = time.time() - t
     QN = NZ.transform(Q).with_columns(pl.Series("id", np.arange(Q.height, dtype=np.uint32)))
     t = time.time(); cand = idx.query(QN, caps=caps); tq = time.time() - t
     sig = B.signatures(RN); ex = B.expand(cand, sig)
