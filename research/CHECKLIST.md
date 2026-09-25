@@ -107,7 +107,11 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] France test patterns: `R`/`R.` for rue (25% of S2/S3 addresses), `Rte`, `Bd`, `Av`, `N°`/`No`, region on one side vs department on the other (Nouvelle-Aquitaine ↔ Gironde…), random accents added (Mâison, SÊRVICE), `Cie` ↔ `Compagnie`, dotted legal forms, no postcodes (only house numbers).
 - [x] **Label-free pseudo-pairs** (same first address number + same core-name set + ≥ 3 shared address words): precision on train **US 0.9975, India 0.914**, recall ~0.5; cover 90% of France test S1. Use: test-time synonyms (done), France self-training / calibration (to do).
 - [x] **Test-time per-country address synonyms** mined from pseudo-pairs (`artifacts.fit_country_addr_synonyms`): France recovers region↔department (aquitaine/gironde, hauts/nord, pays/atlantique, pas) + street abbreviations; France name+house pairs address jaccard 0.648 → 0.705.
-- [ ] India pseudo-pairs are only 91% precise: require the full number set to be equal before using them for self-training.
+- [x] India pseudo-pairs 91% precise → `pseudo_pairs(num_equal=True)` requires equal number sets: India precision 0.992 (keeps 88%). India twins differ in a later number (6-3-891 vs 6-3-896); 70% of wrong pairs belong to another S1 (exclusivity layer targets exactly this).
+- [x] **Determinism:** ties broken by record id, integer-quantised IDF, canonical input order → identical candidates regardless of batch composition / input order (was ~24% different). Required for reproducible candidate_pairs.
+- [x] **Scalable query:** sorted-array postings + adaptive chunks (identical output). FULL mode computes reverse preference from forward candidates (no S1 index); SAMPLE mode keeps the S1 index → train the final matcher on FULL-mode pools.
+- [~] Full-mode candidate pools for all train/test countries (Kaggle `er-cands-*`).
+- [ ] Per-arm df caps (trigram arm = 37% of join rows) — speed vs recall experiment.
 - [ ] France self-training: pseudo-pairs as positives + S1×S1 look-alikes as negatives → France-specific calibration of the matcher.
 
 ## E. Rejected (with reasons)
