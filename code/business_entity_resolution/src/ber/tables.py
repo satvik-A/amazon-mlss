@@ -27,3 +27,6 @@ ALIAS_MARKERS = ["f/k/a", "a/k/a", "d/b/a", "t/a", "fka", "aka", "dba", "formerl
 LANDMARK = {"near", "nr", "opp", "opposite", "behind", "beside", "next", "adjacent", "facing", "pres", "face"}
 # digits used as look-alike letters inside NAME words only
 LEET = {"0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "6": "g", "7": "t", "8": "b", "9": "g"}
+
+# honorific / prefix noise the generator inserts into names (removed on BOTH sides for blocking keys; kept for features)
+HONORIFIC = {"the", "mr", "mrs", "ms", "dr", "smt", "shri", "sri", "sree", "shree", "m", "s", "messrs"}

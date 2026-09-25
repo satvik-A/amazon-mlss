@@ -89,6 +89,12 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] Noise words (extra, still a true copy): company, smt, mr, dr, llp, sri/shri, the, limited, corporation (p_true 0.6–0.9). Decoy words (p_true ≈ 0): group, holdings, associates, care, private, dental, clinic, coastal, highland, metro, harbor…
 - [x] Address synonyms learned: st/street, rd/road, state codes ↔ names (US + India), transliterated Indian states ↔ Latin. **Union-find merging rejected** (ct = court/Connecticut, tn = Tennessee/Tamil Nadu, "new" = New York/New Delhi) → synonym pairs used as extra tokens.
 
+**Phase-1 full-data results (Kaggle `er-artifacts`)**
+- [x] Indic lexicon 1,318 words (mean consistency 0.998). Sibling method on hidden train words: **coverage 100%, accuracy 100%** (fallback 52%).
+- [x] Test: 200 unseen Indic words (5.3% of tokens): 25 resolved via siblings, 175 via fallback. **The unseen words are mostly test DECOY qualifiers** (Medicals, Steel, Sweets, Bakery, Jewellers, Motors…): decoy entities have no Latin sibling.
+- [!] **Test decoys use NEW qualifier words** (like France): decoy features must be generic ("unexplained extra word"), never a fixed train list.
+- [!] Some test decoys share the **exact same address** as the real entity and differ only by a name word ("Lakshmi Baba Consultancy Steel / Producer / Power" at one address), so name-difference features are as important as numbers.
+
 **From the friend's plan (reviewed 2026-09-25)**
 - [ ] Character-trigram / 4-char-prefix name search, for scrambled names with no address (our remaining misses).
 - [x] Adopt a stricter acceptance gate: V1 ≥ +0.002, V2 not worse by > 0.002, no slice worse by > 0.010.
