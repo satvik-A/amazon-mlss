@@ -11,8 +11,8 @@ ACTIVE = {"RUNNING", "QUEUED", "NEW", "PENDING"}
 CANDS2 = ["er-cands2-train-us", "er-cands2-train-india", "er-cands2-test-us", "er-cands2-test-india", "er-cands2-test-france"]
 CPU_JOBS = {"er-blocking-v5", "er-cands-train-us", "er-cands-train-india", "er-cands-test-us", "er-cands-test-india",
             "er-matcher-full", "er-submit", "er-stack", "er-matcher-full2", "er-submit2", *CANDS2}
-GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-score"}
-XENC = ["er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3"]
+GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4", "er-xenc-score"}
+XENC = ["er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4"]
 
 # name -> (resource, deps (must be COMPLETE), launch command builder), in priority order
 def launch(folder, acc=None, sources=None):
@@ -40,7 +40,7 @@ JOBS = [
     ("er-xenc-v3", "gpu", [], lambda st: prebuilt("kaggle/xenc_v3", "NvidiaTeslaT4")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
-WAIT_FOR = {"er-xenc-score": ["er-xenc-v1b", "er-xenc-v2", "er-xenc-v3"]}
+WAIT_FOR = {"er-xenc-score": ["er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4"]}
 GATES = {n: f"{ROOT}/kaggle/.cands2_go" for n in CANDS2}
 
 

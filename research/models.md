@@ -5,14 +5,14 @@ Rule: each model **and its base model** must be MIT or Apache-2.0, ≤ 8B **tota
 ## Pair scorers (cross-encoders)
 | Model | Params | Licence (base) | Why | Status |
 |---|---|---|---|---|
-| BAAI/bge-reranker-v2-m3 | 0.57B | Apache-2.0 (XLM-R, MIT) | multilingual incl. Indian scripts; **zero-shot AUC 0.992** on our eval pairs | fine-tuning (`er-xenc-v1`) |
+| BAAI/bge-reranker-v2-m3 | 0.57B | Apache-2.0 (XLM-R, MIT) | multilingual incl. Indian scripts | zero-shot 0.992 → **fine-tuned 0.9997**, 250 pairs/s |
 | Qwen/Qwen3-Reranker-0.6B | 0.60B | Apache-2.0 | yes/no reranker, LoRA | `er-xenc-v1b` |
-| Qwen/Qwen3-Reranker-4B | 4.02B | Apache-2.0 | size test (LoRA, fp16 base) | `er-xenc-v1b` |
-| google/byt5-base | ~0.58B | Apache-2.0 | **byte-level**: scrambles, leetspeak, any script, no tokenizer gaps | `er-xenc-v2` (queued) |
-| Alibaba-NLP/gte-multilingual-reranker-base | 0.31B | Apache-2.0 | small + fast: candidate for scoring *every* test pair | `er-xenc-v2` (queued) |
+| Qwen/Qwen3-Reranker-4B | 4.02B | Apache-2.0 | size test (LoRA, fp16 base) | zero-shot 0.9907 → **0.99954 after 18.6k pairs**; 11 pairs/s (uncertain band only) |
+| google/byt5-base | ~0.58B | Apache-2.0 | byte-level | **dropped**: NaN logits in fp16 (T5 family overflow; T4 has no bf16); 39 pairs/s |
+| Alibaba-NLP/gte-multilingual-reranker-base | 0.31B | Apache-2.0 | small + fast | remote-code CUDA assert → replaced by CANINE |
 | mixedbread-ai/mxbai-rerank-large-v2 | 1.54B | Apache-2.0 (Qwen2.5-1.5B, Apache) | strong reranker, different training | next |
 | microsoft/mdeberta-v3-base | ~0.28B | MIT | strong NLU encoder, diversity | next |
-| google/canine-c | 0.13B | Apache-2.0 | character-level, very cheap | next |
+| google/canine-c | 0.13B | Apache-2.0 | character-level, very cheap | **AUC 0.9992** after 1 epoch (300k pairs, 29 min), 485 pairs/s → v4 with 3x data |
 | google/muril-base-cased | ~0.24B | Apache-2.0 | Indian languages + transliteration | next |
 | FacebookAI/xlm-roberta-large | 0.56B | MIT | plain multilingual baseline | optional |
 
