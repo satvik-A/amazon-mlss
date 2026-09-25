@@ -80,9 +80,11 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
         mine = rev.filter(pl.col("sq").is_not_null()).select("id_r", pl.col("sq").alias("id"), "rsc")
         cand = cand.join(mine, on=["id", "id_r"], how="left").join(best, on="id_r", how="left")
     cand = cand.with_columns(((pl.col("rsc").fill_null(0.0) - pl.col("rbest")) / pl.col("rbest")).fill_null(0.0).cast(pl.Float32).alias("rev_margin"))
-    ids = Q.select("id", pl.col("entity_id").alias("s1"))
-    rids = R.select(pl.col("id").alias("id_r"), pl.col("entity_id").alias("r"))
+    # ids are row positions in the entity_id-sorted frames -> map by gather (a join would copy all 180M rows twice)
+    s1_ids, r_ids, nq = Q["entity_id"], R["entity_id"], Q.height
     del Q, R; gc.collect()
-    out = cand.join(ids, on="id").join(rids, on="id_r").with_columns(pl.col("rel").cast(pl.String))
-    log(f"  cands {out.height} ({out.height / max(ids.height, 1):.1f}/S1)")
-    return out
+    cand = cand.with_columns(s1_ids.gather(cand["id"]).alias("s1"))
+    cand = cand.with_columns(r_ids.gather(cand["id_r"]).alias("r")).drop("id", "id_r")
+    cand = cand.with_columns(pl.col("rel").cast(pl.String))
+    log(f"  cands {cand.height} ({cand.height / max(nq, 1):.1f}/S1)")
+    return cand

@@ -56,6 +56,8 @@ R = pl.scan_parquet([f"{IN}/train_s2.parquet", f"{IN}/train_s3.parquet"]).filter
 gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id").is_in(S1ids.implode())) \
        .with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
        .filter(pl.col("matched_entity_ids") != "").select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
+if "y" not in pool.columns:   # pools without labels (candidate jobs no longer join labels onto 100M+ rows)
+    pool = pool.join(gt.with_columns(pl.lit(1, dtype=pl.Int8).alias("y")), on=["s1", "r"], how="left").with_columns(pl.col("y").fill_null(0))
 log(f"pool {pool.height} rows; positives in pool {pool['y'].sum()} / {gt.height} = {pool['y'].sum()/gt.height:.4f}")
 F = M.pool_features(pool, s1, R, NZ).join(s1.select(pl.col("entity_id").alias("s1"), "country"), on="s1")
 del pool; fc = M.feature_columns(F); log(f"features {len(fc)}  {time.time()-T0:.0f}s")
