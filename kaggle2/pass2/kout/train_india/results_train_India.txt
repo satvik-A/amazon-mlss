@@ -1,0 +1,9 @@
+train_India: ref b8d1f7c  country synonyms yes
+S1 883188  R 4133346  6s
+  shard 0: 250000/883188 S1 -> 32642555 candidates
+  shard 1: 500000/883188 S1 -> 65307861 candidates
+  shard 2: 750000/883188 S1 -> 97966736 candidates
+  shard 3: 883188/883188 S1 -> 115364606 candidates
+  cands 115364606 (130.6/S1)
+internal pool 130.6/S1; pair recall 0.9662; S1 complete 0.9043
+wrote pool_train_India.parquet 115364606 rows  DONE 5841s
