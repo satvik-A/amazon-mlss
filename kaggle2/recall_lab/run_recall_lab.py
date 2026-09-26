@@ -38,6 +38,7 @@ gt = pl.read_parquet(f"{IN}/gt_rows.parquet").with_columns(pl.col("matched_entit
        .select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
 caps = {**B.CAP, **{int(k): v for k, v in VAR.get("caps", {}).items()}}
 B.ADDR_TAIL = int(VAR.get("tail", 0))
+B.EXP_M, B.EXP_GRP = int(VAR.get("exp_m", 10)), int(VAR.get("exp_grp", 12))
 rows = []
 for c in ("US", "India"):
     S = pl.scan_parquet(f"{IN}/train_s1.parquet").filter(pl.col("country") == c).collect().sort("entity_id")

@@ -23,6 +23,8 @@ CAP = {0: 100, 3: 30, 4: 30, 5: 40, 6: 25, 7: 20, 8: 10}
 # (C-split misses: number x word overlap 31.5% -> 64%). Recall lab r10 vs r9: India recall 96.58 -> 97.96, S1 complete
 # 90.4 -> 93.8, Indian-script copies 95.1 -> 98.0; US 99.05 -> 99.32 / 96.8 -> 97.6; same candidate count. 0 = off.
 ADDR_TAIL = 3
+# sibling expansion: records sharing a signature with one of the top EXP_M primary candidates, groups of at most EXP_GRP
+EXP_M, EXP_GRP = 10, 12
 
 
 def _pairs4(col: str):
@@ -167,8 +169,9 @@ class Index:
         return pl.concat(res)
 
 
-def expand(cand: pl.DataFrame, sigs: pl.DataFrame, M: int = 10, maxgrp: int = 12) -> pl.DataFrame:
+def expand(cand: pl.DataFrame, sigs: pl.DataFrame, M: int | None = None, maxgrp: int | None = None) -> pl.DataFrame:
     """Records sharing a sibling signature with one of the top-M primary candidates (not already candidates)."""
+    M, maxgrp = M or EXP_M, maxgrp or EXP_GRP
     grp = sigs.filter(pl.col("kind") != "none").group_by("sig").agg(pl.col("id").alias("mem")).filter(pl.col("mem").list.len() <= maxgrp)
     top = cand.filter(pl.col("prk") <= M).select("id", "id_r")
     s = top.join(sigs.rename({"id": "id_r"}).select("id_r", "sig"), on="id_r").join(grp, on="sig") \

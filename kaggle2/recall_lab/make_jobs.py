@@ -18,6 +18,10 @@ VARIANTS = [
     {"name": "r9b_base", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 0},
     {"name": "r10_tail3", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3},
     {"name": "r11_tail3_places", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3, "places": 1},
+    # round 5 (2026-09-26 night, candidate-set size no longer a constraint): how much recall do looser limits buy?
+    {"name": "r12_caps2", "ref": "__REF__", "cap": 5000, "key_cap": 400, "caps": {"0": 200, "3": 60, "4": 60, "5": 80, "6": 50, "7": 40, "8": 20}, "keep_prk": 200, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3},
+    {"name": "r13_caps4", "ref": "__REF__", "cap": 20000, "key_cap": 1000, "caps": {"0": 400, "3": 120, "4": 120, "5": 160, "6": 100, "7": 80, "8": 40}, "keep_prk": 400, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3},
+    {"name": "r14_expand", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3, "exp_m": 40, "exp_grp": 40},
 ]
 import subprocess, sys
 REF = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=here).stdout.strip()
