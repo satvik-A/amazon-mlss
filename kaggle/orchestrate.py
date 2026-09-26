@@ -124,7 +124,11 @@ def main():
                 continue
             if name == "er-xenc-score-test" and not stack_passed(launched):
                 continue
-            if (res == "gpu" and gpu_busy >= 2) or (res == "cpu" and cpu_busy >= 5):
+            # Kaggle counts GPU sessions in the batch limit of 5 too
+            if (res == "gpu" and gpu_busy >= 2) or cpu_busy + gpu_busy >= 5:
+                continue
+            # keep a slot for tonight's stacked submission until it is launched
+            if (name in P3_CPU or name in P3_GPU) and "er-submit3" not in launched and cpu_busy + gpu_busy >= 4:
                 continue
             c = cmd(prev)
             r = subprocess.run(c, capture_output=True, text=True, cwd=ROOT)
