@@ -60,6 +60,40 @@ gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id")
 if "y" not in pool.columns:   # pools without labels (candidate jobs no longer join labels onto 100M+ rows)
     pool = pool.join(gt.with_columns(pl.lit(1, dtype=pl.Int8).alias("y")), on=["s1", "r"], how="left").with_columns(pl.col("y").fill_null(0))
 log(f"pool {pool.height} rows; positives in pool {pool['y'].sum()} / {gt.height} = {pool['y'].sum()/gt.height:.4f}")
+# ---- synthetic street twins (training split A only) ----------------------------------------------------------------
+# France test has twin S1s: same name + house number + city, different street. US/India twins differ in the number, so
+# the matcher never saw "same everything but the street". Teach it: a true copy (A split) whose street line is swapped
+# for another record's street line (same country, own house number kept) is a NEGATIVE; its blocking columns are copied
+# from the true pair (a real twin would be retrieved the same way). B/C are untouched, so their scores stay honest.
+NSYN = int(os.environ.get("NSYN", 3000 if LOCAL else 120_000))
+from ber.normalize import street_words
+part_first = lambda e: e.fill_null("").str.split(",").list.eval(pl.element().filter(pl.element().str.contains(r"\d"))).list.first()
+Rx = R.with_columns(part_first(pl.col("business_address")).alias("_sp"), street_words(pl.col("business_address")).list.len().alias("_nsw"))
+pos = pool.filter(((pl.col("s1").hash(11) % 100) < 60) & (pl.col("y") == 1)) \
+          .join(Rx.filter(pl.col("_sp").is_not_null() & (pl.col("_nsw") > 0)).select(pl.col("entity_id").alias("r"), "business_name", "business_address", "country", "_sp"), on="r")
+pos = pos.sample(min(NSYN, pos.height), seed=21)
+donor = Rx.filter(pl.col("_sp").is_not_null() & (pl.col("_nsw") > 0)).select("country", pl.col("_sp").str.replace(r"^\D*\d+\w*\s*", "").alias("_ds"))
+donor = donor.filter(pl.col("_ds").str.len_chars() >= 4)
+syn = []
+for c in pos["country"].unique().to_list():
+    pc = pos.filter(pl.col("country") == c)
+    dc = donor.filter(pl.col("country") == c).sample(pc.height, with_replacement=True, seed=22)["_ds"]
+    pc = pc.with_columns(dc.alias("_ds"))
+    num = pl.col("_sp").str.extract(r"^(\D*\d+\w*)", 1).fill_null("")
+    pc = pc.with_columns((num + " " + pl.col("_ds")).alias("_new"))
+    swap = lambda v: v["business_address"].replace(v["_sp"], v["_new"], 1)
+    pc = pc.with_columns(pl.struct("business_address", "_sp", "_new").map_elements(swap, return_dtype=pl.String).alias("_addr"),
+                         (pl.col("r").str.slice(0, 3) + "SYN" + pl.col("r").str.slice(3)).alias("_rs"))
+    syn.append(pc)
+syn = pl.concat(syn)
+# a donor street that happens to be (nearly) the same street is not a twin: drop those
+syn = syn.filter(pl.col("_addr") != pl.col("business_address"))
+Rsyn = syn.select(pl.col("_rs").alias("entity_id"), "business_name", pl.col("_addr").alias("business_address"), "country")
+Psyn = syn.select([pl.col("_rs").alias("r") if c == "r" else (pl.lit(0, dtype=pool["y"].dtype).alias("y") if c == "y" else pl.col(c)) for c in pool.columns])
+log(f"synthetic street twins (A split, negatives): {Psyn.height}; e.g. {syn.select('business_address', '_addr').head(3).rows()}")
+pool = pl.concat([pool, Psyn], how="vertical_relaxed")
+R = pl.concat([R, Rsyn.select(R.columns)], how="vertical_relaxed")
+del Rx, pos, donor, syn, Psyn, Rsyn
 F = M.pool_features(pool, s1, R, NZ).join(s1.select(pl.col("entity_id").alias("s1"), "country"), on="s1")
 del pool; fc = M.feature_columns(F); log(f"features {len(fc)}  {time.time()-T0:.0f}s")
 

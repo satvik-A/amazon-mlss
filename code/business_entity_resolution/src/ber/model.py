@@ -169,19 +169,11 @@ def one_owner(sel: pl.DataFrame, log=print) -> pl.DataFrame:
 # Label-free evidence (LB 0.958 vs holdout 0.972): test France assigns 3.6% of its predicted records to 2+ S1s; the
 # competing S1s share name + number + city and differ in the street name. US/India twins differ in the number instead,
 # so the matcher never learned it. On train US/India the rule costs F0.5 (-0.0009 / -0.0028 on C): France only.
-_STREET_DROP = ("rue|r|avenue|av|ave|bd|boulevard|blvd|chemin|ch|route|rte|place|pl|allee|all|impasse|imp|quai|cours|chaussee|chau|"
-                "square|sq|voie|passage|residence|res|lieu|dit|lotissement|lot|street|st|road|rd|drive|dr|lane|ln|court|ct|way|circle|cir|"
-                "trail|trl|parkway|pkwy|highway|hwy|terrace|ter|pike|no|nos|num|n|bis|unit|apt|apartment|suite|ste|floor|fl|flat|plot|"
-                "shop|door|house|h|b|t|de|du|des|la|le|les|l|d|a|au|aux|en|et|the|of|and|saint|sainte")
+from .normalize import street_words as _sw
 
 
 def street_words(col: str) -> pl.Expr:
-    """words of the comma-separated address part holding the first number (the street line), minus numbers, street
-    types and function words"""
-    part = pl.col(col).fill_null("").str.to_lowercase().str.normalize("NFKD").str.replace_all(r"[̀-ͯ]", "").str.split(",") \
-             .list.eval(pl.element().filter(pl.element().str.contains(r"\d"))).list.first().fill_null("")
-    return part.str.replace_all(r"\d+[a-z]?", " ").str.extract_all(r"[a-z]{2,}") \
-               .list.eval(pl.element().filter(~pl.element().str.contains(f"^({_STREET_DROP})$")))
+    return _sw(pl.col(col))
 
 
 def street_filter(sel: pl.DataFrame, S1: pl.DataFrame, R: pl.DataFrame, countries=("France",), t: float = 50, log=print) -> pl.DataFrame:

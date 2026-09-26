@@ -60,6 +60,11 @@ def pair_features(P: pl.DataFrame, QN: pl.DataFrame, RN: pl.DataFrame) -> pl.Dat
         "bag_ratio": _cp(d["bag_s"].to_list(), d["bag_r"].to_list(), fuzz.ratio),
         "ad_tset": _cp(d["ad_s_txt"].to_list(), d["ad_r_txt"].to_list(), fuzz.token_set_ratio),
     }
+    if "stw_s" in d.columns:   # street line (normalize.street_words): -1 when either side has none
+        a_, b_ = d["stw_s"].list.join(" ").to_list(), d["stw_r"].list.join(" ").to_list()
+        st = _cp(a_, b_, fuzz.token_set_ratio)
+        both = np.array([bool(x) and bool(y) for x, y in zip(a_, b_)])
+        feats["st_sim"] = np.where(both, st, -1.0).astype(np.float32)
     d = d.with_columns(*[pl.Series(k, v) for k, v in feats.items()])
     inter = lambda a, b: pl.col(a).list.set_intersection(pl.col(b)).list.len()
     diff = lambda a, b: pl.col(a).list.set_difference(pl.col(b))

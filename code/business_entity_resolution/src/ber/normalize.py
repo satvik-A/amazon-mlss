@@ -31,6 +31,19 @@ ALIAS_RE = r"(?i)\s(" + "|".join(m.replace("/", r"\s*/\s*") for m in ALIAS_MARKE
 # region-specific place handling (tables.PLACE_*): city aliases, multi-word states as one token, no synonym chaining
 # through shared state words, generator filler words dropped. Off by default (models trained without it stay valid).
 PLACES = os.environ.get("BER_PLACES", "0") == "1"
+# street line = the comma-separated address part holding the first number, minus numbers, street types, function words.
+# France twin S1s share name + number + city and differ only here (see model.street_filter).
+_STREET_DROP = ("rue|r|avenue|av|ave|bd|boulevard|blvd|chemin|ch|route|rte|place|pl|allee|all|impasse|imp|quai|cours|chaussee|chau|"
+                "square|sq|voie|passage|residence|res|lieu|dit|lotissement|lot|street|st|road|rd|drive|dr|lane|ln|court|ct|way|circle|cir|"
+                "trail|trl|parkway|pkwy|highway|hwy|terrace|ter|pike|no|nos|num|n|bis|unit|apt|apartment|suite|ste|floor|fl|flat|plot|"
+                "shop|door|house|h|b|t|de|du|des|la|le|les|l|d|a|au|aux|en|et|the|of|and|saint|sainte")
+
+
+def street_words(e: pl.Expr) -> pl.Expr:
+    part = e.fill_null("").str.to_lowercase().str.normalize("NFKD").str.replace_all(r"[\u0300-\u036f]", "").str.split(",") \
+            .list.eval(pl.element().filter(pl.element().str.contains(r"\d"))).list.first().fill_null("")
+    return part.str.replace_all(r"\d+[a-z]?", " ").str.extract_all(r"[a-z]{2,}") \
+               .list.eval(pl.element().filter(~pl.element().str.contains(f"^({_STREET_DROP})$")))
 
 
 class Normalizer:
@@ -132,7 +145,8 @@ class Normalizer:
             a.str.extract_all(r"\d+").list.eval(pl.element().str.strip_chars_start("0")).list.eval(pl.element().filter(pl.element() != "")).alias("ad"),
             a.str.extract_all(r"\b[a-z]{1,3}[-/ ]?\d+[a-z]?\b").list.eval(pl.element().str.replace_all(r"[-/ ]", "").str.replace(r"^([a-z]+)0+", "$1"))
              .list.eval(pl.element().filter(~pl.element().str.extract(r"^([a-z]+)").is_in(ux))).alias("au"),
-            (pl.col("a0").str.strip_chars() == "").alias("noaddr"))
+            (pl.col("a0").str.strip_chars() == "").alias("noaddr"),
+            street_words(pl.col("a0")).alias("stw"))
         # street abbreviations (hand table, per-country overrides) BEFORE the length filter so 'R', 'St', 'Bd' map;
         # 2-letter tokens kept (state codes, so the learned code<->name synonyms apply on both sides)
         stop = list(ADDR_STOP | (PLACE_ADDR_STOP if PLACES else set()))
@@ -157,4 +171,4 @@ class Normalizer:
         ex = ex.with_columns(pl.concat_list(pl.col("aw0"), pl.col("equiv").fill_null(empty)).alias("x")) \
                .group_by("entity_id", maintain_order=True).agg(pl.col("x").flatten().unique().alias("aw"))
         d = d.join(ex, on="entity_id", how="left").with_columns(pl.col("aw").list.drop_nulls())
-        return d.select("entity_id", "country", "nw", "core", "alias", "legal", "decoy", "sk", "aw", "ad", "au", "noaddr")
+        return d.select("entity_id", "country", "nw", "core", "alias", "legal", "decoy", "sk", "aw", "ad", "au", "noaddr", "stw")
