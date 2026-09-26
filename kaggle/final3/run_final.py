@@ -51,9 +51,9 @@ for f in find("level1_test_*.parquet"):
         F.filter(pl.col("s1").is_in(bs.implode())).select("s1", "r", "p").write_parquet(f"{WD}/level2_band_{tag}")
     else:
         sel = M.decide(F, cfg, head)
-    matches.append(sel.select("s1", "r"))
+    matches.append(sel.select("s1", "r").join(F.select("s1", "r", "p"), on=["s1", "r"], how="left"))
     log(f"{tag}: rows {F.height} S1 {F['s1'].n_unique()} matches {sel.height}  {time.time()-T0:.0f}s")
-C = pl.concat(cands); Mt = pl.concat(matches)
+C = pl.concat(cands); Mt = M.one_owner(pl.concat(matches), log=log)
 write_submission(Mt, C, s1_all["entity_id"], valid_r, f"{WD}/matching_results.tsv", f"{WD}/candidate_pairs.tsv")
 log(f"{'STACKED' if stack is not None else 'LEVEL-1'} submission: shards {len(matches)} (with cross-encoder {n_x}); candidates/S1 {C.height/s1_all.height:.2f}, "
     f"matches/S1 {Mt.height/s1_all.height:.2f}, S1 with no match {1 - Mt['s1'].n_unique()/s1_all.height:.4f}")

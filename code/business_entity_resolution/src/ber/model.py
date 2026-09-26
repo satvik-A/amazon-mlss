@@ -153,3 +153,13 @@ def apply_policy(F: pl.DataFrame, policy: dict) -> pl.DataFrame:
     if policy.get("cutoff"):
         return F.filter(cutoff_mask(int(policy["cutoff"])))
     return prune_pool(F, policy)
+
+
+# ---- one owner per record (hard constraint over the WHOLE test set, all shards) -------------------------------------
+def one_owner(sel: pl.DataFrame, log=print) -> pl.DataFrame:
+    """sel: selected pairs [s1, r, p]. A record belongs to at most one S1 (0 of 7.6M train records have two owners);
+    keep the highest-p owner (ties: smallest s1 id, deterministic). France test predictions broke this for 3.6% of records."""
+    x = sel.sort(["r", "p", "s1"], descending=[False, True, False])
+    keep = x.unique(subset=["r"], keep="first", maintain_order=True)
+    log(f"one owner per record: {sel.height} -> {keep.height} pairs ({sel.height - keep.height} duplicate claims removed)")
+    return keep.select("s1", "r", "p")

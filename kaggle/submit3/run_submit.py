@@ -84,12 +84,13 @@ for p in POOLS:
         pp = pseudo_pairs(QNk, RNk).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
         hit = pp.join(sel.select("s1", "r"), on=["s1", "r"], how="semi").height
         log(f"{ctry}[{k}]: S1 {Sk.height} candidates {kept.height} matches {sel.height}; pseudo-pairs {pp.height} predicted {hit/max(pp.height,1):.4f}  {time.time()-T0:.0f}s")
-        cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r"))
+        cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r").join(F.select("s1", "r", "p"), on=["s1", "r"], how="left"))
         del F, kept, QNk, RNk
     del SN, RNall, Rall
     cn = sum(c.height for c in cands[-NSH:]); mn = pl.concat(matches[-NSH:])
     log(f"{ctry}: S1 {S.height}  candidates {cn} ({cn/S.height:.2f}/S1)  matches {mn.height} ({mn.height/S.height:.2f}/S1)  S1 predicted empty {1 - mn['s1'].n_unique()/S.height:.4f}")
 C = pl.concat(cands); Mt = pl.concat(matches)
+Mt = M.one_owner(Mt, log=log)   # a record belongs to at most one S1 (always true in train; France test broke it 3.6%)
 write_submission(Mt, C, s1_all["entity_id"], valid_r, f"{WD}/matching_results.tsv", f"{WD}/candidate_pairs.tsv")
 log(f"total: candidates/S1 {C.height/s1_all.height:.2f}, matches/S1 {Mt.height/s1_all.height:.2f}, S1 with no match {1 - Mt['s1'].n_unique()/s1_all.height:.4f}")
 log(f"wrote matching_results.tsv + candidate_pairs.tsv  DONE {time.time()-T0:.0f}s")
