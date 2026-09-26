@@ -23,8 +23,8 @@ Qwen3-Embedding-0.6B / 4B / 8B (0.60 / 4.02 / 7.57B, Apache) · bge-m3 (MIT) · 
 Hybrid recurrent architecture: 3 of every 4 layers are **Gated DeltaNet linear attention** (a recurrent state), every 4th is full attention; vision-language models (`Qwen3_5ForConditionalGeneration`, vocab 248k), used text-only. Apache-2.0.
 | Model | Params | In limit | Plan |
 |---|---|---|---|
-| Qwen/Qwen3.5-0.8B | 0.87B | yes | yes/no scorer + LoRA (`er-xenc-v3`) |
-| Qwen/Qwen3.5-2B | 2.27B | yes | yes/no scorer + LoRA, fp16 base + checkpointing (`er-xenc-v3`) |
+| Qwen/Qwen3.5-0.8B | 0.87B | yes | zero-shot AUC **0.983** (> Qwen3-Reranker-0.6B 0.980); LoRA training OOM at fp32 batch 24 (needs checkpointing) |
+| Qwen/Qwen3.5-2B | 2.27B | yes | zero-shot 0.984 → **fine-tuned AUC 0.99956 after only 28k pairs, best logloss (0.0226) and singleton behaviour of all models**; 4.4 pairs/s training, 16 pairs/s scoring on a T4 (no fast Gated-DeltaNet kernels on T4) → judge for a small uncertain band |
 | Qwen/Qwen3.5-4B | 4.66B | yes | next if 2B beats 0.8B |
 | Qwen/Qwen3.5-9B | 9.65B | **no** | excluded |
 | Qwen3.5-27B / 35B-A3B / 122B, Qwen3.6-27B / 35B, Qwen3-Next-80B | 27–125B | no | excluded |
