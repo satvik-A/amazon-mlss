@@ -1,0 +1,11 @@
+train_US: ref de86229  country synonyms yes
+S1 1323633  R 6186873  4s
+  shard 0: 250000/1323633 S1 -> 32089614 candidates
+  shard 1: 500000/1323633 S1 -> 64192682 candidates
+  shard 2: 750000/1323633 S1 -> 96282292 candidates
+  shard 3: 1000000/1323633 S1 -> 128381730 candidates
+  shard 4: 1250000/1323633 S1 -> 160471662 candidates
+  shard 5: 1323633/1323633 S1 -> 169928770 candidates
+  cands 169928770 (128.4/S1)
+internal pool 128.4/S1; on a 48865-S1 sample: pair recall 0.9911, S1 complete 0.9697
+wrote pool_train_US.parquet 169928770 rows  DONE 8423s

@@ -63,7 +63,7 @@ Full-mode TRAIN India (first pass, all 883k S1): internal pool 89.2/S1, pair rec
 
 **Cross-encoder (bge-reranker-v2-m3, fine-tuned on A-split pairs, eval on C-split top-15 + aux):** AUC 0.9997 (zero-shot 0.992; Qwen3-Reranker-0.6B zero-shot 0.980; blocking score 0.941); top-1 0.998; singletons: best candidate p ≥ 0.5 for 22% → needs number features / has-match head (stacking). Qwen3-Reranker-4B: 0.9907 zero-shot → 0.99954 after only 18.6k pairs, but 11 pairs/s on a T4.
 
-**Second pass, train India (all 883k S1, r9 blocking):** internal pool 130.6/S1, pair recall **0.9662** (first pass 0.9286), S1 complete **0.9043** (0.8253) — matches the recall lab. 97 min on 4 CPUs (sharded).
+**Second pass, train India (all 883k S1, r9 blocking):** internal pool 130.6/S1, pair recall **0.9662** (first pass 0.9286), S1 complete **0.9043** (0.8253) — matches the recall lab. 97 min on 4 CPUs (sharded). **Train US** (1.32M S1): 169.9M rows (128.4/S1), pair recall **0.9911**, S1 complete **0.9697** (49k-S1 sample), 2h20m.
 
 **Candidate cut-off rules** (`ber.model._cut_rules`, greedy OR-rules on similarity features, v5 pool, held-out half): first 8 rules → 8.4 cands/S1 keep 98.4% of in-pool positives; 10 → 11.9, 99.3%; 11 → 13.7, 99.55%; 14 → 26.4, 99.75% (vs 91.5 cands/S1 without). The matcher chooses the depth end to end.
 
