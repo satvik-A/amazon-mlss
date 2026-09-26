@@ -31,6 +31,11 @@ if SJ:
         log(f"LEVEL 2 active: delta on C {cfg2['delta_C']:+.4f}")
     else:
         log(f"level 2 REJECTED by its gate (delta on C {cfg2.get('delta_C')}) -> level 1")
+# test has ~2x the orphan records per S1 of train: thresholds re-tuned with orphan false positives weighted (dataset er-comp4)
+TW = find("stack_thr_w.json")
+if TW and stack is not None and cfg2.get("rule") == "rank-threshold":
+    tw = json.load(open(TW[0])); log(f"orphan-weighted stack thresholds (w {tw['w_orph']}): t1 {cfg2['t1']} -> {tw['t1']}, t2 {cfg2['t2']} -> {tw['t2']}")
+    cfg2 = dict(cfg2, t1=tw["t1"], t2=tw["t2"])
 # pass 4: optional competition + sibling layer (trained offline on full-country train scores; dataset er-comp4)
 CJ = find("comp.json")
 comp, cfg3 = None, None

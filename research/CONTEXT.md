@@ -199,3 +199,16 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - India: word 0.9796 -> +top-10 0.9880 (+4.5 cands/S1), top-20 0.9894 (+13), top-50 0.9907 (+41); rescues 41-48% of word misses; Indic copies 0.980 -> 0.988; no-address copies ~unchanged (0.914 -> 0.917).
 - US: 0.9932 -> top-10 0.9945 (+3.3), top-20 0.9949 (+10.7).
 - Far cheaper than looser word caps (r12: +215 cands for 0.9887). -> pass 4 includes the embedding arm (top-20, always kept by the cut-off; erk / esim become matcher features). Jobs er-emb4-* (GPU) feed er-cands4-*.
+
+## 2026-09-27 00:40 — why LB < C: test has ~2x orphan records per S1 (label-free)
+- Records/S1: train 4.67 (US) / 4.68 (India), 75% linked (orphans 1.2/S1). Test 5.76 / 5.82 / 5.53 (France); final3 links only 58-60%.
+  final3 predicts 3.3-3.4 matches/S1 = what train C gives (3.51 true x R 0.958 / P 0.997), so test true matches/S1 ~ train and the
+  extra ~1.1 records/S1 are ORPHANS: test ~2.4-2.5 orphans/S1 vs train 1.2 (India 2.04M unlinked of 4.72M).
+- Unlinked test records look exactly like train orphans (name equals some S1: India 0.319 vs 0.315, US 0.253 vs 0.269; name equals 2+ S1:
+  0.27 vs 0.27 / 0.12 vs 0.14) -> same generator, twice the density -> twice the false-positive chances -> precision lower on test.
+- Extra-name-word rate of predicted pairs is the same as train true pairs (US 0.405 vs 0.411, India 0.445 vs 0.456): no decoy flood.
+- Action: thresholds tuned with orphan false positives weighted x2 (kaggle/comp4/train_comp.py W_ORPH; out/stack_thr_w.json; final4 reads it).
+- France self-training is being tested by simulation first (kaggle2/selftrain, er2-selftrain): India-only teacher, pseudo-labelled US,
+  scored on US C. Earlier evidence (CHECKLIST 123): France transfer looked fine, and pair-wise LLM judges lost to the stack (AUC 0.90 vs 0.94).
+- Kaggle T4 queue: accounts 1 and 3 waited 1h+; account 2 started at once. Embedding outputs re-routed as datasets
+  (satvik0006/er3-emb4-india, er-emb4-us / er3-emb4-us via scratchpad us_reroute.sh).
