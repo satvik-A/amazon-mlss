@@ -6,6 +6,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() els
 CFG = {"split": "__SPLIT__", "country": "__COUNTRY__", "ref": "__REF__"}
 _B = r'''__BLK__'''   # blocking limits as JSON (pass 4: looser); placeholder / None = library defaults
 BLK = None if _B.startswith("__") or _B == "None" else __import__("json").loads(_B)
+_P = r'''__PART__'''   # "k/K": write raw shards j % K == k only; "merge": merge raw parts from inputs into the pool; else one job
+PART = None if _P.startswith("__") or _P == "None" else _P
 if CFG["split"].startswith("__"):
     CFG = {"split": os.environ.get("SPLIT", "train"), "country": os.environ.get("COUNTRY", "US"), "ref": "local"}
 LOCAL = not os.path.exists("/kaggle")
@@ -44,11 +46,22 @@ if LOCAL:
     S = S.head(5000); R = R.head(150000)
 log(f"S1 {S.height}  R {R.height}  {time.time()-T0:.0f}s")
 EF = [] if LOCAL else glob.glob(f"/kaggle/input/**/emb_{TAG}.parquet", recursive=True)   # pass 4: embedding-arm neighbours
-EMB = pl.read_parquet(EF[0]) if EF else None
-log(f"embedding arm: {EF[0] if EF else 'none'}")
-ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60), shard=(BLK or {}).get("shard", 250_000), emb=EMB)
-keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin", *(["erk", "esim"] if EMB is not None else [])]
-ann = ann.select(keep)
+keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin", *(["erk", "esim"] if EF or PART == "merge" else [])]
+if PART == "merge":   # pool = streaming merge of the raw part shards (a 290M-row pool does not fit in memory at once)
+    from ber.pipeline import merge_parts
+    RAW = sorted(glob.glob("/kaggle/input/**/raw_*.parquet", recursive=True), key=os.path.basename)
+    log(f"merge: {len(RAW)} raw shards")
+    n = merge_parts(RAW, S, R, f"{WD}/pool_{TAG}.parquet", keep, WD, log=log)
+    log(f"  cands {n} ({n / S.height:.1f}/S1)")
+else:
+    EMB = pl.read_parquet(EF[0]) if EF else None
+    log(f"embedding arm: {EF[0] if EF else 'none'}")
+    part = tuple(int(x) for x in PART.split("/")) if PART else None
+    ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60), shard=(BLK or {}).get("shard", 250_000), emb=EMB,
+                     part=part, out_dir=WD)
+    if part is not None:
+        log(f"part {PART} DONE {time.time()-T0:.0f}s"); sys.exit(0)
+    ann = ann.select(keep)
 if SPLIT == "train":
     # recall / completeness on a 50k-S1 sample (labels are attached later by the matcher, on its own sample: a label
     # join over 180M rows would copy the whole pool)
@@ -56,9 +69,12 @@ if SPLIT == "train":
     gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id").is_in(samp.implode())) \
            .with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
            .filter(pl.col("matched_entity_ids") != "").select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
-    a = ann.filter(pl.col("s1").is_in(samp.implode())).select("s1", "r").with_columns(pl.lit(True).alias("k"))
+    src = pl.scan_parquet(f"{WD}/pool_{TAG}.parquet") if PART == "merge" else ann.lazy()
+    a = src.filter(pl.col("s1").is_in(samp.implode())).select("s1", "r").with_columns(pl.lit(True).alias("k")).collect()
     h = gt.join(a, on=["s1", "r"], how="left").with_columns(pl.col("k").fill_null(False))
-    log(f"internal pool {ann.height/S.height:.1f}/S1; on a {samp.len()}-S1 sample: pair recall {h['k'].mean():.4f}, "
+    NT = n if PART == "merge" else ann.height
+    log(f"internal pool {NT/S.height:.1f}/S1; on a {samp.len()}-S1 sample: pair recall {h['k'].mean():.4f}, "
         f"S1 complete {h.group_by('s1').agg(pl.col('k').all())['k'].mean():.4f}")
-ann.write_parquet(f"{WD}/pool_{TAG}.parquet")
-log(f"wrote pool_{TAG}.parquet {ann.height} rows  DONE {time.time()-T0:.0f}s")
+if PART != "merge":
+    n = ann.height; ann.write_parquet(f"{WD}/pool_{TAG}.parquet")
+log(f"wrote pool_{TAG}.parquet {n} rows  DONE {time.time()-T0:.0f}s")

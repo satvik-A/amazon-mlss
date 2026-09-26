@@ -12,6 +12,7 @@ Pruning to the final candidate set is blocking.prune(...) with the policy chosen
 from __future__ import annotations
 
 import gc
+import os
 
 import numpy as np
 import polars as pl
@@ -51,7 +52,8 @@ def _block_shard(idx, Q, R, sig, keep_prk, rel_chunk, emb=None):
 
 
 def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame, nz, log=print, keep_prk: int = 60,
-               rev_cap: int = 3, rel_chunk: int = 10_000_000, shard: int = 250_000, emb: pl.DataFrame | None = None) -> pl.DataFrame:
+               rev_cap: int = 3, rel_chunk: int = 10_000_000, shard: int = 250_000, emb: pl.DataFrame | None = None,
+               part: tuple | None = None, out_dir: str | None = None) -> pl.DataFrame | None:
     """S_raw: S1s to query; R_raw: the country's S2/S3 records; S_all_raw: ALL S1s of the country (reverse lookups).
     Deterministic: inputs are put in entity_id order, so row ids (rank tie-breaks) do not depend on input order.
     S1s are queried in shards of `shard` (memory: 800k S1 x ~165 raw candidates does not fit at once); results are
@@ -66,6 +68,18 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
                  .join(R_raw.select(pl.col("entity_id").alias("r")).with_row_index("id_r"), on="r") \
                  .select(pl.col("id").cast(pl.UInt32), pl.col("id_r").cast(pl.UInt32), pl.col("erk").cast(pl.UInt16), pl.col("esim").cast(pl.Float32))
         log(f"  embedding arm: {emb.height} pairs ({emb.height / max(S_raw.height, 1):.1f}/S1)")
+    if part is not None:
+        # PART mode (FULL mode split over K jobs): shards j with j % K == k are written raw (row ids, no reverse
+        # preference) to out_dir/raw_<j>.parquet; merge_parts() adds rev_margin + entity ids over all parts.
+        k, K = part
+        for j, i in enumerate(range(0, Q.height, shard)):
+            if j % K != k:
+                continue
+            p = _block_shard(idx, Q.slice(i, shard), R, sig, keep_prk, rel_chunk, emb)
+            p.write_parquet(f"{out_dir}/raw_{j:03d}.parquet")
+            log(f"  part {k}/{K} shard {j}: {min(i + shard, Q.height)}/{Q.height} S1 -> {p.height} candidates")
+            del p; gc.collect()
+        return None
     parts = []
     for i in range(0, Q.height, shard):
         parts.append(_block_shard(idx, Q.slice(i, shard), R, sig, keep_prk, rel_chunk, emb))
@@ -99,3 +113,22 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
     cand = cand.with_columns(pl.col("rel").cast(pl.String))
     log(f"  cands {cand.height} ({cand.height / max(nq, 1):.1f}/S1)")
     return cand
+
+
+def merge_parts(files: list[str], S_raw: pl.DataFrame, R_raw: pl.DataFrame, out_path: str, keep: list[str], tmp: str, log=print) -> int:
+    """Merge raw PART-mode shards into one FULL-mode pool file with bounded memory (same columns as candidates()):
+    reverse preference over ALL parts by streaming, then one shard at a time -> entity ids -> streamed into out_path."""
+    s1_ids, r_ids = S_raw.sort("entity_id")["entity_id"], R_raw.sort("entity_id")["entity_id"]
+    rb = pl.scan_parquet(files).group_by("id_r").agg(pl.col("sc").max().alias("rbest")).collect(engine="streaming")
+    outs, n = [], 0
+    for i, f in enumerate(sorted(files)):
+        c = pl.read_parquet(f).join(rb, on="id_r", how="left")
+        c = c.with_columns(((pl.col("sc").fill_null(0.0) - pl.col("rbest")) / pl.col("rbest")).fill_null(0.0).cast(pl.Float32).alias("rev_margin"))
+        c = c.with_columns(s1_ids.gather(c["id"]).alias("s1"), r_ids.gather(c["id_r"]).alias("r")).drop("id", "id_r")
+        c = c.with_columns(pl.col("rel").cast(pl.String)).select([k for k in keep if k in c.columns])
+        o = f"{tmp}/m_{i:03d}.parquet"; c.write_parquet(o); outs.append(o); n += c.height
+        log(f"  merged {os.path.basename(f)}: {c.height} rows"); del c; gc.collect()
+    pl.scan_parquet(outs).sink_parquet(out_path)
+    for o in outs:
+        os.remove(o)
+    return n
