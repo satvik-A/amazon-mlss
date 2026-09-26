@@ -182,3 +182,10 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - France check: the 91.8% pseudo-pair hit rate was a false alarm. France names are generic (city + Club/Comite + legal form), so pseudo-pairs include same-number different-street look-alikes. With street similarity >= 80, France predicted 99.64% (India 99.6%). Real France misses: near-identical records not in candidates (generic names hit per-arm caps) -> loosen caps.
 - Competition stack (India C, level-1 base): one_owner 0.96823, q_k0.5 0.96892, learned competition stack 0.96953 (+0.0013 over one_owner).
 - **Sibling signal:** copies of the same S1 in the SAME source share noise: S2-S2 address similarity 76 vs 40 to the S1, 22% identical noisy addresses (same dropped digit / typo); S3-S3 12-19% identical. S2-S3 not (different formats). -> sibling features (similarity of r to the confident same-source candidates of the S1) in the level-2 stack. Prototype running (scratchpad sibstack.py).
+
+## Pass 4 (started 2026-09-26 22:05, all 3 accounts)
+- Blocking: arm caps x2 {0:200,3:60,4:60,5:80,6:50,7:40,8:20}, keep_prk 200, sibling expansion top-40 / groups <= 40 (df caps unchanged 2000/200). Jobs `er-cands4-*` (account 1, train + test) and `er3-cands4-train-*` (account 3, same config).
+- Matcher 4 picks the cut-off with the best F on B (size no longer a constraint). Level-1 test in 12 shards.
+- Chain (account 1, orchestrator): matcher4 -> l1test4 x3 + xenc-score4 -> stack4 (also saves stack_pred_B2/C) -> xenc-score-test4 x3 -> final4.
+- Competition + sibling layer (`ber.compete`): account 3 `er3-global4-*` scores every train S1 with matcher4 (uploaded as dataset `satvik0006/er3-matcher4`) and writes feats_<country>; trained locally on stack_pred_B2 (+ feats), reported on C; uploaded as dataset `satvikaderla/er-comp4` (comp.txt + comp.json); final4 uses it when present.
+- Account 2: recall lab round 5 (r12 caps x2, r13 caps x4 + df caps, r14 wide sibling expansion) + er2-global-us.
