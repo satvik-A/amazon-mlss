@@ -12,8 +12,8 @@ Rule: each model **and its base model** must be MIT or Apache-2.0, ≤ 8B **tota
 | Alibaba-NLP/gte-multilingual-reranker-base | 0.31B | Apache-2.0 | small + fast | remote-code CUDA assert → replaced by CANINE |
 | mixedbread-ai/mxbai-rerank-large-v2 | 1.54B | Apache-2.0 (Qwen2.5-1.5B, Apache) | strong reranker, different training | next |
 | microsoft/mdeberta-v3-base | ~0.28B | MIT | strong NLU encoder, diversity | next |
-| google/canine-c | 0.13B | Apache-2.0 | character-level, very cheap | **AUC 0.9992** after 1 epoch (300k pairs, 29 min), 485 pairs/s → v4 with 3x data |
-| google/muril-base-cased | ~0.24B | Apache-2.0 | Indian languages + transliteration | next |
+| google/canine-c | 0.13B | Apache-2.0 | character-level, very cheap | AUC 0.9992 (300k pairs); v4 (1M pairs): **0.99937**, top-1 0.9958, 530 pairs/s |
+| google/muril-base-cased | ~0.24B | Apache-2.0 | Indian languages + transliteration | **v4 (1M pairs): AUC 0.99969, top-1 0.99974, 838 pairs/s — best so far** |
 | FacebookAI/xlm-roberta-large | 0.56B | MIT | plain multilingual baseline | optional |
 
 ## Embedders (bi-encoders: blocking arm, similarity features)

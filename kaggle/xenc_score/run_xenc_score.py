@@ -21,7 +21,9 @@ def _models():
     """every model_<tag>/ directory in the inputs (er-xenc-v1, v1b, v2, v3 ...): {tag: dir}"""
     out = {}
     for f in find("model_*/config.json") + find("model_*/adapter_config.json"):
-        d = os.path.dirname(f); out[os.path.basename(d)[len("model_"):]] = d
+        d = os.path.dirname(f)
+        run = os.path.basename(os.path.dirname(d)).replace("er-xenc-", "")     # kernel of origin (v1, v4, ...) keeps tags unique
+        out[f"{run}_{os.path.basename(d)[len('model_'):]}".replace("-", "_").replace(".", "_")] = d
     return out
 MODELS = _models() if not LOCAL else {}
 FILES = find("level1_*.parquet") if not LOCAL else sorted(glob.glob("../matcher_full/level1_*.parquet"))
