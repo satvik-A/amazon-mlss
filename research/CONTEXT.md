@@ -114,7 +114,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 
 ## 5b. Overnight automation (2026-09-25/26)
 - `kaggle/orchestrate.py` (local background process, log `kaggle/orchestrator.log`, state `kaggle/.orchestrator_state.json`): launches matcher-full → submit (+ fetch + official validator), xenc-score → stack, and the GPU bake-offs v2/v3 as upstream jobs finish and slots free (5 CPU / 2 GPU).
-- Account 2 (`satvik006`, token in `~/.kaggle2/access_token`, **not phone-verified → no internet, CPU only**): private dataset `satvik006/er-bundle` (data parquet, artefacts, `ber` source, Linux wheels for polars 1.44.2 / rapidfuzz 3.14.6 / lightgbm 4.6.0). First workload: `kaggle2/recall_lab` (5 blocking variants). Use `KAGGLE_API_TOKEN=$(cat ~/.kaggle2/access_token) kaggle ...`.
+- Account 2 (`satvik006`, token in `~/.kaggle2/access_token`, **phone-verified on 2026-09-26 → internet + GPU (T4 × 2, own 30 h/week quota) now allowed**): private dataset `satvik006/er-bundle` (data parquet, artefacts, `ber` source, Linux wheels for polars 1.44.2 / rapidfuzz 3.14.6 / lightgbm 4.6.0). First workload: `kaggle2/recall_lab` (5 blocking variants). Use `KAGGLE_API_TOKEN=$(cat ~/.kaggle2/access_token) kaggle ...`.
 - Never use account 2 for leaderboard submissions (fair play).
 
 ## 6. Kaggle jobs (folder → kernel)
