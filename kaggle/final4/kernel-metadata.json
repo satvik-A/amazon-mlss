@@ -1,0 +1,6 @@
+{"id": "satvikaderla/er-final4", "title": "er-final4", "code_file": "run_final.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data"], "competition_sources": [],
+ "kernel_sources": ["satvikaderla/er-matcher-full4", "satvikaderla/er-stack4",
+                    "satvikaderla/er-l1test4-us", "satvikaderla/er-l1test4-india", "satvikaderla/er-l1test4-france",
+                    "satvikaderla/er-xenc-score-test4-us", "satvikaderla/er-xenc-score-test4-india", "satvikaderla/er-xenc-score-test4-france"]}

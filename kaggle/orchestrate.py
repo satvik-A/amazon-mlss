@@ -19,6 +19,11 @@ CANDS3 = [f"er-cands3-{s}" for s in ("train-us", "train-india", "test-us", "test
 P3_CPU = {*CANDS3, "er-matcher-full3", "er-stack3", *[f"er-l1test3-{c}" for c in C3], "er-final3"}
 P3_GPU = {"er-xenc-score3", *[f"er-xenc-score-test3-{c}" for c in C3]}
 CPU_JOBS |= P3_CPU; GPU_JOBS |= P3_GPU
+# pass 4 (looser blocking, best-F cut-off; candidate-set size no longer a constraint)
+CANDS4 = [f"er-cands4-{s}" for s in ("train-us", "train-india", "test-us", "test-india", "test-france")]
+P4_CPU = {*CANDS4, "er-matcher-full4", "er-stack4", *[f"er-l1test4-{c}" for c in C3], "er-final4"}
+P4_GPU = {"er-xenc-score4", *[f"er-xenc-score-test4-{c}" for c in C3]}
+CPU_JOBS |= P4_CPU; GPU_JOBS |= P4_GPU
 
 # name -> (resource, deps (must be COMPLETE), launch command builder), in priority order
 def launch(folder, acc=None, sources=None):
@@ -55,6 +60,13 @@ JOBS = [
     *[(f"er-l1test3-{c}", "cpu", ["er-matcher-full3", f"er-cands3-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test3/jobs/{c}"])(c)) for c in C3],
     *[(f"er-xenc-score-test3-{c}", "gpu", [f"er-l1test3-{c}", "er-stack3"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test3/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
     ("er-final3", "cpu", ["er-stack3", *[f"er-l1test3-{c}" for c in C3], *[f"er-xenc-score-test3-{c}" for c in C3]], lambda st: launch("kaggle/final3")),
+    # ---- pass 4 (candidate jobs launched by hand) ----
+    ("er-matcher-full4", "cpu", ["er-cands4-train-us", "er-cands4-train-india"], lambda st: launch("kaggle/matcher_full4")),
+    *[(f"er-l1test4-{c}", "cpu", ["er-matcher-full4", f"er-cands4-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test4/jobs/{c}"])(c)) for c in C3],
+    ("er-xenc-score4", "gpu", ["er-matcher-full4"], lambda st: launch("kaggle/xenc_score4", "NvidiaTeslaT4")),
+    ("er-stack4", "cpu", ["er-xenc-score4"], lambda st: launch("kaggle/stack4")),
+    *[(f"er-xenc-score-test4-{c}", "gpu", [f"er-l1test4-{c}", "er-stack4"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test4/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
+    ("er-final4", "cpu", ["er-stack4", *[f"er-l1test4-{c}" for c in C3], *[f"er-xenc-score-test4-{c}" for c in C3]], lambda st: launch("kaggle/final4")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
 WAIT_FOR = {"er-xenc-score": ["er-xenc-v4"]}
@@ -140,7 +152,7 @@ def main():
                 gpu_busy += res == "gpu"; cpu_busy += res == "cpu"
             json.dump(st, open(STATE, "w"), indent=1)
         # submission files: download + official validator, once per submit job
-        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2"), ("er-submit3", "submit3"), ("er-final3", "final3")):
+        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2"), ("er-submit3", "submit3"), ("er-final3", "final3"), ("er-final4", "final4")):
             if prev.get(sj) == "COMPLETE" and not launched.get(f"{sj}:fetched"):
                 d = f"{ROOT}/kaggle/{folder}/kout"; os.makedirs(d, exist_ok=True)
                 subprocess.run([K, "kernels", "output", f"satvikaderla/{sj}", "-p", d, "-o", "--file-pattern", r".*\.(tsv|txt)$"], capture_output=True, text=True)
