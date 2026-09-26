@@ -21,7 +21,7 @@ from ber import model as M
 from ber.artifacts import pseudo_pairs
 
 T0 = time.time(); WD = "." if LOCAL else "/kaggle/working"
-N_S1 = int(os.environ.get("N_S1", 3000 if LOCAL else 120_000))  # sampled S1 per country
+N_S1 = int(os.environ.get("N_S1", 3000 if LOCAL else 80_000))  # sampled S1 per country (~130 pool rows each)
 REP = open(f"{WD}/results_matcher_full.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); REP.write(s + "\n"); REP.flush()
@@ -78,8 +78,10 @@ gB, gC = sub(gt, Bv), sub(gt, Cv); sB, sC = Bv["s1"].unique(), Cv["s1"].unique()
 f05 = lambda sel, g_, s_: macro_f05(sel, g_, s_)
 
 # ---- decision rules (tuned on B, reported on C) ----------------------------------------------------------------------
-grid = [(a, b) for a in np.arange(0.2, 0.95, 0.05) for b in np.arange(0.2, 0.95, 0.05)]
-t1, t2, _ = max(((a, b, f05(rank_threshold(Bv, a, b), gB, sB)["f05"]) for a, b in grid), key=lambda x: x[2])
+# coarse grid (0.1) then a local refinement (0.05) around the best point: each evaluation is a full pass over B
+ev = lambda a, b: f05(rank_threshold(Bv, a, b), gB, sB)["f05"]
+t1, t2, fb = max(((a, b, ev(a, b)) for a in np.arange(0.2, 0.95, 0.1) for b in np.arange(0.2, 0.95, 0.1)), key=lambda x: x[2])
+t1, t2, _ = max(((a, b, ev(a, b)) for a in (t1 - 0.05, t1, t1 + 0.05) for b in (t2 - 0.05, t2, t2 + 0.05) if 0.05 < a < 0.99 and 0.05 < b < 0.99), key=lambda x: x[2])
 gam = max(((g, f05(M.efd(Bv, g), gB, sB)["f05"]) for g in (0.6, 0.8, 1.0, 1.25, 1.5, 2.0)), key=lambda x: x[1])[0]
 # has-head: trained on half of B (out-of-sample p), rules compared on the other half of B, reported on C
 HB = M.s1_agg(Bv).join(gB.group_by("s1").len().rename({"len": "nt"}), on="s1", how="left").with_columns((pl.col("nt").fill_null(0) > 0).cast(pl.Int8).alias("y1"))
