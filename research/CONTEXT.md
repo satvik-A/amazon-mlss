@@ -165,3 +165,15 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - Checked test scripts: only Indic scripts (Devanagari, Bengali, Gurmukhi, Gujarati, Oriya, Tamil, Telugu, Kannada, Malayalam), India S2/S3 only, same mix as train. US/France: only accented Latin. Test S1 is all Latin.
 - Already covered: indic_lexicon (learned from train pairs), oov_map, unsupervised test sibling map (organiser answer 11), translit fallback, MuRIL/CANINE cross-encoders. Pool recall for Indian-script copies 98.0%.
 - To do: measure selected recall on Indic-script pairs vs Latin pairs in the missed-match analysis.
+
+## Rules (organiser answers, 2026-09-26)
+- Final ranking = PRIVATE score of our BEST PUBLIC submission -> the best public file must also be our real best; never keep a lucky public outlier as best.
+- Prohibited: external data, geo/postal/gazetteer tables, city-level tables, hosted LLM APIs. Allowed: MIT/Apache <=8B offline models, pure-algorithm libs, small hand dictionaries (state abbreviations ok), translit libs (indic-transliteration, anyascii, uroman), IndicXlit, self-training and synthetic pairs from provided records, unsupervised stats on test.
+- Compliance: shipped models MuRIL, CANINE (Apache-2.0), bge-reranker-v2-m3 (Apache-2.0), Qwen3-Reranker (Apache-2.0), all <=4B. tables.PLACE_ALIAS (Indian city renames) is a city-level table -> must stay OFF (BER_PLACES=0, never shipped; r11 gave no gain anyway). PLACE_PHRASE state tokens are OK, but ride on the same flag -> keep off.
+
+## Missed-match analysis (research/missed_match_analysis.py; India train C, pass-2 level-1, full-country scoring, shipped rule + one_owner)
+- Base F 0.9682, P 0.9929, R 0.9286. Where true pairs go: found 92.9%; not in candidates 3.8%; in pool but another S1 scored higher 1.1%; p>=0.5 but rank/caps cut 0.6%; p 0.1-0.5 1.1%; p<0.1 0.4%.
+- Oracle gains: all blocking misses +0.0144 (pass 3 ADDR_TAIL already lifts India pool 0.966 -> 0.980, ~40% of it); all in-pool misses +0.0125; drop all FPs +0.0062; no-address records +0.0056; Indic-script records +0.0056.
+- No-address records: 3.6% of true pairs, recall only 52-57% (vs 98% for records with an address); 3178 of their 5029 misses are "another S1 scored higher" (same name claimed by up to ~1900 S1s). Indic-script records: recall 0.940, slightly BETTER than Latin (0.926) -> cross-script matching is not the weak spot.
+- No leakage: file row order and ID numbers are uncorrelated between S1 and its matches (corr 0.004 / 0.0005).
+- Pass-3 level 2 on C (sampled): P 0.9968, R 0.9582 -> remaining loss is recall: ~1.3 pts blocking, ~2.9 pts selection.
