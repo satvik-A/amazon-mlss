@@ -29,7 +29,7 @@ JD = "data" if LOCAL else os.path.dirname(find("level1_B.parquet")[0])
 TRAIN_MIN = float(os.environ.get("TRAIN_MIN", 2 if LOCAL else 400))
 EPOCHS = float(os.environ.get("EPOCHS", 3))
 N_EASY = int(os.environ.get("N_EASY", 6000))
-KINDS = os.environ.get("KINDS", "__KINDS__" if not "__KINDS__".startswith("__") else "qwen35:2B,qwen4b").split(",")
+KINDS = os.environ.get("KINDS", "qwen35:4B,causal:mixedbread-ai/mxbai-rerank-large-v2" if True else "qwen35:2B,qwen4b").split(",")
 LO, HI = 0.01, 0.99                     # level-2 band that the judge scores (same rule at test time)
 
 
