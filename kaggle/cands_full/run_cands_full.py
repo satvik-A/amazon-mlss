@@ -4,6 +4,8 @@ Config: CFG below is filled in by make_jobs.py (Kaggle uploads only the code fil
 import glob, os, subprocess, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__)) if "__file__" in globals() else "."
 CFG = {"split": "__SPLIT__", "country": "__COUNTRY__", "ref": "__REF__"}
+_B = r'''__BLK__'''   # blocking limits as JSON (pass 4: looser); placeholder / None = library defaults
+BLK = None if _B.startswith("__") or _B == "None" else __import__("json").loads(_B)
 if CFG["split"].startswith("__"):
     CFG = {"split": os.environ.get("SPLIT", "train"), "country": os.environ.get("COUNTRY", "US"), "ref": "local"}
 LOCAL = not os.path.exists("/kaggle")
@@ -20,6 +22,10 @@ import numpy as np, polars as pl
 from ber.normalize import Normalizer
 from ber.pipeline import candidates
 from ber import blocking as B
+if BLK:
+    B.CAP.update({int(k): v for k, v in BLK.get("caps", {}).items()})
+    B.DF_CAP, B.KEY_CAP = BLK.get("df_cap", B.DF_CAP), BLK.get("key_cap", B.KEY_CAP)
+    B.EXP_M, B.EXP_GRP = BLK.get("exp_m", B.EXP_M), BLK.get("exp_grp", B.EXP_GRP)
 
 T0 = time.time(); WD = "." if LOCAL else "/kaggle/working"; SPLIT, CTRY = CFG["split"], CFG["country"]
 TAG = f"{SPLIT}_{CTRY}"
@@ -31,13 +37,13 @@ find = lambda f: glob.glob(f"/kaggle/input/**/{f}", recursive=True)[0]
 IN = f"{HERE}/../../research/eda/cache" if LOCAL else os.path.dirname(find("train_s1.parquet"))
 ART = f"{HERE}/../artifacts/kout/artifacts" if LOCAL else os.path.dirname(find("indic_lexicon.parquet"))
 NZ = Normalizer(ART)
-log(f"{TAG}: ref {CFG['ref']}  country synonyms {'yes' if NZ.addr_syn_c is not None else 'no'}")
+log(f"{TAG}: blocking {BLK}; caps {B.CAP}; ref {CFG['ref']}  country synonyms {'yes' if NZ.addr_syn_c is not None else 'no'}")
 S = pl.scan_parquet(f"{IN}/{SPLIT}_s1.parquet").filter(pl.col("country") == CTRY).collect()
 R = pl.scan_parquet([f"{IN}/{SPLIT}_s2.parquet", f"{IN}/{SPLIT}_s3.parquet"]).filter(pl.col("country") == CTRY).collect()
 if LOCAL:
     S = S.head(5000); R = R.head(150000)
 log(f"S1 {S.height}  R {R.height}  {time.time()-T0:.0f}s")
-ann = candidates(S, R, S, NZ, log=log)
+ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60))
 keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin"]
 ann = ann.select(keep)
 if SPLIT == "train":

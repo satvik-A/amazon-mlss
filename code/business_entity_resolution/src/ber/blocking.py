@@ -25,6 +25,8 @@ CAP = {0: 100, 3: 30, 4: 30, 5: 40, 6: 25, 7: 20, 8: 10}
 ADDR_TAIL = 3
 # sibling expansion: records sharing a signature with one of the top EXP_M primary candidates, groups of at most EXP_GRP
 EXP_M, EXP_GRP = 10, 12
+# token document-frequency caps of the index (tokens more frequent than this are not indexed)
+DF_CAP, KEY_CAP = 2000, 200
 
 
 def _pairs4(col: str):
@@ -105,7 +107,8 @@ def signatures(N: pl.DataFrame) -> pl.DataFrame:
 class Index:
     """Inverted index for one country's S2/S3 pool (or S1 pool, for reverse lookups)."""
 
-    def __init__(self, N: pl.DataFrame, cap: int = 2000, key_cap: int = 200, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6, 7, 8)):
+    def __init__(self, N: pl.DataFrame, cap: int | None = None, key_cap: int | None = None, chunk: int = 1_500_000, arms=(0, 3, 4, 5, 6, 7, 8)):
+        cap, key_cap = cap or DF_CAP, key_cap or KEY_CAP
         parts = []
         for c0 in range(0, N.height, chunk):
             tk = tokens(N.slice(c0, chunk))
