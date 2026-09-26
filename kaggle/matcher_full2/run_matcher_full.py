@@ -43,10 +43,11 @@ for p in POOLS:
     ids = pl.scan_parquet(p).select(pl.col("s1").unique()).collect(engine="streaming")["s1"].sort()
     thr = int(1_000_000 * min(1.0, N_S1 / len(ids)))
     P = pl.scan_parquet(p).filter((pl.col("s1").hash(7) % 1_000_000) < thr).collect(engine="streaming").join(st, on="r", how="left")
+    P = P.drop("y", strict=False)   # labels always come from gt below (older pools carried a y column, newer do not)
     parts.append(P)
     log(f"{os.path.basename(p)}: {len(ids)} S1 -> sample {P['s1'].n_unique()} S1 / {P.height} rows  {time.time()-T0:.0f}s")
     del P, st
-pool = pl.concat(parts, how="vertical_relaxed"); del parts
+pool = pl.concat(parts, how="diagonal_relaxed"); del parts
 ctry = pool.select("s1").unique().join(S1ALL.select(pl.col("entity_id").alias("s1"), "country"), on="s1")["country"].unique().to_list()
 pool = pool.join(M.s1_name_freq(S1ALL.filter(pl.col("country").is_in(ctry)), NZ), on="s1", how="left")
 log(f"context features: n_claim, n_s1_for_r, s1_name_freq  {time.time()-T0:.0f}s")
