@@ -38,3 +38,33 @@ LEET = {"0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "6": "g", "7": "t", "8
 HONORIFIC = {"the", "mr", "mrs", "ms", "dr", "smt", "shri", "sri", "sree", "shree", "m", "s", "messrs"}
 # function words in names ('Clinique de Jean' = 'Clinique du Jean'); removed from the core like honorifics
 NAME_STOP = {"and", "of", "de", "du", "des", "la", "le", "les", "l", "d", "et", "en", "au", "aux"}
+
+# ---- region-specific place names (hand tables; active with BER_PLACES=1) --------------------------------------------
+# Old / new / variant spellings of Indian places, measured on train true pairs where only the alias links S1 and copy
+# (Kolkata/Calcutta 17.8k, Odisha/Orissa 13.5k, Bengaluru/Bangalore 10.1k, Thiruvananthapuram/Trivandrum 6.7k, ...).
+# The canonical token is ADDED (the original word stays), so both spellings meet on it.
+PLACE_ALIAS = {"India": {
+    "calcutta": "kolkata", "kolkatta": "kolkata", "bombay": "mumbai", "bangalore": "bengaluru", "banglore": "bengaluru",
+    "bengalooru": "bengaluru", "madras": "chennai", "gurgaon": "gurugram", "trivandrum": "thiruvananthapuram",
+    "calicut": "kozhikode", "trichy": "tiruchirappalli", "tiruchi": "tiruchirappalli", "baroda": "vadodara",
+    "vizag": "visakhapatnam", "vishakhapatnam": "visakhapatnam", "poona": "pune", "cochin": "kochi", "ernakulam": "kochi",
+    "mysore": "mysuru", "allahabad": "prayagraj", "mangalore": "mangaluru", "belgaum": "belagavi", "gulbarga": "kalaburagi",
+    "hubli": "hubballi", "ahmadabad": "ahmedabad", "nasik": "nashik", "kancheepuram": "kanchipuram",
+    "tiruvallur": "thiruvallur", "rangareddi": "rangareddy", "paraganas": "parganas", "keralam": "kerala",
+    "orissa": "odisha", "secunderabad": "hyderabad", "benaras": "varanasi", "banaras": "varanasi",
+    "pondicherry": "puducherry", "simla": "shimla", "tuticorin": "thoothukudi", "cawnpore": "kanpur",
+    "trichur": "thrissur", "quilon": "kollam", "alleppey": "alappuzha", "cuddapah": "kadapa", "gauhati": "guwahati",
+    "jubbulpore": "jabalpur", "bhubaneshwar": "bhubaneswar"}}
+# multi-word places -> one canonical token (a word shared by several states, "pradesh", must not chain them together)
+PLACE_PHRASE = {"India": [
+    (("andhra", "pradesh"), "st_ap_tg"), (("telangana",), "st_ap_tg"), (("telangaan",), "st_ap_tg"), (("aandhrapradesh",), "st_ap_tg"),
+    (("madhya", "pradesh"), "st_mp"), (("madhy", "pradesh"), "st_mp"), (("uttar", "pradesh"), "st_up"), (("himachal", "pradesh"), "st_hp"),
+    (("arunachal", "pradesh"), "st_ar"), (("west", "bengal"), "st_wb"), (("pashchimabangg",), "st_wb"), (("tamil", "nadu"), "st_tn"),
+    (("gautam", "buddha", "nagar"), "noida"), (("ranga", "reddy"), "rangareddy"), (("navi", "mumbai"), "navimumbai"),
+    (("new", "bombay"), "navimumbai"), (("chhatrapati", "sambhaji", "nagar"), "aurangabad"), (("sawai", "madhopur"), "sawaimadhopur"),
+    (("new", "delhi"), "delhi")]}
+# learned address synonyms that touch these words chain unrelated states (pradesh -> mp, up, telangana; west -> wv)
+PLACE_SYN_BLOCK = {"pradesh", "west", "east", "north", "south", "bengal", "nadu", "tamil", "uttar", "madhya", "andhra",
+                   "himachal", "arunachal", "w", "e", "n", "s"}
+# generator filler in copy addresses with no counterpart in the S1 ("Door No 12", literal "null" / "<NULL>")
+PLACE_ADDR_STOP = {"door", "dor", "doro", "null"}

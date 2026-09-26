@@ -20,13 +20,17 @@ import re
 
 import polars as pl
 
-from .tables import ADDR_STOP, ALIAS_MARKERS, HONORIFIC, LEGAL, NAME_STOP, NUMBER_WORDS, STREET, STREET_COUNTRY, UNIT_EXCLUDE
+from .tables import (ADDR_STOP, ALIAS_MARKERS, HONORIFIC, LEGAL, NAME_STOP, NUMBER_WORDS, PLACE_ADDR_STOP, PLACE_ALIAS,
+                     PLACE_PHRASE, PLACE_SYN_BLOCK, STREET, STREET_COUNTRY, UNIT_EXCLUDE)
 from .text import base_clean, leet_fix_token, skeleton
 from .translit import INDIC_RE, translit
 
 TOK_ANY = r"[^\s.,()\[\]\-/]+"
 WEB_RE = r"(?i)(^@|www\.|\.(com|in|net|org|co|fr|biz|info)\b)"
 ALIAS_RE = r"(?i)\s(" + "|".join(m.replace("/", r"\s*/\s*") for m in ALIAS_MARKERS) + r")[:\s]"
+# region-specific place handling (tables.PLACE_*): city aliases, multi-word states as one token, no synonym chaining
+# through shared state words, generator filler words dropped. Off by default (models trained without it stay valid).
+PLACES = os.environ.get("BER_PLACES", "0") == "1"
 
 
 class Normalizer:
@@ -42,10 +46,16 @@ class Normalizer:
         dp = os.path.join(art_dir, "decoy_words.parquet")
         self.decoy = set(pl.read_parquet(dp)["t"].to_list()) if os.path.exists(dp) else set()
         syn = rd("addr_synonyms.parquet")
+        blk = list(PLACE_SYN_BLOCK)
+        if PLACES:
+            syn = syn.filter(~pl.col("token").is_in(blk) & ~pl.col("equiv").is_in(blk))
         self.addr_syn = syn.group_by("token").agg(pl.col("equiv"))
         # per-country synonyms mined at test time from pseudo-pairs (artifacts.fit_country_addr_synonyms), optional
         cp = os.path.join(art_dir, "addr_synonyms_country.parquet")
-        self.addr_syn_c = pl.read_parquet(cp).group_by(["country", "token"]).agg(pl.col("equiv")) if os.path.exists(cp) else None
+        sc = pl.read_parquet(cp) if os.path.exists(cp) else None
+        if sc is not None and PLACES:
+            sc = sc.filter(~pl.col("token").is_in(blk) & ~pl.col("equiv").is_in(blk))
+        self.addr_syn_c = sc.group_by(["country", "token"]).agg(pl.col("equiv")) if sc is not None else None
         v = rd("vocab.parquet").group_by(["country", "token"]).agg(pl.col("n").sum())
         self.vocab = {}
         for c, g in v.partition_by("country", as_dict=True).items():
@@ -125,11 +135,20 @@ class Normalizer:
             (pl.col("a0").str.strip_chars() == "").alias("noaddr"))
         # street abbreviations (hand table, per-country overrides) BEFORE the length filter so 'R', 'St', 'Bd' map;
         # 2-letter tokens kept (state codes, so the learned code<->name synonyms apply on both sides)
-        stop = list(ADDR_STOP)
+        stop = list(ADDR_STOP | (PLACE_ADDR_STOP if PLACES else set()))
         aw = pl.col("aw0").list.eval(pl.element().replace(STREET))
         for c, ov in STREET_COUNTRY.items():
             aw = pl.when(pl.col("country") == c).then(pl.col("aw0").list.eval(pl.element().replace({**STREET, **ov}))).otherwise(aw)
         d = d.with_columns(aw.list.eval(pl.element().filter((pl.element().str.len_chars() >= 2) & ~pl.element().is_in(stop))).alias("aw0"))
+        if PLACES:
+            # flat expressions (a nested when/otherwise chain doubles the expression tree per rule)
+            parts = [pl.col("aw0")]
+            for c, tab in PLACE_ALIAS.items():
+                parts.append(pl.when(pl.col("country") == c).then(pl.col("aw0").list.eval(pl.element().replace_strict(tab, default=None)).list.drop_nulls()))
+            hits = [pl.when(pl.all_horizontal([pl.col("aw0").list.contains(w) for w in words]) & (pl.col("country") == c)).then(pl.lit(canon))
+                    for c, phrases in PLACE_PHRASE.items() for words, canon in phrases]
+            parts.append(pl.concat_list(hits).list.drop_nulls())
+            d = d.with_columns(pl.concat_list([x.fill_null(pl.lit([], dtype=pl.List(pl.String))) for x in parts]).list.unique(maintain_order=True).alias("aw0"))
         ex = d.select("entity_id", "country", "aw0").explode("aw0").join(self.addr_syn.rename({"token": "aw0"}), on="aw0", how="left")
         empty = pl.lit([], dtype=pl.List(pl.String))
         if self.addr_syn_c is not None:

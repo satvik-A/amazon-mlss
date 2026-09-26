@@ -17,6 +17,7 @@ VARIANTS = [
     # round 4 (internet, ber from GitHub): address-word window = first words + the last 3 (city / state), vs r9 on the same code
     {"name": "r9b_base", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 0},
     {"name": "r10_tail3", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3},
+    {"name": "r11_tail3_places", "ref": "__REF__", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3, "places": 1},
 ]
 import subprocess, sys
 REF = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=here).stdout.strip()

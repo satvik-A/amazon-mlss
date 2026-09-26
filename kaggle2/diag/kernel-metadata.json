@@ -1,0 +1,4 @@
+{"id": "satvik006/er2-diag", "title": "er2-diag", "code_file": "run_diag.py",
+ "language": "python", "kernel_type": "script", "is_private": true, "enable_gpu": false, "enable_tpu": false,
+ "enable_internet": true, "dataset_sources": ["satvik006/er-bundle", "satvik006/er-diag-in"], "competition_sources": [],
+ "kernel_sources": []}

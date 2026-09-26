@@ -19,6 +19,8 @@ if not LOCAL:
 else:
     sys.path.insert(0, os.path.abspath("../../code/business_entity_resolution/src"))
     IN, ART, WD = "../../research/eda/cache", "../../kaggle/artifacts/kout/artifacts", "."
+if VAR.get("places"):
+    os.environ["BER_PLACES"] = "1"      # read by ber.normalize at import
 import numpy as np, polars as pl
 from ber.normalize import Normalizer
 from ber.pipeline import norm_chunks
