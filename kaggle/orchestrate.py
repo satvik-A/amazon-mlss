@@ -69,7 +69,7 @@ JOBS = [
     *[(f"er-l1test4-{c}", "cpu", ["er-matcher-full4", f"er-cands4-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test4/jobs/{c}"])(c)) for c in C3],
     ("er-xenc-score4", "gpu", ["er-matcher-full4"], lambda st: launch("kaggle/xenc_score4", "NvidiaTeslaT4")),
     ("er-stack4", "cpu", ["er-xenc-score4"], lambda st: launch("kaggle/stack4")),
-    *[(f"er-xenc-score-test4-{c}", "gpu", [f"er-l1test4-{c}", "er-stack4"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test4/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
+    *[(f"er-xenc-score-test4-{c}", "gpu", [f"er-l1test4-{c}"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test4/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
     ("er-final4", "cpu", ["er-stack4", *[f"er-l1test4-{c}" for c in C3], *[f"er-xenc-score-test4-{c}" for c in C3]], lambda st: launch("kaggle/final4")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
