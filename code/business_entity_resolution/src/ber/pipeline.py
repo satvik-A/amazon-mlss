@@ -23,8 +23,9 @@ def norm_chunks(nz, df: pl.DataFrame, chunk: int = 1_000_000) -> pl.DataFrame:
     return pl.concat([nz.transform(df.slice(i, chunk)) for i in range(0, df.height, chunk)])
 
 
-def _block_shard(idx, Q, R, sig, keep_prk, rel_chunk):
-    """query + sibling expansion + group ids + number relation for one shard of S1 queries (compact integer columns)."""
+def _block_shard(idx, Q, R, sig, keep_prk, rel_chunk, emb=None):
+    """query + sibling expansion (+ embedding-arm pairs) + group ids + number relation for one shard of S1 queries.
+    emb: [id, id_r, erk, esim] nearest records by multilingual-e5 cosine (pass 4); rows new to the word arms get sc 0."""
     cand = idx.query(Q)
     ex = B.expand(cand, sig)
     cand = pl.concat([cand, ex.with_columns(pl.lit(0.0, dtype=pl.Float32).alias("sc"), pl.lit(None, dtype=pl.UInt32).alias("prk"),
@@ -33,6 +34,11 @@ def _block_shard(idx, Q, R, sig, keep_prk, rel_chunk):
     del ex
     cand = cand.with_columns((pl.col("prk").is_null() & pl.col("xrk").is_null()).alias("exp"))
     cand = cand.filter((pl.col("prk") <= keep_prk) | pl.col("xrk").is_not_null() | pl.col("exp"))
+    if emb is not None:
+        lo, hi = int(Q["id"].min()), int(Q["id"].max())
+        e = emb.filter(pl.col("id").is_between(lo, hi))
+        cand = cand.join(e, on=["id", "id_r"], how="full", coalesce=True).with_columns(
+            pl.col("sc").fill_null(0.0), pl.col("exp").fill_null(False), *[pl.col(f"a{k}").fill_null(False) for k in B.ARMS])
     cand = cand.join(sig.rename({"id": "id_r"}), on="id_r", how="left").with_columns(
         pl.when(pl.col("kind") == "none").then(pl.col("id_r").cast(pl.UInt64) + (1 << 62)).otherwise(pl.col("sig")).alias("gid")).drop("sig", "kind")
     cand = cand.with_columns(pl.col("sc").max().over(["id", "gid"]).alias("_g")).with_columns(
@@ -45,7 +51,7 @@ def _block_shard(idx, Q, R, sig, keep_prk, rel_chunk):
 
 
 def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame, nz, log=print, keep_prk: int = 60,
-               rev_cap: int = 3, rel_chunk: int = 10_000_000, shard: int = 250_000) -> pl.DataFrame:
+               rev_cap: int = 3, rel_chunk: int = 10_000_000, shard: int = 250_000, emb: pl.DataFrame | None = None) -> pl.DataFrame:
     """S_raw: S1s to query; R_raw: the country's S2/S3 records; S_all_raw: ALL S1s of the country (reverse lookups).
     Deterministic: inputs are put in entity_id order, so row ids (rank tie-breaks) do not depend on input order.
     S1s are queried in shards of `shard` (memory: 800k S1 x ~165 raw candidates does not fit at once); results are
@@ -55,9 +61,14 @@ def candidates(S_raw: pl.DataFrame, R_raw: pl.DataFrame, S_all_raw: pl.DataFrame
     idx = B.Index(R)
     sig = B.signatures(R)
     Q = norm_chunks(nz, S_raw).with_columns(pl.Series("id", np.arange(S_raw.height, dtype=np.uint32)))
+    if emb is not None:   # [s1, r, erk, esim] entity ids -> row ids
+        emb = emb.join(S_raw.select(pl.col("entity_id").alias("s1")).with_row_index("id"), on="s1") \
+                 .join(R_raw.select(pl.col("entity_id").alias("r")).with_row_index("id_r"), on="r") \
+                 .select(pl.col("id").cast(pl.UInt32), pl.col("id_r").cast(pl.UInt32), pl.col("erk").cast(pl.UInt16), pl.col("esim").cast(pl.Float32))
+        log(f"  embedding arm: {emb.height} pairs ({emb.height / max(S_raw.height, 1):.1f}/S1)")
     parts = []
     for i in range(0, Q.height, shard):
-        parts.append(_block_shard(idx, Q.slice(i, shard), R, sig, keep_prk, rel_chunk))
+        parts.append(_block_shard(idx, Q.slice(i, shard), R, sig, keep_prk, rel_chunk, emb))
         log(f"  shard {i // shard}: {min(i + shard, Q.height)}/{Q.height} S1 -> {sum(p.height for p in parts)} candidates")
         gc.collect()
     del idx; gc.collect()

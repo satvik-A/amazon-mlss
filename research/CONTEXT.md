@@ -193,3 +193,9 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - Pass 4 blocking OOM: doubled limits with 250k-S1 shards were killed (India test, US train on acc3). Relaunched (India, US; train + test) with primary cap 120, keep_prk 120, other arms x2, sibling expansion 40/40, 100k-S1 shards. France test pool finished with the first (x2, keep_prk 200) config.
 - Recall lab round 5 (30k S1/country): r12 (all caps x2, prk 200, df 5000) India recall 0.9796 -> 0.9887, complete 93.8 -> 96.4, no-address 91.4 -> 94.0; US 0.9932 -> 0.9953; 345 cands/S1. r13 (x4) India 0.9931 at 733/S1. r14 (sibling expansion 40/40) +70 cands/S1 for +0.0005 -> useless. Earlier labs: primary cap / keep_prk / df cap alone move little; arms 7 (no-address) + 8 (name x address) caps carry the gain.
 - **Final pass-4 blocking (jobs4c, 23:xx):** arms 3-8 caps x2 {3:60,4:60,5:80,6:50,7:40,8:20}, df cap 5000 / key cap 400, primary 100 / keep_prk 60 unchanged, expansion unchanged, 100k-S1 shards. Superseded runs were stopped by deleting the kernels (the CLI cannot cancel a session or delete one version).
+
+## LB: final3 = 0.978 (2026-09-26 night) — best so far (submit3 0.976). Held-out C 0.9842 -> LB gap ~0.006.
+## Embedding search arm (er2-embed-lab, multilingual-e5-small, 30k train S1/country)
+- India: word 0.9796 -> +top-10 0.9880 (+4.5 cands/S1), top-20 0.9894 (+13), top-50 0.9907 (+41); rescues 41-48% of word misses; Indic copies 0.980 -> 0.988; no-address copies ~unchanged (0.914 -> 0.917).
+- US: 0.9932 -> top-10 0.9945 (+3.3), top-20 0.9949 (+10.7).
+- Far cheaper than looser word caps (r12: +215 cands for 0.9887). -> pass 4 includes the embedding arm (top-20, always kept by the cut-off; erk / esim become matcher features). Jobs er-emb4-* (GPU) feed er-cands4-*.

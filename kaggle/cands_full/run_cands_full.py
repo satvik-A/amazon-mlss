@@ -43,8 +43,11 @@ R = pl.scan_parquet([f"{IN}/{SPLIT}_s2.parquet", f"{IN}/{SPLIT}_s3.parquet"]).fi
 if LOCAL:
     S = S.head(5000); R = R.head(150000)
 log(f"S1 {S.height}  R {R.height}  {time.time()-T0:.0f}s")
-ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60), shard=(BLK or {}).get("shard", 250_000))
-keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin"]
+EF = [] if LOCAL else glob.glob(f"/kaggle/input/**/emb_{TAG}.parquet", recursive=True)   # pass 4: embedding-arm neighbours
+EMB = pl.read_parquet(EF[0]) if EF else None
+log(f"embedding arm: {EF[0] if EF else 'none'}")
+ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60), shard=(BLK or {}).get("shard", 250_000), emb=EMB)
+keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin", *(["erk", "esim"] if EMB is not None else [])]
 ann = ann.select(keep)
 if SPLIT == "train":
     # recall / completeness on a 50k-S1 sample (labels are attached later by the matcher, on its own sample: a label

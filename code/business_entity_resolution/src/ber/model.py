@@ -43,7 +43,10 @@ def pool_features(pool: pl.DataFrame, S1: pl.DataFrame, R: pl.DataFrame, nz, chu
         q = QN.filter(pl.col("entity_id").is_in(ids.implode()))
         r = RN.filter(pl.col("entity_id").is_in(P["r"].unique().implode()))
         out.append(pair_features(P, q, r))
-    return pl.concat(out, how="vertical_relaxed")
+    F = pl.concat(out, how="vertical_relaxed")
+    if "erk" not in F.columns:   # pools without the embedding arm (pass <= 3)
+        F = F.with_columns(pl.lit(None, dtype=pl.UInt16).alias("erk"), pl.lit(None, dtype=pl.Float32).alias("esim"))
+    return F
 
 
 def s1_agg(d: pl.DataFrame, p: str = "p") -> pl.DataFrame:
@@ -139,13 +142,17 @@ def _cut_rules():
     ]
 
 
+EMB_KEEP = 20
+
+
 def cutoff_mask(n: int) -> pl.Expr:
     """True for candidates kept by the first n cut-off rules (feature frame from pool_features)."""
     rules = _cut_rules()[:n]
     e = rules[0]
     for r in rules[1:]:
         e = e | r
-    return e.fill_null(False)
+    # embedding-arm neighbours are always kept (a deterministic blocking arm, like sc_rank)
+    return e.fill_null(False) | (pl.col("erk") <= EMB_KEEP).fill_null(False)
 
 
 def apply_policy(F: pl.DataFrame, policy: dict) -> pl.DataFrame:
