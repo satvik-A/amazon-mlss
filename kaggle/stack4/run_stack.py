@@ -75,5 +75,5 @@ log(f"DELTA level-2 minus level-1 on C: {d:+.4f}  -> {'ACCEPT' if d >= 0.002 els
 json.dump(dict(res["level-2"][1], stack_features=feat2, delta_C=d), open(f"{WD}/decision_stack.json", "w"), indent=1)
 # pass 4: stacked scores of the out-of-sample rows (B2 tunes / C reports) for the competition + sibling layer
 for nm, a, b in (("B2", B2, B2s), ("C", C, Cs)):
-    b.select("s1", "r", "y", pl.col("p").alias("p2")).with_columns(a["p"].alias("p1")).write_parquet(f"{WD}/stack_pred_{nm}.parquet")
+    b.select("s1", "r", "y", "noaddr_r", pl.col("p").alias("p2")).with_columns(a["p"].alias("p1")).write_parquet(f"{WD}/stack_pred_{nm}.parquet")
 log(f"DONE {time.time()-T0:.0f}s")
