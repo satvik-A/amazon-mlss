@@ -73,4 +73,7 @@ S1c = pl.scan_parquet(f"{IN}/train_s1.parquet").filter(pl.col("entity_id").is_in
 log(per.join(S1c, on="s1").group_by("country").agg((pl.col("f") - pl.col("f1")).mean().alias("delta"), pl.len()))
 log(f"DELTA level-2 minus level-1 on C: {d:+.4f}  -> {'ACCEPT' if d >= 0.002 else 'REJECT'} (gate +0.002)")
 json.dump(dict(res["level-2"][1], stack_features=feat2, delta_C=d), open(f"{WD}/decision_stack.json", "w"), indent=1)
+# pass 4: stacked scores of the out-of-sample rows (B2 tunes / C reports) for the competition + sibling layer
+for nm, a, b in (("B2", B2, B2s), ("C", C, Cs)):
+    b.select("s1", "r", "y", pl.col("p").alias("p2")).with_columns(a["p"].alias("p1")).write_parquet(f"{WD}/stack_pred_{nm}.parquet")
 log(f"DONE {time.time()-T0:.0f}s")
