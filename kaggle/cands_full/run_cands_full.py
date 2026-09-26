@@ -43,7 +43,7 @@ R = pl.scan_parquet([f"{IN}/{SPLIT}_s2.parquet", f"{IN}/{SPLIT}_s3.parquet"]).fi
 if LOCAL:
     S = S.head(5000); R = R.head(150000)
 log(f"S1 {S.height}  R {R.height}  {time.time()-T0:.0f}s")
-ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60))
+ann = candidates(S, R, S, NZ, log=log, keep_prk=(BLK or {}).get("keep_prk", 60), shard=(BLK or {}).get("shard", 250_000))
 keep = ["s1", "r", "sc", "prk", "xrk", *[f"a{k}" for k in B.ARMS], "exp", "gid", "rel", "rev_margin"]
 ann = ann.select(keep)
 if SPLIT == "train":
