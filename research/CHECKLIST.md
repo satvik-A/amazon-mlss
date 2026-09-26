@@ -117,7 +117,8 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] **Scalable query:** sorted-array postings + adaptive chunks (identical output). FULL mode computes reverse preference from forward candidates (no S1 index); SAMPLE mode keeps the S1 index → train the final matcher on FULL-mode pools.
 - [~] Full-mode candidate pools for all train/test countries (Kaggle `er-cands-*`).
 - [x] Recall lab (account 2): df cap 2000 = 2.3× faster for −0.1/−0.2 pt; df cap 20000 = 5× slower for +0.1/+0.4 pt (rejected); aux caps ×2 +0.3/+0.6 pt; **arm 7 (no-address names) +2.1/+2.2 pts completeness**; arm 7 cap 20 slightly better; arm 8 (name key × address) running.
-- [ ] **Deterministic feature cut-offs for the final candidate set** (number relation, name overlap, score ratio; thresholds tuned on train) — v5 shows group/beta pruning alone is lossy; candidate-set size counts in the ranking.
+- [x] **Deterministic feature cut-offs for the final candidate set** (11 rules: 24 cands/S1 at −0.0007 F0.5 on C) (number relation, name overlap, score ratio; thresholds tuned on train) — v5 shows group/beta pruning alone is lossy; candidate-set size counts in the ranking.
+- [!] **France transfer gap (label-free):** in er-submit2 France shard 0, only **95.1%** of France pseudo-pairs are predicted as matches vs 99.95% (US) / 99.51% (India) on train holdout C → France recall on easy pairs ~4.5 pts lower. Next: analyse level1_test_France (features + p) for the missed pseudo-pairs; fix via features/normalisation, label-free per-country threshold calibration, or self-training on pseudo-pairs.
 - [ ] France self-training: pseudo-pairs as positives + S1×S1 look-alikes as negatives → France-specific calibration of the matcher.
 
 ## E. Rejected (with reasons)
