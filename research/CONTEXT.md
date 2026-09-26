@@ -160,3 +160,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 ## LB: submit3 = 0.976 (2026-09-26)
 - submit2 0.958 -> submit3 0.976 (+0.018) from France fixes (one_owner + street_filter) + pass-2 stack. Held-out C for that model 0.981 -> LB gap now ~0.005 (was ~0.023).
 - Pass-3 (C 0.9842) expected ~0.979 on LB if gap holds. 0.988 needs ~+0.009 more: recall of in-pool pairs (R ~0.93, P ~0.992) is the main lever.
+
+## Organiser answer (2026-09-26): private LB = same test files (US/India/France), no new countries/languages; names may be Indic in one source and Latin in another.
+- Checked test scripts: only Indic scripts (Devanagari, Bengali, Gurmukhi, Gujarati, Oriya, Tamil, Telugu, Kannada, Malayalam), India S2/S3 only, same mix as train. US/France: only accented Latin. Test S1 is all Latin.
+- Already covered: indic_lexicon (learned from train pairs), oov_map, unsupervised test sibling map (organiser answer 11), translit fallback, MuRIL/CANINE cross-encoders. Pool recall for Indian-script copies 98.0%.
+- To do: measure selected recall on Indic-script pairs vs Latin pairs in the missed-match analysis.
