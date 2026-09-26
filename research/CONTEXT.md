@@ -156,3 +156,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - Shipped per-S1 rule 0.96632 -> + one_owner (retuned) 0.96823 (+0.0019) -> exclusive posterior q_k0.5 (t1 0.8, t2 0.7) 0.96901 (+0.0027 total, +0.0008 over one_owner).
 - P_C ~0.992, R_C ~0.93: the remaining gap is RECALL of pairs that are in the pool but not selected, not precision.
 - Verdict: exclusive posterior is a small real gain; add to final decision after US confirms. Not the 0.988 lever by itself.
+
+## LB: submit3 = 0.976 (2026-09-26)
+- submit2 0.958 -> submit3 0.976 (+0.018) from France fixes (one_owner + street_filter) + pass-2 stack. Held-out C for that model 0.981 -> LB gap now ~0.005 (was ~0.023).
+- Pass-3 (C 0.9842) expected ~0.979 on LB if gap holds. 0.988 needs ~+0.009 more: recall of in-pool pairs (R ~0.93, P ~0.992) is the main lever.
