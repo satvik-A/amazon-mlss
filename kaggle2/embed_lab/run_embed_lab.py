@@ -57,8 +57,8 @@ for c in ("India", "US"):
     ER = embed(text(R)); log(f"{c}: embedded {R.height} records  {time.time()-T0:.0f}s")
     EQ = embed(text(Q))
     top = []
-    for i in range(0, Q.height, 2048):
-        sc = EQ[i:i + 2048] @ ER.T
+    for i in range(0, Q.height, 256):
+        sc = EQ[i:i + 256] @ ER.T
         top.append(torch.topk(sc, max(KS), dim=1).indices.cpu().numpy())
     top = np.vstack(top); del ER, EQ; torch.cuda.empty_cache()
     log(f"{c}: kNN done  {time.time()-T0:.0f}s")
