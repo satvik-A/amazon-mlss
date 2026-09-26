@@ -86,6 +86,13 @@ Full-mode TRAIN India (first pass, all 883k S1): internal pool 89.2/S1, pair rec
 | **v2 fixed normaliser (a4c1490)** | **0.9615 (+0.0025, gate passed)** | 0.969 | 0.961 | 0.973 | 0.944 |
 Ceiling (perfect decisions on this pool) 0.9837. Decision rules within ±0.0005 of each other (rank-threshold best on B for v2). End-to-end vs candidate-set size (v2): 5.9 cands → 0.9444, 43 → 0.9582, 91.5 (no pruning) → 0.9615 → group/beta pruning is too lossy; next: deterministic feature cut-offs.
 
+**Second-pass matcher (`er-matcher-full2`; r9 blocking, full-mode pools, 80k S1/country, context features; holdout C = 16,038 S1):**
+- C macro F0.5 **0.9725** (rank-threshold t1 0.80 / t2 0.75; no candidate cut-off) — US 0.9785, India 0.9666; singleton 0.967, non-singleton 0.973; pair P 0.9933 R 0.9401. Ceiling (perfect decisions on the pool) 0.9928. Expected-F rules within 0.0002; has-head no gain.
+- Pool: 97.9% of true pairs in the sampled pool. LightGBM 642 rounds; top features rev_margin (full-mode), prk, num_rel, bag_ratio, ad_tset, **a8**, n_extra_sk.
+- Cut-off policies (end to end on C): 5 rules → 8.2 cands/S1, 0.9645; 8 → 13.8, 0.9703; 10 → 21.8, 0.9715; **11 → 23.9, 0.9718 (chosen: smallest within 0.0005 of best on B)**; 14 → 39.7, 0.9723; none → 124. Group-G pruning is much worse (G=10: 25.7 cands, 0.946).
+- Label-free reference: C pseudo-pairs predicted as match US 0.9995, India 0.9951 (France number comes from er-submit2).
+- Known bug: prune(G=99) drops ~0.1% of positives (null-gid join) — irrelevant now (cut-off policies).
+
 **Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
 
 **Validation:** exact scorer OK. **LB probe (all-empty) = 0.05642 → test singleton rate 5.64%** (train 5.6%: consistent). A wrong non-empty prediction on a singleton costs its full 1/N; every non-singleton S1 needs ≥1 correct match to score anything.

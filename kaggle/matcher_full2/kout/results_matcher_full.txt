@@ -1,0 +1,52 @@
+ref b785161; pools ['/kaggle/input/notebooks/satvikaderla/er-cands2-train-india/pool_train_India.parquet', '/kaggle/input/notebooks/satvikaderla/er-cands2-train-us/pool_train_US.parquet']; N_S1/country 80000
+pool_train_India.parquet: 883187 S1 -> sample 80247 S1 / 10486871 rows  50s
+pool_train_US.parquet: 1323633 S1 -> sample 79778 S1 / 10254590 rows  121s
+context features: n_claim, n_s1_for_r, s1_name_freq  193s
+pool 20741461 rows; positives in pool 542885 / 554699 = 0.9787
+features 51  1377s
+top features (gain): [('rev_margin', 12029301), ('prk', 2744008), ('num_rel', 1966889), ('bag_ratio', 1863986), ('ad_tset', 798664), ('a8', 706194), ('n_extra_sk', 655666), ('nm_tsort', 441308), ('n_extra_r', 397928), ('co_jw', 391444), ('aw_jacc', 300515), ('nm_partial', 255359), ('s1_name_freq', 230752), ('nw_jacc', 230734), ('n_num_r', 198835), ('num_jacc', 172443), ('xrk', 144836), ('house_rel', 124850), ('noaddr_r', 116397), ('a4', 106011), ('len_diff', 101683), ('nm_tset', 89196), ('nm_ratio', 84701), ('n_claim', 77220), ('grp_nm_tset_mean', 73274)]
+
+rank thresholds t1=0.80 t2=0.75; expected-F gamma=1.5
+=== decision rules (no extra pruning) ===
+  rank-threshold             B 0.9727 | C 0.9725  singleton 0.9668  non-singleton 0.9729  P 0.9933 R 0.9401
+  expected-F                 B 0.9723 | C 0.9723  singleton 0.9487  non-singleton 0.9738  P 0.9945 R 0.9354
+  expected-F + exclusivity   B 0.9724 | C 0.9723  singleton 0.9487  non-singleton 0.9738  P 0.9945 R 0.9354
+  expected-F + has-head      B 0.9747 | C 0.9717  singleton 0.9497  non-singleton 0.9731  P 0.9945 R 0.9352
+rule chosen on B (has-head excluded from choice: in-sample on B): rank-threshold; has-head on C for reference 0.9717
+ceiling on C (perfect decisions on the pool): 0.9928
+shape: (2, 3)
+┌─────────┬──────────┬──────┐
+│ country ┆ f        ┆ len  │
+│ ---     ┆ ---      ┆ ---  │
+│ str     ┆ f64      ┆ u32  │
+╞═════════╪══════════╪══════╡
+│ US      ┆ 0.978468 ┆ 8013 │
+│ India   ┆ 0.966585 ┆ 8025 │
+└─────────┴──────────┴──────┘
+  US C pseudo-pairs 12384: true precision 0.9994, predicted as match 0.9995  (compare with the France number in er-submit)
+  India C pseudo-pairs 12024: true precision 0.9947, predicted as match 0.9951  (compare with the France number in er-submit)
+
+=== END-TO-END per blocking policy ===
+shape: (11, 6)
+┌─────────────────────────────────┬────────────┬──────────┬──────────┬───────────┬──────────┐
+│ policy                          ┆ cands_B    ┆ recall_B ┆ F_B      ┆ cands_C   ┆ F_C      │
+│ ---                             ┆ ---        ┆ ---      ┆ ---      ┆ ---       ┆ ---      │
+│ str                             ┆ f64        ┆ f64      ┆ f64      ┆ f64       ┆ f64      │
+╞═════════════════════════════════╪════════════╪══════════╪══════════╪═══════════╪══════════╡
+│ {"cutoff": 5}                   ┆ 8.224665   ┆ 0.934193 ┆ 0.964667 ┆ 8.234755  ┆ 0.964548 │
+│ {"cutoff": 8}                   ┆ 13.856669  ┆ 0.963823 ┆ 0.970633 ┆ 13.840441 ┆ 0.970297 │
+│ {"alpha": 0.0, "G": 5, "gate":… ┆ 16.25461   ┆ 0.896912 ┆ 0.93782  ┆ 16.265869 ┆ 0.939088 │
+│ {"cutoff": 9}                   ┆ 17.323122  ┆ 0.964486 ┆ 0.97063  ┆ 17.288814 ┆ 0.970297 │
+│ {"cutoff": 10}                  ┆ 21.876005  ┆ 0.971588 ┆ 0.971765 ┆ 21.811011 ┆ 0.97152  │
+│ {"cutoff": 11}                  ┆ 24.036919  ┆ 0.973487 ┆ 0.972111 ┆ 23.886083 ┆ 0.971828 │
+│ {"cutoff": 12}                  ┆ 24.682495  ┆ 0.97383  ┆ 0.972168 ┆ 24.539219 ┆ 0.971871 │
+│ {"alpha": 0.0, "G": 10, "gate"… ┆ 25.740629  ┆ 0.910778 ┆ 0.944879 ┆ 25.746415 ┆ 0.946007 │
+│ {"cutoff": 14}                  ┆ 39.86097   ┆ 0.975934 ┆ 0.972472 ┆ 39.693603 ┆ 0.972277 │
+│ {"alpha": 0.0, "G": 20, "gate"… ┆ 40.939005  ┆ 0.920586 ┆ 0.950279 ┆ 40.895436 ┆ 0.950986 │
+│ {"alpha": 0.0, "G": 99, "gate"… ┆ 123.869699 ┆ 0.97474  ┆ 0.971292 ┆ 123.79374 ┆ 0.971058 │
+└─────────────────────────────────┴────────────┴──────────┴──────────┴───────────┴──────────┘
+policy chosen on B (smallest candidate set within 0.0005 of the best F): {'policy': '{"cutoff": 11}', 'cands_B': 24.036918707845224, 'recall_B': 0.9734865382992319, 'F_B': 0.9721114741787086, 'cands_C': 23.88608305274972, 'F_C': 0.9718283805087403}
+wrote level1_B/C.parquet (policy-pruned rows with features, p, y)
+{"t1": 0.8000000000000003, "t2": 0.7500000000000002, "gamma": 1.5, "rule": "rank-threshold", "policy": {"cutoff": 11}, "features": ["sc", "prk", "xrk", "a0", "a3", "a4", "a5", "a6", "a7", "a8", "exp", "rev_margin", "n_claim", "s1_name_freq", "noaddr_s", "noaddr_r", "nm_ratio", "nm_tsort", "nm_tset", "nm_partial", "co_jw", "co_tset", "co_alias_tset", "bag_ratio", "ad_tset", "n_core_s", "n_core_r", "n_core_common", "n_extra_r", "n_missing_r", "n_extra_sk", "n_missing_sk", "sk_jacc", "nw_jacc", "aw_jacc", "legal_rel", "n_decoy_extra", "n_num_s", "n_num_r", "num_jacc", "unit_rel", "len_diff", "src
+
+DONE 3878s
