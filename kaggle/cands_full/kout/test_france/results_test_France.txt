@@ -1,0 +1,6 @@
+machine: 4 CPUs, 33 GB RAM
+test_France: ref 988ce1d  country synonyms yes
+S1 259452  R 1434993  6s
+  queried 259452 S1 -> 33229890 raw candidates
+  cands 24649784 (95.0/S1)
+wrote pool_test_France.parquet 24649784 rows  DONE 2607s

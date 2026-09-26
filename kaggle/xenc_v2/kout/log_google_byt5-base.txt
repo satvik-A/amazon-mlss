@@ -1,4 +1,28 @@
 model google/byt5-base on cuda (Tesla T4)
-ZERO-SHOT {"auc": 0.4758561841205934, "logloss": 0.8421339392927344, "top1_acc_nonsingleton": 0.5548098434004475, "singleton_max_p_below_0.5": 0.0030441400304414, "auc_US": 0.511779512236394, "auc_India": 0.49191163976210706}
-zero-shot scored 6000 in 184s
+ZERO-SHOT {"auc": 0.4765431437229741, "logloss": 0.8421347360728048, "top1_acc_nonsingleton": 0.5570469798657718, "singleton_max_p_below_0.5": 0.00228310502283105, "auc_US": 0.5098531334733409, "auc_India": 0.4938903787423756}
+zero-shot scored 6000 in 177s
 trainable params 584.6M
+step 200 seen 2400 loss nan 8.3 pairs/s
+step 400 seen 4800 loss nan 8.4 pairs/s
+step 600 seen 7200 loss nan 8.4 pairs/s
+step 800 seen 9600 loss nan 8.4 pairs/s
+step 1000 seen 12000 loss nan 8.4 pairs/s
+step 1200 seen 14400 loss nan 8.4 pairs/s
+step 1400 seen 16800 loss nan 8.4 pairs/s
+step 1600 seen 19200 loss nan 8.4 pairs/s
+step 1800 seen 21600 loss nan 8.5 pairs/s
+step 2000 seen 24000 loss nan 8.5 pairs/s
+step 2200 seen 26400 loss nan 8.5 pairs/s
+step 2400 seen 28800 loss nan 8.5 pairs/s
+step 2600 seen 31200 loss nan 8.5 pairs/s
+step 2800 seen 33600 loss nan 8.6 pairs/s
+step 3000 seen 36000 loss nan 8.6 pairs/s
+step 3200 seen 38400 loss nan 8.6 pairs/s
+step 3400 seen 40800 loss nan 8.6 pairs/s
+step 3600 seen 43200 loss nan 8.6 pairs/s
+step 3800 seen 45600 loss nan 8.6 pairs/s
+step 4000 seen 48000 loss nan 8.6 pairs/s
+step 4200 seen 50400 loss nan 8.6 pairs/s
+step 4400 seen 52800 loss nan 8.7 pairs/s
+trained 4559 steps, 54708 pairs (0.18 epoch) in 105.0 min
+eval scored 163329 pairs in 4157s (39 pairs/s)

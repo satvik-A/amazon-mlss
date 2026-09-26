@@ -1,0 +1,24 @@
+[{"stream_name":"stdout","time":22.29349632,"data":"ref 2951e07; pools ['/kaggle/input/notebooks/satvik006/er2-cands2-train-india/pool_train_India.parquet', '/kaggle/input/notebooks/satvik006/er2-cands2-train-us/pool_train_US.parquet']; N_S1/country 80000\n"}
+,{"stream_name":"stdout","time":72.374349787,"data":"pool_train_India.parquet: 883187 S1 -\u003e sample 80247 S1 / 10486871 rows  50s\n"}
+,{"stream_name":"stdout","time":151.179841097,"data":"pool_train_US.parquet: 1323633 S1 -\u003e sample 79778 S1 / 10254590 rows  129s\n"}
+,{"stream_name":"stderr","time":151.180734572,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":151.180790128,"data":"  File \"/kaggle/src/script.py\", line 49, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":151.18094646,"data":"    pool = pl.concat(parts, how=\"vertical_relaxed\"); del parts\n"}
+,{"stream_name":"stderr","time":151.181242282,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":151.181270905,"data":"  File \"/usr/local/lib/python3.12/dist-packages/polars/functions/eager.py\", line 297, in concat\n"}
+,{"stream_name":"stderr","time":151.181578396,"data":"    )._collect_eager(optimizations=QueryOptFlags._eager())\n"}
+,{"stream_name":"stderr","time":151.181663705,"data":"      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":151.181677647,"data":"  File \"/usr/local/lib/python3.12/dist-packages/polars/lazyframe/frame.py\", line 2240, in _collect_eager\n"}
+,{"stream_name":"stderr","time":151.182417923,"data":"    return _eager_engine().collect(\n"}
+,{"stream_name":"stderr","time":151.182448764,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":151.182456125,"data":"  File \"/usr/local/lib/python3.12/dist-packages/polars/lazyframe/engine.py\", line 443, in collect\n"}
+,{"stream_name":"stderr","time":151.18269324,"data":"    return wrap_df(ldf.collect(self.name, callback))\n"}
+,{"stream_name":"stderr","time":151.182888733,"data":"                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":151.182918924,"data":"polars.exceptions.ComputeError: schema lengths differ\n"}
+,{"stream_name":"stderr","time":154.786798469,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":154.786850176,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":155.115477076,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":155.115510387,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":155.869559695,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":157.631834809,"data":"[NbConvertApp] Writing 354377 bytes to __results__.html\n"}
+]

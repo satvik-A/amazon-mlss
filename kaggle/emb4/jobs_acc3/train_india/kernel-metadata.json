@@ -1,0 +1,16 @@
+{
+ "id": "satvik0006/er3-emb4-train-india",
+ "title": "er3-emb4-train-india",
+ "code_file": "run_emb.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [
+  "satvik0006/er-bundle"
+ ],
+ "competition_sources": [],
+ "kernel_sources": []
+}

@@ -1,0 +1,11 @@
+[{"stream_name":"stdout","time":7.848689489,"data":"test_India: ref d83f580  country synonyms yes\n"}
+,{"stream_name":"stdout","time":10.751755191,"data":"S1 809986  R 4717565  3s\n"}
+,{"stream_name":"stdout","time":2825.259170784,"data":"  queried 809986 S1 -\u003e 132584771 raw candidates\n"}
+,{"stream_name":"stderr","time":3131.756690875,"data":"Killed\n"}
+,{"stream_name":"stderr","time":3134.083613251,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3134.083648141,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3134.376182265,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3134.376224834,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3135.520529249,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3136.681181462,"data":"[NbConvertApp] Writing 306918 bytes to __results__.html\n"}
+]

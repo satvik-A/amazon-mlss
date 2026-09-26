@@ -1,0 +1,18 @@
+[{"stream_name":"stdout","time":12.585256719,"data":"train_India: ref b8d1f7c  country synonyms yes\n"}
+,{"stream_name":"stdout","time":18.337791432,"data":"S1 883188  R 4133346  6s\n"}
+,{"stream_name":"stdout","time":1887.245203053,"data":"  shard 0: 250000/883188 S1 -\u003e 32642555 candidates\n"}
+,{"stream_name":"stdout","time":3410.762541,"data":"  shard 1: 500000/883188 S1 -\u003e 65307861 candidates\n"}
+,{"stream_name":"stdout","time":4955.778585399,"data":"  shard 2: 750000/883188 S1 -\u003e 97966736 candidates\n"}
+,{"stream_name":"stdout","time":5760.828233579,"data":"  shard 3: 883188/883188 S1 -\u003e 115364606 candidates\n"}
+,{"stream_name":"stdout","time":5807.445178263,"data":"  cands 115364606 (130.6/S1)\n"}
+,{"stream_name":"stderr","time":5809.344196586,"data":"/kaggle/src/script.py:46: DeprecationWarning: In Polars 2.0, the default behavior for `empty_as_null` will change to `False`. To keep the current behavior, explicitly set `empty_as_null=True`.\n"}
+,{"stream_name":"stderr","time":5809.344339329,"data":"  .with_columns(pl.col(\"matched_entity_ids\").fill_null(\"\").str.split(\",\")).explode(\"matched_entity_ids\") \\\n"}
+,{"stream_name":"stdout","time":5821.148464452,"data":"internal pool 130.6/S1; pair recall 0.9662; S1 complete 0.9043\n"}
+,{"stream_name":"stdout","time":5853.475357904,"data":"wrote pool_train_India.parquet 115364606 rows  DONE 5841s\n"}
+,{"stream_name":"stderr","time":5857.349471747,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":5857.349515278,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":5857.754182952,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":5857.754219149,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":5864.292339893,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":5866.090396502,"data":"[NbConvertApp] Writing 309809 bytes to __results__.html\n"}
+]

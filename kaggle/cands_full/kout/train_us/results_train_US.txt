@@ -1,0 +1,3 @@
+train_US: ref 988ce1d  country synonyms yes
+S1 1323633  R 6186873  7s
+  queried 1323633 S1 -> 165510335 raw candidates

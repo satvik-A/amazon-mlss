@@ -1,0 +1,21 @@
+{
+ "zero_shot": {
+  "auc": 0.4507582576823248,
+  "logloss": 0.6496664242618597,
+  "top1_acc_nonsingleton": 0.5212527964205816,
+  "singleton_max_p_below_0.5": 0.943683409436834,
+  "auc_India": 0.47866877596081453,
+  "auc_US": 0.41257917886073014
+ },
+ "fine_tuned": {
+  "auc": 0.9991951511142352,
+  "logloss": 0.03401528369385731,
+  "top1_acc_nonsingleton": 0.9930537002404488,
+  "singleton_max_p_below_0.5": 0.7392996108949417,
+  "auc_India": 0.9992989766617433,
+  "auc_US": 0.9991338500296585
+ },
+ "pairs_seen": 299708,
+ "steps": 9366,
+ "model": "google/canine-c"
+}

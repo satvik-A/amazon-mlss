@@ -1,0 +1,53 @@
+ref 66967e3; pools ['/kaggle/input/notebooks/satvikaderla/er-cands3-train-india/pool_train_India.parquet', '/kaggle/input/notebooks/satvikaderla/er-cands3-train-us/pool_train_US.parquet']; N_S1/country 80000
+pool_train_India.parquet: 883188 S1 -> sample 80247 S1 / 10415961 rows  46s
+pool_train_US.parquet: 1323633 S1 -> sample 79778 S1 / 10205153 rows  128s
+context features: n_claim, n_s1_for_r, s1_name_freq  204s
+pool 20621114 rows; positives in pool 547313 / 554699 = 0.9867
+synthetic street twins (A split, negatives): 119995; e.g. [('32551 Stanford Road, Los Fresnos, Texas', '32551 EL MIRAGE RD, Los Fresnos, Texas'), ('GAITHERSBURG, 1526 TANYARD HILL ROAD, MD', 'GAITHERSBURG, 1526 MCCASLIN ROSE LN, MD'), ('47 Meoa Ave, Worcester, Massachusetts', '47 TIMBER VILLAGE DRIVE, Worcester, Massachusetts')]
+features 52  1177s
+top features (gain): [('rev_margin', 9876346), ('prk', 5221775), ('num_rel', 1934680), ('aw_jacc', 1059036), ('ad_tset', 939460), ('st_sim', 755197), ('co_jw', 753771), ('n_num_r', 433821), ('n_extra_sk', 429562), ('nw_jacc', 348735), ('nm_tsort', 301948), ('sc_rank', 261077), ('sc', 232635), ('num_jacc', 214487), ('s1_name_freq', 197014), ('nm_partial', 182458), ('xrk', 145781), ('grp_size', 136105), ('n_extra_r', 127704), ('a8', 110393), ('noaddr_r', 109806), ('len_diff', 103906), ('nm_tset', 101198), ('house_rel', 100191), ('nm_ratio', 86878)]
+
+rank thresholds t1=0.70 t2=0.70; expected-F gamma=1.25
+=== decision rules (no extra pruning) ===
+  rank-threshold             B 0.9747 | C 0.9743  singleton 0.9572  non-singleton 0.9754  P 0.9923 R 0.9466
+  expected-F                 B 0.9741 | C 0.9740  singleton 0.9422  non-singleton 0.9759  P 0.9937 R 0.9398
+  expected-F + exclusivity   B 0.9742 | C 0.9740  singleton 0.9422  non-singleton 0.9760  P 0.9937 R 0.9398
+  expected-F + has-head      B 0.9772 | C 0.9732  singleton 0.9455  non-singleton 0.9749  P 0.9938 R 0.9395
+rule chosen on B (has-head excluded from choice: in-sample on B): rank-threshold; has-head on C for reference 0.9732
+ceiling on C (perfect decisions on the pool): 0.9958
+shape: (2, 3)
+┌─────────┬──────────┬──────┐
+│ country ┆ f        ┆ len  │
+│ ---     ┆ ---      ┆ ---  │
+│ str     ┆ f64      ┆ u32  │
+╞═════════╪══════════╪══════╡
+│ US      ┆ 0.978515 ┆ 8013 │
+│ India   ┆ 0.970133 ┆ 8025 │
+└─────────┴──────────┴──────┘
+  US C pseudo-pairs 12386: true precision 0.9994, predicted as match 0.9994  (compare with the France number in er-submit)
+  India C pseudo-pairs 12081: true precision 0.9938, predicted as match 0.9929  (compare with the France number in er-submit)
+
+=== END-TO-END per blocking policy ===
+shape: (11, 6)
+┌─────────────────────────────────┬───────────┬──────────┬──────────┬────────────┬──────────┐
+│ policy                          ┆ cands_B   ┆ recall_B ┆ F_B      ┆ cands_C    ┆ F_C      │
+│ ---                             ┆ ---       ┆ ---      ┆ ---      ┆ ---        ┆ ---      │
+│ str                             ┆ f64       ┆ f64      ┆ f64      ┆ f64        ┆ f64      │
+╞═════════════════════════════════╪═══════════╪══════════╪══════════╪════════════╪══════════╡
+│ {"cutoff": 5}                   ┆ 8.728602  ┆ 0.9396   ┆ 0.966577 ┆ 8.715862   ┆ 0.966203 │
+│ {"cutoff": 8}                   ┆ 15.476143 ┆ 0.970575 ┆ 0.972373 ┆ 15.435965  ┆ 0.971932 │
+│ {"alpha": 0.0, "G": 5, "gate":… ┆ 16.775272 ┆ 0.930991 ┆ 0.958817 ┆ 16.770732  ┆ 0.958005 │
+│ {"cutoff": 9}                   ┆ 18.943641 ┆ 0.971238 ┆ 0.972368 ┆ 18.888452  ┆ 0.971929 │
+│ {"cutoff": 10}                  ┆ 23.516382 ┆ 0.979364 ┆ 0.973696 ┆ 23.458661  ┆ 0.973221 │
+│ {"alpha": 0.0, "G": 10, "gate"… ┆ 26.653866 ┆ 0.941379 ┆ 0.96259  ┆ 26.638982  ┆ 0.961806 │
+│ {"cutoff": 11}                  ┆ 27.080457 ┆ 0.981396 ┆ 0.974061 ┆ 26.943946  ┆ 0.973585 │
+│ {"cutoff": 12}                  ┆ 27.753117 ┆ 0.981685 ┆ 0.974125 ┆ 27.640479  ┆ 0.973663 │
+│ {"alpha": 0.0, "G": 20, "gate"… ┆ 42.184614 ┆ 0.947486 ┆ 0.965255 ┆ 42.106559  ┆ 0.964847 │
+│ {"cutoff": 14}                  ┆ 43.733363 ┆ 0.984006 ┆ 0.974428 ┆ 43.664173  ┆ 0.974004 │
+│ {"alpha": 0.0, "G": 99, "gate"… ┆ 123.89839 ┆ 0.984615 ┆ 0.974206 ┆ 123.878975 ┆ 0.97387  │
+└─────────────────────────────────┴───────────┴──────────┴──────────┴────────────┴──────────┘
+policy chosen on B (smallest candidate set within 0.0005 of the best F): {'policy': '{"cutoff": 11}', 'cands_B': 27.080456889891206, 'recall_B': 0.9813959657097385, 'F_B': 0.9740611005470606, 'cands_C': 26.943945629130813, 'F_C': 0.973584790942471}
+wrote level1_B/C.parquet (policy-pruned rows with features, p, y)
+{"t1": 0.7000000000000002, "t2": 0.7000000000000002, "gamma": 1.25, "rule": "rank-threshold", "policy": {"cutoff": 11}, "features": ["sc", "prk", "xrk", "a0", "a3", "a4", "a5", "a6", "a7", "a8", "exp", "rev_margin", "n_claim", "s1_name_freq", "noaddr_s", "noaddr_r", "nm_ratio", "nm_tsort", "nm_tset", "nm_partial", "co_jw", "co_tset", "co_alias_tset", "bag_ratio", "ad_tset", "st_sim", "n_core_s", "n_core_r", "n_core_common", "n_extra_r", "n_missing_r", "n_extra_sk", "n_missing_sk", "sk_jacc", "nw_jacc", "aw_jacc", "legal_rel", "n_decoy_extra", "n_num_s", "n_num_r", "num_jacc", "unit_rel", "len_
+
+DONE 3635s

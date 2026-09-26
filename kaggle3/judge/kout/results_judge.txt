@@ -1,0 +1,117 @@
+pairs: train 50079 (pos 0.290; B1 band + 6000 easy); eval B2 21760 + C 14459 (band 0.01..0.99)  33s
+GPUs: 2; kinds ['qwen35:4B', 'causal:mixedbread-ai/mxbai-rerank-large-v2']; train 400.0 min, 3.0 epochs max
+worker exit codes [0, 0]
+--- qwen35:4B
+200 loss 0.4448 2.8 pairs/s
+ep 0 step 600/18779 seen 4800 loss 0.3938 2.8 pairs/s
+ep 0 step 800/18779 seen 6400 loss 0.3355 2.8 pairs/s
+ep 0 step 1000/18779 seen 8000 loss 0.3005 2.9 pairs/s
+ep 0 step 1200/18779 seen 9600 loss 0.2568 2.9 pairs/s
+ep 0 step 1400/18779 seen 11200 loss 0.2648 2.9 pairs/s
+ep 0 step 1600/18779 seen 12800 loss 0.2696 2.9 pairs/s
+ep 0 step 1800/18779 seen 14400 loss 0.2421 2.9 pairs/s
+ep 0 step 2000/18779 seen 16000 loss 0.2103 2.9 pairs/s
+ep 0 step 2200/18779 seen 17600 loss 0.2568 2.9 pairs/s
+ep 0 step 2400/18779 seen 19200 loss 0.2515 2.9 pairs/s
+ep 0 step 2600/18779 seen 20800 loss 0.2197 2.9 pairs/s
+ep 0 step 2800/18779 seen 22400 loss 0.2417 2.9 pairs/s
+ep 0 step 3000/18779 seen 24000 loss 0.1920 2.9 pairs/s
+ep 0 step 3200/18779 seen 25600 loss 0.2248 2.9 pairs/s
+ep 0 step 3400/18779 seen 27200 loss 0.2253 2.9 pairs/s
+ep 0 step 3600/18779 seen 28800 loss 0.2063 2.9 pairs/s
+ep 0 step 3800/18779 seen 30400 loss 0.2381 2.9 pairs/s
+ep 0 step 4000/18779 seen 32000 loss 0.2241 2.9 pairs/s
+ep 0 step 4200/18779 seen 33600 loss 0.2027 2.9 pairs/s
+ep 0 step 4400/18779 seen 35200 loss 0.1961 2.9 pairs/s
+ep 0 step 4600/18779 seen 36800 loss 0.2023 2.9 pairs/s
+ep 0 step 4800/18779 seen 38400 loss 0.1934 2.9 pairs/s
+ep 0 step 5000/18779 seen 40000 loss 0.1912 2.9 pairs/s
+ep 0 step 5200/18779 seen 41600 loss 0.1836 2.9 pairs/s
+ep 0 step 5400/18779 seen 43200 loss 0.1924 2.9 pairs/s
+ep 0 step 5600/18779 seen 44800 loss 0.2025 2.9 pairs/s
+ep 0 step 5800/18779 seen 46400 loss 0.1860 2.9 pairs/s
+ep 0 step 6000/18779 seen 48000 loss 0.1800 2.9 pairs/s
+ep 0 step 6200/18779 seen 49600 loss 0.2063 2.9 pairs/s
+ep 1 step 6400/18779 seen 51199 loss 0.1682 2.9 pairs/s
+ep 1 step 6600/18779 seen 52799 loss 0.1563 2.9 pairs/s
+ep 1 step 6800/18779 seen 54399 loss 0.1453 2.9 pairs/s
+ep 1 step 7000/18779 seen 55999 loss 0.1498 2.9 pairs/s
+ep 1 step 7200/18779 seen 57599 loss 0.1722 2.9 pairs/s
+ep 1 step 7400/18779 seen 59199 loss 0.1508 2.9 pairs/s
+ep 1 step 7600/18779 seen 60799 loss 0.1290 2.9 pairs/s
+ep 1 step 7800/18779 seen 62399 loss 0.1225 2.9 pairs/s
+ep 1 step 8000/18779 seen 63999 loss 0.1730 2.9 pairs/s
+ep 1 step 8200/18779 seen 65599 loss 0.1828 2.9 pairs/s
+ep 1 step 8400/18779 seen 67199 loss 0.1416 2.9 pairs/s
+ep 1 step 8600/18779 seen 68799 loss 0.1385 2.9 pairs/s
+trained 8723 steps, 69783 pairs (1.39 epochs) in 400.0 min
+scored 36219 band pairs in 3274s (11.1 pairs/s)
+AUC on B2 band: 0.8982  (21760 pairs)
+AUC on C band: 0.9018  (14459 pairs)
+
+--- causal:mixedbread-ai/mxbai-rerank-large-v2
+ep 1000/9389 seen 16000 loss 0.2167 9.4 pairs/s
+ep 0 step 1200/9389 seen 19200 loss 0.2273 9.4 pairs/s
+ep 0 step 1400/9389 seen 22400 loss 0.2000 9.4 pairs/s
+ep 0 step 1600/9389 seen 25600 loss 0.1878 9.4 pairs/s
+ep 0 step 1800/9389 seen 28800 loss 0.1963 9.4 pairs/s
+ep 0 step 2000/9389 seen 32000 loss 0.2010 9.4 pairs/s
+ep 0 step 2200/9389 seen 35200 loss 0.1745 9.4 pairs/s
+ep 0 step 2400/9389 seen 38400 loss 0.1800 9.4 pairs/s
+ep 0 step 2600/9389 seen 41600 loss 0.1695 9.4 pairs/s
+ep 0 step 2800/9389 seen 44800 loss 0.1787 9.4 pairs/s
+ep 0 step 3000/9389 seen 48000 loss 0.1610 9.4 pairs/s
+ep 1 step 3200/9389 seen 51199 loss 0.1521 9.4 pairs/s
+ep 1 step 3400/9389 seen 54399 loss 0.1307 9.4 pairs/s
+ep 1 step 3600/9389 seen 57599 loss 0.1324 9.4 pairs/s
+ep 1 step 3800/9389 seen 60799 loss 0.1228 9.4 pairs/s
+ep 1 step 4000/9389 seen 63999 loss 0.1185 9.4 pairs/s
+ep 1 step 4200/9389 seen 67199 loss 0.1379 9.4 pairs/s
+ep 1 step 4400/9389 seen 70399 loss 0.1232 9.4 pairs/s
+ep 1 step 4600/9389 seen 73599 loss 0.1307 9.4 pairs/s
+ep 1 step 4800/9389 seen 76799 loss 0.1260 9.4 pairs/s
+ep 1 step 5000/9389 seen 79999 loss 0.1087 9.4 pairs/s
+ep 1 step 5200/9389 seen 83199 loss 0.1219 9.4 pairs/s
+ep 1 step 5400/9389 seen 86399 loss 0.1121 9.5 pairs/s
+ep 1 step 5600/9389 seen 89599 loss 0.1093 9.5 pairs/s
+ep 1 step 5800/9389 seen 92799 loss 0.1413 9.5 pairs/s
+ep 1 step 6000/9389 seen 95999 loss 0.1295 9.4 pairs/s
+ep 1 step 6200/9389 seen 99199 loss 0.1182 9.4 pairs/s
+ep 2 step 6400/9389 seen 102398 loss 0.0678 9.4 pairs/s
+ep 2 step 6600/9389 seen 105598 loss 0.0686 9.4 pairs/s
+ep 2 step 6800/9389 seen 108798 loss 0.0652 9.5 pairs/s
+ep 2 step 7000/9389 seen 111998 loss 0.0748 9.5 pairs/s
+ep 2 step 7200/9389 seen 115198 loss 0.0649 9.5 pairs/s
+ep 2 step 7400/9389 seen 118398 loss 0.0683 9.5 pairs/s
+ep 2 step 7600/9389 seen 121598 loss 0.0792 9.5 pairs/s
+ep 2 step 7800/9389 seen 124798 loss 0.0782 9.5 pairs/s
+ep 2 step 8000/9389 seen 127998 loss 0.0699 9.5 pairs/s
+ep 2 step 8200/9389 seen 131198 loss 0.0668 9.5 pairs/s
+ep 2 step 8400/9389 seen 134398 loss 0.0710 9.5 pairs/s
+ep 2 step 8600/9389 seen 137598 loss 0.0555 9.5 pairs/s
+ep 2 step 8800/9389 seen 140798 loss 0.0661 9.5 pairs/s
+ep 2 step 9000/9389 seen 143998 loss 0.0634 9.5 pairs/s
+ep 2 step 9200/9389 seen 147198 loss 0.0694 9.5 pairs/s
+trained 9389 steps, 150222 pairs (3.00 epochs) in 264.5 min
+scored 36219 band pairs in 910s (39.8 pairs/s)
+AUC on B2 band: 0.8934  (21760 pairs)
+AUC on C band: 0.8921  (14459 pairs)
+
+AUC on C band (14459 rows, pos 0.225): p2 0.9375
+AUC on C band (14459 rows, pos 0.225): lg_mxbai_rerank_large_v2 0.8921
+AUC on C band (14459 rows, pos 0.225): lg_qwen35_4B 0.9018
+level 2: B2 F0.5 0.9805; C F0.5 0.9811 (singleton 0.9904, P 0.9977 R 0.9486)
+lg_mxbai_rerank_large_v2                 band (0.01,0.99) share 0.0377: B2 0.9811 (+0.0006)  C 0.9819 (+0.0007)  singleton 0.9914  coef [0.798, 0.123]
+lg_mxbai_rerank_large_v2                 band (0.02,0.98) share 0.0263: B2 0.9811 (+0.0006)  C 0.9818 (+0.0006)  singleton 0.9882  coef [0.799, 0.122]
+lg_mxbai_rerank_large_v2                 band (0.05,0.95) share 0.0134: B2 0.9811 (+0.0006)  C 0.9816 (+0.0005)  singleton 0.9872  coef [0.798, 0.118]
+lg_mxbai_rerank_large_v2                 band (0.1,0.9) share 0.0089: B2 0.9810 (+0.0006)  C 0.9815 (+0.0004)  singleton 0.9861  coef [0.812, 0.114]
+lg_qwen35_4B                             band (0.01,0.99) share 0.0377: B2 0.9809 (+0.0004)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.784, 0.17]
+lg_qwen35_4B                             band (0.02,0.98) share 0.0263: B2 0.9809 (+0.0004)  C 0.9819 (+0.0007)  singleton 0.9936  coef [0.783, 0.167]
+lg_qwen35_4B                             band (0.05,0.95) share 0.0134: B2 0.9809 (+0.0004)  C 0.9817 (+0.0006)  singleton 0.9904  coef [0.781, 0.164]
+lg_qwen35_4B                             band (0.1,0.9) share 0.0089: B2 0.9810 (+0.0005)  C 0.9818 (+0.0007)  singleton 0.9925  coef [0.8, 0.158]
+lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.01,0.99) share 0.0377: B2 0.9812 (+0.0007)  C 0.9821 (+0.0010)  singleton 0.9936  coef [0.744, 0.073, 0.108]
+lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.02,0.98) share 0.0263: B2 0.9812 (+0.0007)  C 0.9820 (+0.0009)  singleton 0.9914  coef [0.744, 0.073, 0.104]
+lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.05,0.95) share 0.0134: B2 0.9811 (+0.0007)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.745, 0.069, 0.104]
+lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.1,0.9) share 0.0089: B2 0.9811 (+0.0006)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.77, 0.067, 0.098]
+CHOSEN on B2: ['lg_mxbai_rerank_large_v2', 'lg_qwen35_4B'] band (0.02,0.98) -> C 0.9820 (+0.0009) -> REJECT (gate +0.002)
+DONE 27838s

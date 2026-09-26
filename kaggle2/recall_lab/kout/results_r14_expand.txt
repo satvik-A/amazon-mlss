@@ -1,0 +1,13 @@
+variant {"name": "r14_expand", "ref": "25c5b7e", "cap": 2000, "key_cap": 200, "caps": {"3": 30, "4": 30, "5": 40, "6": 25, "7": 20}, "keep_prk": 60, "arms": [0, 3, 4, 5, 6, 7, 8], "tail": 3, "exp_m": 40, "exp_grp": 40}; polars 1.44.2; ber from /usr/local/lib/python3.12/dist-packages/ber
+{"variant": "r14_expand", "country": "US", "S1": 29086, "cands": 173.76053771573953, "p95": 259.0, "recall": 0.9933209906035994, "complete": 0.9766384047159856, "recall_r_indic": null, "recall_r_noaddr": 0.8976960473472839, "complete_s1_noaddr": null, "build_s": 677, "query_s": 221, "ms_per_query": 7.583938249570831}
+{"variant": "r14_expand", "country": "India", "S1": 29051, "cands": 200.08505731300127, "p95": 284.0, "recall": 0.9800936651718686, "complete": 0.9394877773325075, "recall_r_indic": 0.9806595863610956, "recall_r_noaddr": 0.9137582195245321, "complete_s1_noaddr": null, "build_s": 554, "query_s": 199, "ms_per_query": 6.856867714817194}
+shape: (2, 13)
+┌────────────┬─────────┬───────┬────────────┬───┬────────────────────┬─────────┬─────────┬──────────────┐
+│ variant    ┆ country ┆ S1    ┆ cands      ┆ … ┆ complete_s1_noaddr ┆ build_s ┆ query_s ┆ ms_per_query │
+│ ---        ┆ ---     ┆ ---   ┆ ---        ┆   ┆ ---                ┆ ---     ┆ ---     ┆ ---          │
+│ str        ┆ str     ┆ i64   ┆ f64        ┆   ┆ null               ┆ i64     ┆ i64     ┆ f64          │
+╞════════════╪═════════╪═══════╪════════════╪═══╪════════════════════╪═════════╪═════════╪══════════════╡
+│ r14_expand ┆ US      ┆ 29086 ┆ 173.760538 ┆ … ┆ null               ┆ 677     ┆ 221     ┆ 7.583938     │
+│ r14_expand ┆ India   ┆ 29051 ┆ 200.085057 ┆ … ┆ null               ┆ 554     ┆ 199     ┆ 6.856868     │
+└────────────┴─────────┴───────┴────────────┴───┴────────────────────┴─────────┴─────────┴──────────────┘
+DONE 1719s

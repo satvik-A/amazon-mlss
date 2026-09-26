@@ -1,0 +1,26 @@
+[{"stream_name":"stderr","time":5.851137106,"data":"  WARNING: Did not find branch or tag '5bbf7a8', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":14.402454672,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 16.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.462802854,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 66.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.979542394,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 35.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":30.284601062,"data":"ref 5bbf7a8; model ref 66967e3; rule rank-threshold; policy {'cutoff': 11}; holdout {'F': 0.973584790942471, 'cands': 26.943945629130813}\n"}
+,{"stream_name":"stdout","time":105.772918589,"data":"France: normalised 259452 S1 + 1434993 S2/S3 once  76s\n"}
+,{"stream_name":"stdout","time":266.822616706,"data":"France[0]: S1 32492 candidates 1211502 matches 113395; pseudo-pairs 84394 predicted 0.9032  237s\n"}
+,{"stream_name":"stdout","time":419.752794421,"data":"France[1]: S1 32253 candidates 1209697 matches 112627; pseudo-pairs 83693 predicted 0.9052  390s\n"}
+,{"stream_name":"stdout","time":574.585201076,"data":"France[2]: S1 32496 candidates 1223294 matches 112503; pseudo-pairs 84155 predicted 0.9012  545s\n"}
+,{"stream_name":"stdout","time":727.496653798,"data":"France[3]: S1 32335 candidates 1211519 matches 112598; pseudo-pairs 84690 predicted 0.9011  698s\n"}
+,{"stream_name":"stdout","time":881.198229091,"data":"France[4]: S1 32414 candidates 1217627 matches 112914; pseudo-pairs 84267 predicted 0.9025  851s\n"}
+,{"stream_name":"stdout","time":1047.141928229,"data":"France[5]: S1 32333 candidates 1214507 matches 113553; pseudo-pairs 84630 predicted 0.9030  1017s\n"}
+,{"stream_name":"stdout","time":1207.172747871,"data":"France[6]: S1 32542 candidates 1221184 matches 112960; pseudo-pairs 84109 predicted 0.9047  1177s\n"}
+,{"stream_name":"stdout","time":1364.71069857,"data":"France[7]: S1 32587 candidates 1223072 matches 113829; pseudo-pairs 84823 predicted 0.9045  1335s\n"}
+,{"stream_name":"stdout","time":1364.929158761,"data":"France: S1 259452  candidates 9732402 (37.51/S1)  matches 904379 (3.49/S1)  S1 predicted empty 0.0491\n"}
+,{"stream_name":"stdout","time":1374.077574467,"data":"street filter (France, ratio \u003c 50): 2385 of 904379 pairs removed\n"}
+,{"stream_name":"stdout","time":1374.348984233,"data":"one owner per record: 901994 -\u003e 888595 pairs (13399 duplicate claims removed)\n"}
+,{"stream_name":"stdout","time":1376.06789956,"data":"total: candidates/S1 37.51, matches/S1 3.42, S1 with no match 0.0518\n"}
+,{"stream_name":"stdout","time":1376.067949755,"data":"wrote cands_France + matches_l1_France  DONE 1346s\n"}
+,{"stream_name":"stderr","time":1379.408298569,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1379.408337971,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1379.717683937,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1379.717725937,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1380.494354675,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1382.24088844,"data":"[NbConvertApp] Writing 322882 bytes to __results__.html\n"}
+]

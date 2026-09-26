@@ -1,0 +1,2 @@
+US: index over 6186873 records  649s
+India: index over 4133346 records  1165s

@@ -1,0 +1,21 @@
+{
+ "zero_shot": {
+  "auc": 0.9838036243314995,
+  "logloss": 0.1465896945799853,
+  "top1_acc_nonsingleton": 0.9866071428571429,
+  "singleton_max_p_below_0.5": 0.993907083015994,
+  "auc_US": 0.9807115510713454,
+  "auc_India": 0.9876166386085427
+ },
+ "fine_tuned": {
+  "auc": 0.9995630012317598,
+  "logloss": 0.02255939314620677,
+  "top1_acc_nonsingleton": 0.9989313384985306,
+  "singleton_max_p_below_0.5": 0.8132295719844358,
+  "auc_US": 0.9994694606381931,
+  "auc_India": 0.999666935449863
+ },
+ "pairs_seen": 28044,
+ "steps": 2337,
+ "model": "Qwen/Qwen3.5-2B"
+}

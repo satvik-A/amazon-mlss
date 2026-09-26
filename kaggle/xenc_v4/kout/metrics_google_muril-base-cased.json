@@ -1,0 +1,21 @@
+{
+ "zero_shot": {
+  "auc": 0.44741038783165443,
+  "logloss": 0.6903186436562309,
+  "top1_acc_nonsingleton": 0.5,
+  "singleton_max_p_below_0.5": 1.0,
+  "auc_India": 0.4159000232271646,
+  "auc_US": 0.49543234134293945
+ },
+ "fine_tuned": {
+  "auc": 0.9996860640553931,
+  "logloss": 0.027252452481906386,
+  "top1_acc_nonsingleton": 0.9997350291467939,
+  "singleton_max_p_below_0.5": 0.6814159292035398,
+  "auc_India": 0.999723620325251,
+  "auc_US": 0.9996434145072902
+ },
+ "pairs_seen": 999464,
+ "steps": 41645,
+ "model": "google/muril-base-cased"
+}

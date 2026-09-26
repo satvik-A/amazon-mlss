@@ -1,0 +1,117 @@
+pairs: train 50079 (pos 0.290; B1 band + 6000 easy); eval B2 21760 + C 14459 (band 0.01..0.99)  30s
+GPUs: 2; kinds ['qwen35:2B', 'qwen4b']; train 400.0 min, 3.0 epochs max
+worker exit codes [0, 0]
+--- qwen35:2B
+p 1000/9389 seen 16000 loss 0.2287 6.4 pairs/s
+ep 0 step 1200/9389 seen 19200 loss 0.2363 6.4 pairs/s
+ep 0 step 1400/9389 seen 22400 loss 0.1986 6.5 pairs/s
+ep 0 step 1600/9389 seen 25600 loss 0.1955 6.5 pairs/s
+ep 0 step 1800/9389 seen 28800 loss 0.2065 6.5 pairs/s
+ep 0 step 2000/9389 seen 32000 loss 0.2048 6.5 pairs/s
+ep 0 step 2200/9389 seen 35200 loss 0.1970 6.5 pairs/s
+ep 0 step 2400/9389 seen 38400 loss 0.1876 6.5 pairs/s
+ep 0 step 2600/9389 seen 41600 loss 0.1706 6.5 pairs/s
+ep 0 step 2800/9389 seen 44800 loss 0.1816 6.5 pairs/s
+ep 0 step 3000/9389 seen 48000 loss 0.1889 6.5 pairs/s
+ep 1 step 3200/9389 seen 51199 loss 0.1688 6.5 pairs/s
+ep 1 step 3400/9389 seen 54399 loss 0.1346 6.5 pairs/s
+ep 1 step 3600/9389 seen 57599 loss 0.1388 6.5 pairs/s
+ep 1 step 3800/9389 seen 60799 loss 0.1191 6.5 pairs/s
+ep 1 step 4000/9389 seen 63999 loss 0.1193 6.5 pairs/s
+ep 1 step 4200/9389 seen 67199 loss 0.1524 6.5 pairs/s
+ep 1 step 4400/9389 seen 70399 loss 0.1301 6.5 pairs/s
+ep 1 step 4600/9389 seen 73599 loss 0.1254 6.5 pairs/s
+ep 1 step 4800/9389 seen 76799 loss 0.1356 6.5 pairs/s
+ep 1 step 5000/9389 seen 79999 loss 0.1159 6.5 pairs/s
+ep 1 step 5200/9389 seen 83199 loss 0.1213 6.5 pairs/s
+ep 1 step 5400/9389 seen 86399 loss 0.1171 6.5 pairs/s
+ep 1 step 5600/9389 seen 89599 loss 0.1334 6.5 pairs/s
+ep 1 step 5800/9389 seen 92799 loss 0.1368 6.5 pairs/s
+ep 1 step 6000/9389 seen 95999 loss 0.1327 6.5 pairs/s
+ep 1 step 6200/9389 seen 99199 loss 0.1193 6.5 pairs/s
+ep 2 step 6400/9389 seen 102398 loss 0.0795 6.5 pairs/s
+ep 2 step 6600/9389 seen 105598 loss 0.0833 6.5 pairs/s
+ep 2 step 6800/9389 seen 108798 loss 0.0730 6.5 pairs/s
+ep 2 step 7000/9389 seen 111998 loss 0.0759 6.6 pairs/s
+ep 2 step 7200/9389 seen 115198 loss 0.0756 6.5 pairs/s
+ep 2 step 7400/9389 seen 118398 loss 0.0616 6.6 pairs/s
+ep 2 step 7600/9389 seen 121598 loss 0.0763 6.6 pairs/s
+ep 2 step 7800/9389 seen 124798 loss 0.0826 6.6 pairs/s
+ep 2 step 8000/9389 seen 127998 loss 0.0765 6.6 pairs/s
+ep 2 step 8200/9389 seen 131198 loss 0.0697 6.6 pairs/s
+ep 2 step 8400/9389 seen 134398 loss 0.0782 6.6 pairs/s
+ep 2 step 8600/9389 seen 137598 loss 0.0647 6.6 pairs/s
+ep 2 step 8800/9389 seen 140798 loss 0.0789 6.6 pairs/s
+ep 2 step 9000/9389 seen 143998 loss 0.0641 6.6 pairs/s
+ep 2 step 9200/9389 seen 147198 loss 0.0675 6.6 pairs/s
+trained 9389 steps, 150222 pairs (3.00 epochs) in 381.9 min
+scored 36219 band pairs in 1327s (27.3 pairs/s)
+AUC on B2 band: 0.8993  (21760 pairs)
+AUC on C band: 0.8983  (14459 pairs)
+
+--- qwen4b
+/s
+ep 0 step 4800/18779 seen 38400 loss 0.1706 4.3 pairs/s
+ep 0 step 5000/18779 seen 40000 loss 0.1796 4.3 pairs/s
+ep 0 step 5200/18779 seen 41600 loss 0.1647 4.3 pairs/s
+ep 0 step 5400/18779 seen 43200 loss 0.1829 4.3 pairs/s
+ep 0 step 5600/18779 seen 44800 loss 0.1956 4.3 pairs/s
+ep 0 step 5800/18779 seen 46400 loss 0.1717 4.3 pairs/s
+ep 0 step 6000/18779 seen 48000 loss 0.1794 4.3 pairs/s
+ep 0 step 6200/18779 seen 49600 loss 0.1869 4.3 pairs/s
+ep 1 step 6400/18779 seen 51199 loss 0.1662 4.3 pairs/s
+ep 1 step 6600/18779 seen 52799 loss 0.1327 4.3 pairs/s
+ep 1 step 6800/18779 seen 54399 loss 0.1309 4.3 pairs/s
+ep 1 step 7000/18779 seen 55999 loss 0.1435 4.3 pairs/s
+ep 1 step 7200/18779 seen 57599 loss 0.1479 4.3 pairs/s
+ep 1 step 7400/18779 seen 59199 loss 0.1504 4.3 pairs/s
+ep 1 step 7600/18779 seen 60799 loss 0.1119 4.3 pairs/s
+ep 1 step 7800/18779 seen 62399 loss 0.1142 4.3 pairs/s
+ep 1 step 8000/18779 seen 63999 loss 0.1387 4.3 pairs/s
+ep 1 step 8200/18779 seen 65599 loss 0.1739 4.3 pairs/s
+ep 1 step 8400/18779 seen 67199 loss 0.1174 4.3 pairs/s
+ep 1 step 8600/18779 seen 68799 loss 0.1300 4.3 pairs/s
+ep 1 step 8800/18779 seen 70399 loss 0.1422 4.3 pairs/s
+ep 1 step 9000/18779 seen 71999 loss 0.1106 4.3 pairs/s
+ep 1 step 9200/18779 seen 73599 loss 0.1381 4.3 pairs/s
+ep 1 step 9400/18779 seen 75199 loss 0.1277 4.3 pairs/s
+ep 1 step 9600/18779 seen 76799 loss 0.1253 4.3 pairs/s
+ep 1 step 9800/18779 seen 78399 loss 0.1291 4.3 pairs/s
+ep 1 step 10000/18779 seen 79999 loss 0.1211 4.3 pairs/s
+ep 1 step 10200/18779 seen 81599 loss 0.1374 4.3 pairs/s
+ep 1 step 10400/18779 seen 83199 loss 0.1376 4.3 pairs/s
+ep 1 step 10600/18779 seen 84799 loss 0.1031 4.3 pairs/s
+ep 1 step 10800/18779 seen 86399 loss 0.1244 4.3 pairs/s
+ep 1 step 11000/18779 seen 87999 loss 0.1176 4.3 pairs/s
+ep 1 step 11200/18779 seen 89599 loss 0.1219 4.3 pairs/s
+ep 1 step 11400/18779 seen 91199 loss 0.1401 4.3 pairs/s
+ep 1 step 11600/18779 seen 92799 loss 0.1365 4.3 pairs/s
+ep 1 step 11800/18779 seen 94399 loss 0.1249 4.3 pairs/s
+ep 1 step 12000/18779 seen 95999 loss 0.1396 4.3 pairs/s
+ep 1 step 12200/18779 seen 97599 loss 0.1308 4.3 pairs/s
+ep 1 step 12400/18779 seen 99199 loss 0.1265 4.3 pairs/s
+ep 2 step 12600/18779 seen 100798 loss 0.0971 4.3 pairs/s
+ep 2 step 12800/18779 seen 102398 loss 0.0569 4.3 pairs/s
+trained 12892 steps, 103134 pairs (2.06 epochs) in 400.0 min
+scored 36219 band pairs in 2063s (17.6 pairs/s)
+AUC on B2 band: 0.9090  (21760 pairs)
+AUC on C band: 0.9089  (14459 pairs)
+
+AUC on C band (14459 rows, pos 0.225): p2 0.9375
+AUC on C band (14459 rows, pos 0.225): lg_qwen35_2B 0.8983
+AUC on C band (14459 rows, pos 0.225): lg_qwen4b 0.9089
+level 2: B2 F0.5 0.9805; C F0.5 0.9811 (singleton 0.9904, P 0.9977 R 0.9486)
+lg_qwen35_2B                             band (0.01,0.99) share 0.0377: B2 0.9809 (+0.0004)  C 0.9817 (+0.0006)  singleton 0.9936  coef [0.784, 0.132]
+lg_qwen35_2B                             band (0.02,0.98) share 0.0263: B2 0.9808 (+0.0004)  C 0.9815 (+0.0004)  singleton 0.9947  coef [0.789, 0.13]
+lg_qwen35_2B                             band (0.05,0.95) share 0.0134: B2 0.9808 (+0.0003)  C 0.9814 (+0.0003)  singleton 0.9925  coef [0.796, 0.125]
+lg_qwen35_2B                             band (0.1,0.9) share 0.0089: B2 0.9808 (+0.0004)  C 0.9816 (+0.0004)  singleton 0.9904  coef [0.815, 0.119]
+lg_qwen4b                                band (0.01,0.99) share 0.0377: B2 0.9810 (+0.0005)  C 0.9817 (+0.0006)  singleton 0.9936  coef [0.779, 0.174]
+lg_qwen4b                                band (0.02,0.98) share 0.0263: B2 0.9810 (+0.0005)  C 0.9817 (+0.0006)  singleton 0.9936  coef [0.781, 0.169]
+lg_qwen4b                                band (0.05,0.95) share 0.0134: B2 0.9810 (+0.0005)  C 0.9815 (+0.0004)  singleton 0.9914  coef [0.784, 0.159]
+lg_qwen4b                                band (0.1,0.9) share 0.0089: B2 0.9809 (+0.0005)  C 0.9817 (+0.0006)  singleton 0.9914  coef [0.799, 0.149]
+lg_qwen35_2B+lg_qwen4b                   band (0.01,0.99) share 0.0377: B2 0.9812 (+0.0007)  C 0.9818 (+0.0007)  singleton 0.9925  coef [0.742, 0.076, 0.107]
+lg_qwen35_2B+lg_qwen4b                   band (0.02,0.98) share 0.0263: B2 0.9811 (+0.0006)  C 0.9819 (+0.0008)  singleton 0.9925  coef [0.745, 0.075, 0.104]
+lg_qwen35_2B+lg_qwen4b                   band (0.05,0.95) share 0.0134: B2 0.9811 (+0.0007)  C 0.9815 (+0.0004)  singleton 0.9904  coef [0.753, 0.074, 0.095]
+lg_qwen35_2B+lg_qwen4b                   band (0.1,0.9) share 0.0089: B2 0.9810 (+0.0005)  C 0.9815 (+0.0004)  singleton 0.9904  coef [0.776, 0.07, 0.09]
+CHOSEN on B2: ['lg_qwen35_2B', 'lg_qwen4b'] band (0.01,0.99) -> C 0.9818 (+0.0007) -> REJECT (gate +0.002)
+DONE 26618s

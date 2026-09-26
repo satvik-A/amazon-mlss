@@ -1,0 +1,20 @@
+[{"stream_name":"stdout","time":15.855329825,"data":"train_US: ref de86229  country synonyms yes\n"}
+,{"stream_name":"stdout","time":19.844678402,"data":"S1 1323633  R 6186873  4s\n"}
+,{"stream_name":"stdout","time":2074.944435326,"data":"  shard 0: 250000/1323633 S1 -\u003e 32089614 candidates\n"}
+,{"stream_name":"stdout","time":3675.421099511,"data":"  shard 1: 500000/1323633 S1 -\u003e 64192682 candidates\n"}
+,{"stream_name":"stdout","time":5095.044786613,"data":"  shard 2: 750000/1323633 S1 -\u003e 96282292 candidates\n"}
+,{"stream_name":"stdout","time":6482.85940609,"data":"  shard 3: 1000000/1323633 S1 -\u003e 128381730 candidates\n"}
+,{"stream_name":"stdout","time":7882.085494974,"data":"  shard 4: 1250000/1323633 S1 -\u003e 160471662 candidates\n"}
+,{"stream_name":"stdout","time":8294.981734105,"data":"  shard 5: 1323633/1323633 S1 -\u003e 169928770 candidates\n"}
+,{"stream_name":"stdout","time":8395.593080141,"data":"  cands 169928770 (128.4/S1)\n"}
+,{"stream_name":"stderr","time":8396.643777332,"data":"/kaggle/src/script.py:48: DeprecationWarning: In Polars 2.0, the default behavior for `empty_as_null` will change to `False`. To keep the current behavior, explicitly set `empty_as_null=True`.\n"}
+,{"stream_name":"stderr","time":8396.643951942,"data":"  .with_columns(pl.col(\"matched_entity_ids\").fill_null(\"\").str.split(\",\")).explode(\"matched_entity_ids\") \\\n"}
+,{"stream_name":"stdout","time":8400.235661535,"data":"internal pool 128.4/S1; on a 48865-S1 sample: pair recall 0.9911, S1 complete 0.9697\n"}
+,{"stream_name":"stdout","time":8438.207063872,"data":"wrote pool_train_US.parquet 169928770 rows  DONE 8423s\n"}
+,{"stream_name":"stderr","time":8445.683578046,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":8445.683642986,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":8446.545848078,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":8446.545946498,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":8448.296291888,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":8451.309285227,"data":"[NbConvertApp] Writing 301182 bytes to __results__.html\n"}
+]

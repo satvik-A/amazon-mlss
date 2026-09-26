@@ -1,0 +1,15 @@
+[{"stream_name":"stderr","time":10.142176403,"data":"  WARNING: Did not find branch or tag '988ce1d', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":19.03766606,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 12.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":19.114543374,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 52.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":19.685191965,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 32.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":28.333104067,"data":"train_US: ref 988ce1d  country synonyms yes\n"}
+,{"stream_name":"stdout","time":34.854474412,"data":"S1 1323633  R 6186873  7s\n"}
+,{"stream_name":"stdout","time":18710.297530958,"data":"  queried 1323633 S1 -\u003e 165510335 raw candidates\n"}
+,{"stream_name":"stderr","time":19297.847305232,"data":"Killed\n"}
+,{"stream_name":"stderr","time":19302.763515559,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":19302.763569499,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":19303.440148101,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":19303.440184564,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":19306.213164943,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":19308.338401061,"data":"[NbConvertApp] Writing 304044 bytes to __results__.html\n"}
+]

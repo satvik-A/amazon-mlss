@@ -1,0 +1,18 @@
+model Qwen/Qwen3.5-2B on cuda (Tesla T4)
+ZERO-SHOT {"auc": 0.9838036243314995, "logloss": 0.1465896945799853, "top1_acc_nonsingleton": 0.9866071428571429, "singleton_max_p_below_0.5": 0.993907083015994, "auc_US": 0.9807115510713454, "auc_India": 0.9876166386085427}
+zero-shot scored 6000 in 316s
+trainable params 16.8M
+step 200 seen 2400 loss 0.1999 4.2 pairs/s
+step 400 seen 4800 loss 0.1415 4.3 pairs/s
+step 600 seen 7200 loss 0.0788 4.4 pairs/s
+step 800 seen 9600 loss 0.0885 4.4 pairs/s
+step 1000 seen 12000 loss 0.0680 4.4 pairs/s
+step 1200 seen 14400 loss 0.0772 4.4 pairs/s
+step 1400 seen 16800 loss 0.0783 4.4 pairs/s
+step 1600 seen 19200 loss 0.0586 4.4 pairs/s
+step 1800 seen 21600 loss 0.0628 4.4 pairs/s
+step 2000 seen 24000 loss 0.0287 4.4 pairs/s
+step 2200 seen 26400 loss 0.0360 4.4 pairs/s
+trained 2337 steps, 28044 pairs (0.09 epoch) in 105.0 min
+eval scored 163329 pairs in 10178s (16 pairs/s)
+FINE-TUNED {"auc": 0.9995630012317598, "logloss": 0.02255939314620677, "top1_acc_nonsingleton": 0.9989313384985306, "singleton_max_p_below_0.5": 0.8132295719844358, "auc_US": 0.9994694606381931, "auc_India": 0.999666935449863}

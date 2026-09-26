@@ -1,0 +1,16 @@
+{
+ "id": "satvik0006/er3-cands4-train-us",
+ "title": "er3-cands4-train-us",
+ "code_file": "run_cands_full.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [
+  "satvik0006/er-bundle"
+ ],
+ "competition_sources": [],
+ "kernel_sources": []
+}

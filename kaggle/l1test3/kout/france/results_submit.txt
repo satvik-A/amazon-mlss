@@ -1,0 +1,15 @@
+ref 5bbf7a8; model ref 66967e3; rule rank-threshold; policy {'cutoff': 11}; holdout {'F': 0.973584790942471, 'cands': 26.943945629130813}
+France: normalised 259452 S1 + 1434993 S2/S3 once  76s
+France[0]: S1 32492 candidates 1211502 matches 113395; pseudo-pairs 84394 predicted 0.9032  237s
+France[1]: S1 32253 candidates 1209697 matches 112627; pseudo-pairs 83693 predicted 0.9052  390s
+France[2]: S1 32496 candidates 1223294 matches 112503; pseudo-pairs 84155 predicted 0.9012  545s
+France[3]: S1 32335 candidates 1211519 matches 112598; pseudo-pairs 84690 predicted 0.9011  698s
+France[4]: S1 32414 candidates 1217627 matches 112914; pseudo-pairs 84267 predicted 0.9025  851s
+France[5]: S1 32333 candidates 1214507 matches 113553; pseudo-pairs 84630 predicted 0.9030  1017s
+France[6]: S1 32542 candidates 1221184 matches 112960; pseudo-pairs 84109 predicted 0.9047  1177s
+France[7]: S1 32587 candidates 1223072 matches 113829; pseudo-pairs 84823 predicted 0.9045  1335s
+France: S1 259452  candidates 9732402 (37.51/S1)  matches 904379 (3.49/S1)  S1 predicted empty 0.0491
+street filter (France, ratio < 50): 2385 of 904379 pairs removed
+one owner per record: 901994 -> 888595 pairs (13399 duplicate claims removed)
+total: candidates/S1 37.51, matches/S1 3.42, S1 with no match 0.0518
+wrote cands_France + matches_l1_France  DONE 1346s

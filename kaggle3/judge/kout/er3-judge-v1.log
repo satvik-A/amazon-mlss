@@ -1,0 +1,259 @@
+[{"stream_name":"stdout","time":7.878848735,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 91.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.9224360560000004,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 832.9/832.9 kB 30.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":7.960648205,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 516.0/516.0 kB 23.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":8.025550526,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.4/3.4 MB 70.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":25.436178893,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 1.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":154.713182422,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.3/45.3 kB 1.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":155.014347049,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 399.6/399.6 kB 8.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":155.068378247,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 819.2/819.2 kB 24.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":157.887233489,"data":"  error: subprocess-exited-with-error\n"}
+,{"stream_name":"stderr","time":157.887289598,"data":"  \n"}
+,{"stream_name":"stderr","time":157.887294423,"data":"  × Building wheel for causal-conv1d (pyproject.toml) did not run successfully.\n"}
+,{"stream_name":"stderr","time":157.887298922,"data":"  │ exit code: 1\n"}
+,{"stream_name":"stderr","time":157.887302346,"data":"  ╰─\u003e See above for output.\n"}
+,{"stream_name":"stderr","time":157.887306538,"data":"  \n"}
+,{"stream_name":"stderr","time":157.887309883,"data":"  note: This error originates from a subprocess, and is likely not a problem with pip.\n"}
+,{"stream_name":"stderr","time":157.888164637,"data":"  ERROR: Failed building wheel for causal-conv1d\n"}
+,{"stream_name":"stderr","time":157.889129514,"data":"ERROR: ERROR: Failed to build installable wheels for some pyproject.toml based projects (causal-conv1d)\n"}
+,{"stream_name":"stderr","time":162.965162134,"data":"  WARNING: Did not find branch or tag '599ce1f', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":169.778812677,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 12.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":170.281569982,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 37.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":170.343209062,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 72.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stderr","time":176.149717956,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stderr","time":176.149746362,"data":"cudf-polars-cu12 26.2.1 requires polars\u003c1.36,\u003e=1.30, but you have polars 1.44.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":209.299062671,"data":"pairs: train 50079 (pos 0.290; B1 band + 6000 easy); eval B2 21760 + C 14459 (band 0.01..0.99)  33s\n"}
+,{"stream_name":"stdout","time":214.171423162,"data":"GPUs: 2; kinds ['qwen35:4B', 'causal:mixedbread-ai/mxbai-rerank-large-v2']; train 400.0 min, 3.0 epochs max\n"}
+,{"stream_name":"stderr","time":240.742736432,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":240.769562654,"data":"Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"}
+,{"stream_name":"stderr","time":243.528716632,"data":"[transformers] `torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stderr","time":243.552293567,"data":"[transformers] `torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stderr","time":281.724594246,"data":"\rFetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 0/338 [00:00\u003c?, ?it/s]\rLoading weights: 100%|██████████| 338/338 [00:00\u003c00:00, 5240.59it/s]\n"}
+,{"stream_name":"stderr","time":300.520342829,"data":"\rFetching 2 files:  50%|█████     | 1/2 [00:56\u003c00:56, 56.48s/it]\rFetching 2 files: 100%|██████████| 2/2 [00:56\u003c00:00, 28.24s/it]\n"}
+,{"stream_name":"stdout","time":312.839007347,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] model mixedbread-ai/mxbai-rerank-large-v2 on Tesla T4; trainable 18.5M; train 50079 pairs\n"}
+,{"stream_name":"stderr","time":313.032697977,"data":"\rLoading weights:   0%|          | 0/723 [00:00\u003c?, ?it/s][transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.\n"}
+,{"stream_name":"stderr","time":319.666217254,"data":"\rLoading weights:   0%|          | 1/723 [00:05\u003c1:08:00,  5.65s/it]\rLoading weights:  36%|███▌      | 257/723 [00:05\u003c00:07, 62.25it/s]\rLoading weights:  48%|████▊     | 348/723 [00:06\u003c00:05, 67.15it/s]\rLoading weights:  55%|█████▌    | 401/723 [00:07\u003c00:04, 65.95it/s]\rLoading weights:  60%|██████    | 436/723 [00:08\u003c00:04, 67.47it/s]\rLoading weights:  71%|███████▏  | 516/723 [00:08\u003c00:02, 99.50it/s]\rLoading weights:  81%|████████  | 586/723 [00:08\u003c00:01, 135.26it/s]\rLoading weights:  90%|████████▉ | 648/723 [00:08\u003c00:00, 172.30it/s]\rLoading weights:  98%|█████████▊| 710/723 [00:08\u003c00:00, 213.24it/s]\rLoading weights: 100%|██████████| 723/723 [00:08\u003c00:00, 82.72it/s] \n"}
+,{"stream_name":"stdout","time":324.694033388,"data":"[qwen35:4B] model Qwen/Qwen3.5-4B on Tesla T4; trainable 32.5M; train 50079 pairs\n"}
+,{"stream_name":"stderr","time":324.737238567,"data":"[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.\n"}
+,{"stream_name":"stderr","time":325.154213852,"data":"[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.\n"}
+,{"stream_name":"stderr","time":326.464773089,"data":"[transformers] `chunk_gated_delta_rule` is falling back to its reference PyTorch implementation because `flash-linear-attention` is not installed. This is correct but much slower; install `flash-linear-attention` for the optimized kernel.\n"}
+,{"stream_name":"stdout","time":648.910429883,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 200/9389 seen 3200 loss 0.4305 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":898.680184142,"data":"[qwen35:4B] ep 0 step 200/18779 seen 1600 loss 0.4619 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":992.069118452,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 400/9389 seen 6400 loss 0.3295 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":1333.538072097,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 600/9389 seen 9600 loss 0.2762 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":1468.485161415,"data":"[qwen35:4B] ep 0 step 400/18779 seen 3200 loss 0.4448 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":1674.467559239,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 800/9389 seen 12800 loss 0.2426 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":2017.195791696,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 1000/9389 seen 16000 loss 0.2167 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":2030.890833506,"data":"[qwen35:4B] ep 0 step 600/18779 seen 4800 loss 0.3938 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":2359.554012209,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 1200/9389 seen 19200 loss 0.2273 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":2572.77644262,"data":"[qwen35:4B] ep 0 step 800/18779 seen 6400 loss 0.3355 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":2702.088365246,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 1400/9389 seen 22400 loss 0.2000 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":3042.348417555,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 1600/9389 seen 25600 loss 0.1878 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":3126.025153959,"data":"[qwen35:4B] ep 0 step 1000/18779 seen 8000 loss 0.3005 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":3380.734492555,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 1800/9389 seen 28800 loss 0.1963 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":3675.374465168,"data":"[qwen35:4B] ep 0 step 1200/18779 seen 9600 loss 0.2568 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":3720.807856376,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 2000/9389 seen 32000 loss 0.2010 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":4063.127500534,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 2200/9389 seen 35200 loss 0.1745 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":4239.345247057,"data":"[qwen35:4B] ep 0 step 1400/18779 seen 11200 loss 0.2648 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":4402.698841497,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 2400/9389 seen 38400 loss 0.1800 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":4735.429586507,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 2600/9389 seen 41600 loss 0.1695 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":4780.914671074,"data":"[qwen35:4B] ep 0 step 1600/18779 seen 12800 loss 0.2696 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":5082.3508159,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 2800/9389 seen 44800 loss 0.1787 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":5333.894089685,"data":"[qwen35:4B] ep 0 step 1800/18779 seen 14400 loss 0.2421 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":5424.604804511,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 0 step 3000/9389 seen 48000 loss 0.1610 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":5768.446534783,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 3200/9389 seen 51199 loss 0.1521 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":5880.665294493,"data":"[qwen35:4B] ep 0 step 2000/18779 seen 16000 loss 0.2103 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":6105.009974366,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 3400/9389 seen 54399 loss 0.1307 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":6431.063712119,"data":"[qwen35:4B] ep 0 step 2200/18779 seen 17600 loss 0.2568 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":6442.26854773,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 3600/9389 seen 57599 loss 0.1324 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":6774.91126203,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 3800/9389 seen 60799 loss 0.1228 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":6990.395926864,"data":"[qwen35:4B] ep 0 step 2400/18779 seen 19200 loss 0.2515 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":7112.264560901,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 4000/9389 seen 63999 loss 0.1185 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":7447.718362966,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 4200/9389 seen 67199 loss 0.1379 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":7546.862058057,"data":"[qwen35:4B] ep 0 step 2600/18779 seen 20800 loss 0.2197 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":7780.683579395,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 4400/9389 seen 70399 loss 0.1232 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":8098.181625414,"data":"[qwen35:4B] ep 0 step 2800/18779 seen 22400 loss 0.2417 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":8116.499880665,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 4600/9389 seen 73599 loss 0.1307 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":8457.294536182,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 4800/9389 seen 76799 loss 0.1260 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":8654.413359721,"data":"[qwen35:4B] ep 0 step 3000/18779 seen 24000 loss 0.1920 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":8790.59327639,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 5000/9389 seen 79999 loss 0.1087 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":9123.025425929,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 5200/9389 seen 83199 loss 0.1219 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":9195.899996557,"data":"[qwen35:4B] ep 0 step 3200/18779 seen 25600 loss 0.2248 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":9453.412826561,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 5400/9389 seen 86399 loss 0.1121 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":9733.262585245,"data":"[qwen35:4B] ep 0 step 3400/18779 seen 27200 loss 0.2253 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":9789.192366909,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 5600/9389 seen 89599 loss 0.1093 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":10130.43415672,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 5800/9389 seen 92799 loss 0.1413 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":10288.955178873,"data":"[qwen35:4B] ep 0 step 3600/18779 seen 28800 loss 0.2063 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":10476.027704535,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 6000/9389 seen 95999 loss 0.1295 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":10816.454324572,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 1 step 6200/9389 seen 99199 loss 0.1182 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":10835.002809108,"data":"[qwen35:4B] ep 0 step 3800/18779 seen 30400 loss 0.2381 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":11155.252713754,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 6400/9389 seen 102398 loss 0.0678 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":11385.212343606,"data":"[qwen35:4B] ep 0 step 4000/18779 seen 32000 loss 0.2241 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":11487.842001124,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 6600/9389 seen 105598 loss 0.0686 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":11817.223885011,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 6800/9389 seen 108798 loss 0.0652 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":11937.96375569,"data":"[qwen35:4B] ep 0 step 4200/18779 seen 33600 loss 0.2027 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":12154.458242844,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 7000/9389 seen 111998 loss 0.0748 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":12490.905183317,"data":"[qwen35:4B] ep 0 step 4400/18779 seen 35200 loss 0.1961 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":12495.227517315,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 7200/9389 seen 115198 loss 0.0649 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":12833.053433196,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 7400/9389 seen 118398 loss 0.0683 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":13041.519889662,"data":"[qwen35:4B] ep 0 step 4600/18779 seen 36800 loss 0.2023 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":13165.463072706,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 7600/9389 seen 121598 loss 0.0792 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":13500.663313269,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 7800/9389 seen 124798 loss 0.0782 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":13595.816286024,"data":"[qwen35:4B] ep 0 step 4800/18779 seen 38400 loss 0.1934 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":13845.48054522,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 8000/9389 seen 127998 loss 0.0699 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":14136.210173594,"data":"[qwen35:4B] ep 0 step 5000/18779 seen 40000 loss 0.1912 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":14180.574175796,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 8200/9389 seen 131198 loss 0.0668 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":14513.1724694,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 8400/9389 seen 134398 loss 0.0710 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":14678.05438357,"data":"[qwen35:4B] ep 0 step 5200/18779 seen 41600 loss 0.1836 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":14854.495352948,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 8600/9389 seen 137598 loss 0.0555 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":15199.529104442,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 8800/9389 seen 140798 loss 0.0661 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":15231.686830162,"data":"[qwen35:4B] ep 0 step 5400/18779 seen 43200 loss 0.1924 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":15532.380204812,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 9000/9389 seen 143998 loss 0.0634 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":15786.373102103,"data":"[qwen35:4B] ep 0 step 5600/18779 seen 44800 loss 0.2025 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":15868.180667941,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] ep 2 step 9200/9389 seen 147198 loss 0.0694 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":16181.757251663,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] trained 9389 steps, 150222 pairs (3.00 epochs) in 264.5 min\n"}
+,{"stream_name":"stdout","time":16329.516785379,"data":"[qwen35:4B] ep 0 step 5800/18779 seen 46400 loss 0.1860 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":16882.468907217,"data":"[qwen35:4B] ep 0 step 6000/18779 seen 48000 loss 0.1800 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":17091.9109854,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] scored 36219 band pairs in 910s (39.8 pairs/s)\n"}
+,{"stream_name":"stdout","time":17091.962962811,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] AUC on B2 band: 0.8934  (21760 pairs)\n"}
+,{"stream_name":"stdout","time":17091.969556543,"data":"[causal:mixedbread-ai/mxbai-rerank-large-v2] AUC on C band: 0.8921  (14459 pairs)\n"}
+,{"stream_name":"stdout","time":17430.139003681,"data":"[qwen35:4B] ep 0 step 6200/18779 seen 49600 loss 0.2063 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":17975.984289949,"data":"[qwen35:4B] ep 1 step 6400/18779 seen 51199 loss 0.1682 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":18516.429748148,"data":"[qwen35:4B] ep 1 step 6600/18779 seen 52799 loss 0.1563 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":19062.038721116,"data":"[qwen35:4B] ep 1 step 6800/18779 seen 54399 loss 0.1453 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":19616.832449195,"data":"[qwen35:4B] ep 1 step 7000/18779 seen 55999 loss 0.1498 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":20168.274966369,"data":"[qwen35:4B] ep 1 step 7200/18779 seen 57599 loss 0.1722 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":20706.036305143,"data":"[qwen35:4B] ep 1 step 7400/18779 seen 59199 loss 0.1508 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":21250.552632611,"data":"[qwen35:4B] ep 1 step 7600/18779 seen 60799 loss 0.1290 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":21799.040925165,"data":"[qwen35:4B] ep 1 step 7800/18779 seen 62399 loss 0.1225 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":22346.489833235,"data":"[qwen35:4B] ep 1 step 8000/18779 seen 63999 loss 0.1730 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":22882.727238699,"data":"[qwen35:4B] ep 1 step 8200/18779 seen 65599 loss 0.1828 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":23439.769836882,"data":"[qwen35:4B] ep 1 step 8400/18779 seen 67199 loss 0.1416 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":23988.54453143,"data":"[qwen35:4B] ep 1 step 8600/18779 seen 68799 loss 0.1385 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":24327.035522185,"data":"[qwen35:4B] trained 8723 steps, 69783 pairs (1.39 epochs) in 400.0 min\n"}
+,{"stream_name":"stdout","time":27601.513773587,"data":"[qwen35:4B] scored 36219 band pairs in 3274s (11.1 pairs/s)\n"}
+,{"stream_name":"stdout","time":27601.542231016,"data":"[qwen35:4B] AUC on B2 band: 0.8982  (21760 pairs)\n"}
+,{"stream_name":"stdout","time":27601.548333307,"data":"[qwen35:4B] AUC on C band: 0.9018  (14459 pairs)\n"}
+,{"stream_name":"stdout","time":27603.969405139,"data":"worker exit codes [0, 0]\n"}
+,{"stream_name":"stdout","time":27603.970117473,"data":"--- qwen35:4B\n"}
+,{"stream_name":"stdout","time":27603.970555295,"data":"200 loss 0.4448 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970567875,"data":"ep 0 step 600/18779 seen 4800 loss 0.3938 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.9705721,"data":"ep 0 step 800/18779 seen 6400 loss 0.3355 2.8 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970575977,"data":"ep 0 step 1000/18779 seen 8000 loss 0.3005 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970579577,"data":"ep 0 step 1200/18779 seen 9600 loss 0.2568 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970583057,"data":"ep 0 step 1400/18779 seen 11200 loss 0.2648 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970587026,"data":"ep 0 step 1600/18779 seen 12800 loss 0.2696 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970608362,"data":"ep 0 step 1800/18779 seen 14400 loss 0.2421 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970614408,"data":"ep 0 step 2000/18779 seen 16000 loss 0.2103 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97062014,"data":"ep 0 step 2200/18779 seen 17600 loss 0.2568 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970625872,"data":"ep 0 step 2400/18779 seen 19200 loss 0.2515 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97063145,"data":"ep 0 step 2600/18779 seen 20800 loss 0.2197 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970636835,"data":"ep 0 step 2800/18779 seen 22400 loss 0.2417 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970675989,"data":"ep 0 step 3000/18779 seen 24000 loss 0.1920 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970680844,"data":"ep 0 step 3200/18779 seen 25600 loss 0.2248 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970685117,"data":"ep 0 step 3400/18779 seen 27200 loss 0.2253 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970689382,"data":"ep 0 step 3600/18779 seen 28800 loss 0.2063 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97072174,"data":"ep 0 step 3800/18779 seen 30400 loss 0.2381 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970726717,"data":"ep 0 step 4000/18779 seen 32000 loss 0.2241 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970730902,"data":"ep 0 step 4200/18779 seen 33600 loss 0.2027 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970735484,"data":"ep 0 step 4400/18779 seen 35200 loss 0.1961 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970740037,"data":"ep 0 step 4600/18779 seen 36800 loss 0.2023 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970744295,"data":"ep 0 step 4800/18779 seen 38400 loss 0.1934 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970748295,"data":"ep 0 step 5000/18779 seen 40000 loss 0.1912 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970752116,"data":"ep 0 step 5200/18779 seen 41600 loss 0.1836 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970756043,"data":"ep 0 step 5400/18779 seen 43200 loss 0.1924 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97075988,"data":"ep 0 step 5600/18779 seen 44800 loss 0.2025 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970763836,"data":"ep 0 step 5800/18779 seen 46400 loss 0.1860 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970769747,"data":"ep 0 step 6000/18779 seen 48000 loss 0.1800 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970777177,"data":"ep 0 step 6200/18779 seen 49600 loss 0.2063 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970779945,"data":"ep 1 step 6400/18779 seen 51199 loss 0.1682 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970782623,"data":"ep 1 step 6600/18779 seen 52799 loss 0.1563 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970785262,"data":"ep 1 step 6800/18779 seen 54399 loss 0.1453 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970788167,"data":"ep 1 step 7000/18779 seen 55999 loss 0.1498 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970790775,"data":"ep 1 step 7200/18779 seen 57599 loss 0.1722 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970793356,"data":"ep 1 step 7400/18779 seen 59199 loss 0.1508 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97079595,"data":"ep 1 step 7600/18779 seen 60799 loss 0.1290 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970800512,"data":"ep 1 step 7800/18779 seen 62399 loss 0.1225 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97080399,"data":"ep 1 step 8000/18779 seen 63999 loss 0.1730 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970821582,"data":"ep 1 step 8200/18779 seen 65599 loss 0.1828 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970826442,"data":"ep 1 step 8400/18779 seen 67199 loss 0.1416 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970830765,"data":"ep 1 step 8600/18779 seen 68799 loss 0.1385 2.9 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97083515,"data":"trained 8723 steps, 69783 pairs (1.39 epochs) in 400.0 min\n"}
+,{"stream_name":"stdout","time":27603.970839759,"data":"scored 36219 band pairs in 3274s (11.1 pairs/s)\n"}
+,{"stream_name":"stdout","time":27603.970843683,"data":"AUC on B2 band: 0.8982  (21760 pairs)\n"}
+,{"stream_name":"stdout","time":27603.970868557,"data":"AUC on C band: 0.9018  (14459 pairs)\n"}
+,{"stream_name":"stdout","time":27603.970872641,"data":"\n"}
+,{"stream_name":"stdout","time":27603.970876424,"data":"--- causal:mixedbread-ai/mxbai-rerank-large-v2\n"}
+,{"stream_name":"stdout","time":27603.970880268,"data":"ep 1000/9389 seen 16000 loss 0.2167 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970886107,"data":"ep 0 step 1200/9389 seen 19200 loss 0.2273 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970892901,"data":"ep 0 step 1400/9389 seen 22400 loss 0.2000 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970895659,"data":"ep 0 step 1600/9389 seen 25600 loss 0.1878 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97089831,"data":"ep 0 step 1800/9389 seen 28800 loss 0.1963 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970900961,"data":"ep 0 step 2000/9389 seen 32000 loss 0.2010 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970903602,"data":"ep 0 step 2200/9389 seen 35200 loss 0.1745 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970906332,"data":"ep 0 step 2400/9389 seen 38400 loss 0.1800 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970908965,"data":"ep 0 step 2600/9389 seen 41600 loss 0.1695 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.9709116,"data":"ep 0 step 2800/9389 seen 44800 loss 0.1787 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970914236,"data":"ep 0 step 3000/9389 seen 48000 loss 0.1610 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970916942,"data":"ep 1 step 3200/9389 seen 51199 loss 0.1521 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97091963,"data":"ep 1 step 3400/9389 seen 54399 loss 0.1307 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970922278,"data":"ep 1 step 3600/9389 seen 57599 loss 0.1324 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970924914,"data":"ep 1 step 3800/9389 seen 60799 loss 0.1228 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970927801,"data":"ep 1 step 4000/9389 seen 63999 loss 0.1185 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970930852,"data":"ep 1 step 4200/9389 seen 67199 loss 0.1379 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.9709336,"data":"ep 1 step 4400/9389 seen 70399 loss 0.1232 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970936213,"data":"ep 1 step 4600/9389 seen 73599 loss 0.1307 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970938906,"data":"ep 1 step 4800/9389 seen 76799 loss 0.1260 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970941516,"data":"ep 1 step 5000/9389 seen 79999 loss 0.1087 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970944126,"data":"ep 1 step 5200/9389 seen 83199 loss 0.1219 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970946736,"data":"ep 1 step 5400/9389 seen 86399 loss 0.1121 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970950432,"data":"ep 1 step 5600/9389 seen 89599 loss 0.1093 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970954156,"data":"ep 1 step 5800/9389 seen 92799 loss 0.1413 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970956937,"data":"ep 1 step 6000/9389 seen 95999 loss 0.1295 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970959538,"data":"ep 1 step 6200/9389 seen 99199 loss 0.1182 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970962126,"data":"ep 2 step 6400/9389 seen 102398 loss 0.0678 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970965357,"data":"ep 2 step 6600/9389 seen 105598 loss 0.0686 9.4 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970968113,"data":"ep 2 step 6800/9389 seen 108798 loss 0.0652 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970970748,"data":"ep 2 step 7000/9389 seen 111998 loss 0.0748 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.97097965,"data":"ep 2 step 7200/9389 seen 115198 loss 0.0649 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970982487,"data":"ep 2 step 7400/9389 seen 118398 loss 0.0683 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970985203,"data":"ep 2 step 7600/9389 seen 121598 loss 0.0792 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970987821,"data":"ep 2 step 7800/9389 seen 124798 loss 0.0782 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970990448,"data":"ep 2 step 8000/9389 seen 127998 loss 0.0699 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970993079,"data":"ep 2 step 8200/9389 seen 131198 loss 0.0668 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970995786,"data":"ep 2 step 8400/9389 seen 134398 loss 0.0710 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.970998401,"data":"ep 2 step 8600/9389 seen 137598 loss 0.0555 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.971001071,"data":"ep 2 step 8800/9389 seen 140798 loss 0.0661 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.971003776,"data":"ep 2 step 9000/9389 seen 143998 loss 0.0634 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.971006441,"data":"ep 2 step 9200/9389 seen 147198 loss 0.0694 9.5 pairs/s\n"}
+,{"stream_name":"stdout","time":27603.971009048,"data":"trained 9389 steps, 150222 pairs (3.00 epochs) in 264.5 min\n"}
+,{"stream_name":"stdout","time":27603.971011793,"data":"scored 36219 band pairs in 910s (39.8 pairs/s)\n"}
+,{"stream_name":"stdout","time":27603.971014491,"data":"AUC on B2 band: 0.8934  (21760 pairs)\n"}
+,{"stream_name":"stdout","time":27603.971017118,"data":"AUC on C band: 0.8921  (14459 pairs)\n"}
+,{"stream_name":"stdout","time":27603.971019772,"data":"\n"}
+,{"stream_name":"stderr","time":27606.297384564,"data":"/kaggle/src/script.py:181: DeprecationWarning: In Polars 2.0, the default behavior for `empty_as_null` will change to `False`. To keep the current behavior, explicitly set `empty_as_null=True`.\n"}
+,{"stream_name":"stderr","time":27606.297425023,"data":"  .with_columns(pl.col(\"matched_entity_ids\").fill_null(\"\").str.split(\",\")).explode(\"matched_entity_ids\") \\\n"}
+,{"stream_name":"stdout","time":27606.325865784,"data":"AUC on C band (14459 rows, pos 0.225): p2 0.9375\n"}
+,{"stream_name":"stdout","time":27606.331798164,"data":"AUC on C band (14459 rows, pos 0.225): lg_mxbai_rerank_large_v2 0.8921\n"}
+,{"stream_name":"stdout","time":27606.337193866,"data":"AUC on C band (14459 rows, pos 0.225): lg_qwen35_4B 0.9018\n"}
+,{"stream_name":"stdout","time":27637.401849277,"data":"level 2: B2 F0.5 0.9805; C F0.5 0.9811 (singleton 0.9904, P 0.9977 R 0.9486)\n"}
+,{"stream_name":"stdout","time":27669.041866003,"data":"lg_mxbai_rerank_large_v2                 band (0.01,0.99) share 0.0377: B2 0.9811 (+0.0006)  C 0.9819 (+0.0007)  singleton 0.9914  coef [0.798, 0.123]\n"}
+,{"stream_name":"stdout","time":27700.649478663,"data":"lg_mxbai_rerank_large_v2                 band (0.02,0.98) share 0.0263: B2 0.9811 (+0.0006)  C 0.9818 (+0.0006)  singleton 0.9882  coef [0.799, 0.122]\n"}
+,{"stream_name":"stdout","time":27732.370036476,"data":"lg_mxbai_rerank_large_v2                 band (0.05,0.95) share 0.0134: B2 0.9811 (+0.0006)  C 0.9816 (+0.0005)  singleton 0.9872  coef [0.798, 0.118]\n"}
+,{"stream_name":"stdout","time":27763.352194869,"data":"lg_mxbai_rerank_large_v2                 band (0.1,0.9) share 0.0089: B2 0.9810 (+0.0006)  C 0.9815 (+0.0004)  singleton 0.9861  coef [0.812, 0.114]\n"}
+,{"stream_name":"stdout","time":27794.888469386,"data":"lg_qwen35_4B                             band (0.01,0.99) share 0.0377: B2 0.9809 (+0.0004)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.784, 0.17]\n"}
+,{"stream_name":"stdout","time":27826.108739333,"data":"lg_qwen35_4B                             band (0.02,0.98) share 0.0263: B2 0.9809 (+0.0004)  C 0.9819 (+0.0007)  singleton 0.9936  coef [0.783, 0.167]\n"}
+,{"stream_name":"stdout","time":27857.650919646,"data":"lg_qwen35_4B                             band (0.05,0.95) share 0.0134: B2 0.9809 (+0.0004)  C 0.9817 (+0.0006)  singleton 0.9904  coef [0.781, 0.164]\n"}
+,{"stream_name":"stdout","time":27888.794510971,"data":"lg_qwen35_4B                             band (0.1,0.9) share 0.0089: B2 0.9810 (+0.0005)  C 0.9818 (+0.0007)  singleton 0.9925  coef [0.8, 0.158]\n"}
+,{"stream_name":"stdout","time":27920.272962074,"data":"lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.01,0.99) share 0.0377: B2 0.9812 (+0.0007)  C 0.9821 (+0.0010)  singleton 0.9936  coef [0.744, 0.073, 0.108]\n"}
+,{"stream_name":"stdout","time":27951.960797638,"data":"lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.02,0.98) share 0.0263: B2 0.9812 (+0.0007)  C 0.9820 (+0.0009)  singleton 0.9914  coef [0.744, 0.073, 0.104]\n"}
+,{"stream_name":"stdout","time":27983.477290248,"data":"lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.05,0.95) share 0.0134: B2 0.9811 (+0.0007)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.745, 0.069, 0.104]\n"}
+,{"stream_name":"stdout","time":28014.466343203,"data":"lg_mxbai_rerank_large_v2+lg_qwen35_4B    band (0.1,0.9) share 0.0089: B2 0.9811 (+0.0006)  C 0.9819 (+0.0008)  singleton 0.9914  coef [0.77, 0.067, 0.098]\n"}
+,{"stream_name":"stdout","time":28014.46641546,"data":"CHOSEN on B2: ['lg_mxbai_rerank_large_v2', 'lg_qwen35_4B'] band (0.02,0.98) -\u003e C 0.9820 (+0.0009) -\u003e REJECT (gate +0.002)\n"}
+,{"stream_name":"stdout","time":28014.467704293,"data":"DONE 27838s\n"}
+,{"stream_name":"stderr","time":28019.455618745,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":28019.455662179,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":28019.739321798,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":28019.739366722,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":28020.487403794,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":28022.015192347,"data":"[NbConvertApp] Writing 357278 bytes to __results__.html\n"}
+]

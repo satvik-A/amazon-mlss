@@ -1,0 +1,17 @@
+{
+ "id": "satvik006/er2-judge-v1",
+ "title": "er2-judge-v1",
+ "code_file": "run_judge.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [
+  "satvik006/er-bundle",
+  "satvik006/er-judge-in"
+ ],
+ "competition_sources": [],
+ "kernel_sources": []
+}

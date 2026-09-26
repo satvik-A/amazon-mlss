@@ -1,0 +1,31 @@
+LEVEL 2 active: delta on C +0.0104
+inputs: 24 level-1 files, 24 cross-encoder files, 3 candidate files
+France_0.parquet: rows 1211502 S1 32492 matches 106655  23s
+France_1.parquet: rows 1209697 S1 32253 matches 105890  35s
+France_2.parquet: rows 1223294 S1 32496 matches 105685  48s
+France_3.parquet: rows 1211519 S1 32335 matches 106164  62s
+France_4.parquet: rows 1217627 S1 32414 matches 106096  74s
+France_5.parquet: rows 1214507 S1 32333 matches 106768  87s
+France_6.parquet: rows 1221184 S1 32542 matches 106158  101s
+France_7.parquet: rows 1223072 S1 32587 matches 107022  114s
+India_0.parquet: rows 3011565 S1 101192 matches 335032  144s
+India_1.parquet: rows 3018710 S1 101343 matches 335732  175s
+India_2.parquet: rows 3003572 S1 101277 matches 335210  206s
+India_3.parquet: rows 3006364 S1 100995 matches 333940  237s
+India_4.parquet: rows 3015177 S1 101346 matches 334725  268s
+India_5.parquet: rows 3028659 S1 101577 matches 336482  300s
+India_6.parquet: rows 3003784 S1 101037 matches 333752  332s
+India_7.parquet: rows 3003349 S1 101219 matches 334534  364s
+US_0.parquet: rows 1925639 S1 83124 matches 280103  384s
+US_1.parquet: rows 1915070 S1 82610 matches 277962  403s
+US_2.parquet: rows 1926809 S1 83175 matches 281321  425s
+US_3.parquet: rows 1912676 S1 82738 matches 279408  445s
+US_4.parquet: rows 1918743 S1 82644 matches 278904  465s
+US_5.parquet: rows 1924592 S1 82962 matches 279785  484s
+US_6.parquet: rows 1919408 S1 82983 matches 279438  504s
+US_7.parquet: rows 1916668 S1 82870 matches 279481  526s
+street filter (France, ratio < 50): 3161 of 850438 pairs removed
+one owner per record: 5763086 -> 5750578 pairs (12508 duplicate claims removed)
+STACKED submission: shards 24 (with cross-encoder 24); candidates/S1 28.39, matches/S1 3.32, S1 with no match 0.0583
+level-1 fallback in l1/: matches/S1 3.36
+DONE 742s

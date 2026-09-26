@@ -1,0 +1,48 @@
+[{"stream_name":"stderr","time":5.947789176,"data":"  WARNING: Did not find branch or tag '988ce1d', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":15.239510719,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 4.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.414371769,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 25.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":16.268784765,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 29.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":23.584004688,"data":"train_India: ref 988ce1d  country synonyms yes\n"}
+,{"stream_name":"stdout","time":28.218064666,"data":"S1 883188  R 4133346  5s\n"}
+,{"stream_name":"stdout","time":7736.331341915,"data":"  queried 883188 S1 -\u003e 109313882 raw candidates\n"}
+,{"stream_name":"stdout","time":8170.812769587,"data":"  cands 78772404 (89.2/S1)\n"}
+,{"stream_name":"stderr","time":8172.818994521,"data":"/kaggle/src/script.py:41: DeprecationWarning: In Polars 2.0, the default behavior for `empty_as_null` will change to `False`. To keep the current behavior, explicitly set `empty_as_null=True`.\n"}
+,{"stream_name":"stderr","time":8172.819088109,"data":"  .with_columns(pl.col(\"matched_entity_ids\").fill_null(\"\").str.split(\",\")).explode(\"matched_entity_ids\") \\\n"}
+,{"stream_name":"stdout","time":8182.365664647,"data":"internal pool 89.2/S1; pair recall 0.9286\n"}
+,{"stream_name":"stdout","time":12053.639212138,"data":"FULL-mode Pareto frontier:\n"}
+,{"stream_name":"stdout","time":12053.642410837,"data":"shape: (21, 6)\n"}
+,{"stream_name":"stdout","time":12053.642440347,"data":"┌───────┬─────┬──────┬───────────┬──────────┬──────────┐\n"}
+,{"stream_name":"stdout","time":12053.642448182,"data":"│ alpha ┆ G   ┆ beta ┆ cands     ┆ recall   ┆ complete │\n"}
+,{"stream_name":"stdout","time":12053.642453635,"data":"│ ---   ┆ --- ┆ ---  ┆ ---       ┆ ---      ┆ ---      │\n"}
+,{"stream_name":"stdout","time":12053.642459089,"data":"│ f64   ┆ i64 ┆ f64  ┆ f64       ┆ f64      ┆ f64      │\n"}
+,{"stream_name":"stdout","time":12053.64246425,"data":"╞═══════╪═════╪══════╪═══════════╪══════════╪══════════╡\n"}
+,{"stream_name":"stdout","time":12053.642470909,"data":"│ 0.8   ┆ 2   ┆ 0.0  ┆ 2.821141  ┆ 0.607283 ┆ 0.299972 │\n"}
+,{"stream_name":"stdout","time":12053.642476237,"data":"│ 0.8   ┆ 3   ┆ 0.0  ┆ 2.912216  ┆ 0.620991 ┆ 0.314731 │\n"}
+,{"stream_name":"stdout","time":12053.642481502,"data":"│ 0.8   ┆ 5   ┆ 0.0  ┆ 2.943861  ┆ 0.623906 ┆ 0.317683 │\n"}
+,{"stream_name":"stdout","time":12053.642486825,"data":"│ 0.8   ┆ 99  ┆ 0.0  ┆ 2.977402  ┆ 0.624792 ┆ 0.318266 │\n"}
+,{"stream_name":"stdout","time":12053.642492013,"data":"│ 0.7   ┆ 2   ┆ 0.0  ┆ 3.014711  ┆ 0.628073 ┆ 0.32164  │\n"}
+,{"stream_name":"stdout","time":12053.642497313,"data":"│ 0.7   ┆ 3   ┆ 0.0  ┆ 3.184397  ┆ 0.652686 ┆ 0.350174 │\n"}
+,{"stream_name":"stdout","time":12053.64250259,"data":"│ 0.7   ┆ 5   ┆ 0.0  ┆ 3.245368  ┆ 0.658399 ┆ 0.356747 │\n"}
+,{"stream_name":"stdout","time":12053.642507693,"data":"│ 0.7   ┆ 99  ┆ 0.0  ┆ 3.335097  ┆ 0.660485 ┆ 0.358393 │\n"}
+,{"stream_name":"stdout","time":12053.642512873,"data":"│ 0.5   ┆ 3   ┆ 0.0  ┆ 3.527603  ┆ 0.68678  ┆ 0.394494 │\n"}
+,{"stream_name":"stdout","time":12053.642532149,"data":"│ 0.5   ┆ 5   ┆ 0.0  ┆ 3.663554  ┆ 0.698206 ┆ 0.410087 │\n"}
+,{"stream_name":"stdout","time":12053.642536766,"data":"│ 0.0   ┆ 3   ┆ 0.0  ┆ 3.771541  ┆ 0.709022 ┆ 0.431825 │\n"}
+,{"stream_name":"stdout","time":12053.642541257,"data":"│ 0.5   ┆ 3   ┆ 0.25 ┆ 4.089634  ┆ 0.720267 ┆ 0.433378 │\n"}
+,{"stream_name":"stdout","time":12053.64254553,"data":"│ 0.0   ┆ 5   ┆ 0.0  ┆ 4.092429  ┆ 0.731068 ┆ 0.467348 │\n"}
+,{"stream_name":"stdout","time":12053.642549749,"data":"│ 0.0   ┆ 3   ┆ 0.25 ┆ 4.430376  ┆ 0.744845 ┆ 0.476891 │\n"}
+,{"stream_name":"stdout","time":12053.64255404,"data":"│ 0.0   ┆ 5   ┆ 0.25 ┆ 4.997201  ┆ 0.769753 ┆ 0.519508 │\n"}
+,{"stream_name":"stdout","time":12053.642558293,"data":"│ 0.0   ┆ 99  ┆ 0.0  ┆ 5.38961   ┆ 0.763293 ┆ 0.522597 │\n"}
+,{"stream_name":"stdout","time":12053.642562597,"data":"│ 0.0   ┆ 5   ┆ 0.5  ┆ 6.707696  ┆ 0.803289 ┆ 0.570156 │\n"}
+,{"stream_name":"stdout","time":12053.642566982,"data":"│ 0.0   ┆ 99  ┆ 0.25 ┆ 8.055506  ┆ 0.809374 ┆ 0.590994 │\n"}
+,{"stream_name":"stdout","time":12053.642571247,"data":"│ 0.0   ┆ 5   ┆ -1.0 ┆ 13.769856 ┆ 0.845928 ┆ 0.65014  │\n"}
+,{"stream_name":"stdout","time":12053.642575502,"data":"│ 0.0   ┆ 99  ┆ 0.5  ┆ 14.900695 ┆ 0.851094 ┆ 0.660855 │\n"}
+,{"stream_name":"stdout","time":12053.642580807,"data":"│ 0.0   ┆ 99  ┆ -1.0 ┆ 89.190411 ┆ 0.928567 ┆ 0.82526  │\n"}
+,{"stream_name":"stdout","time":12053.644816147,"data":"└───────┴─────┴──────┴───────────┴──────────┴──────────┘\n"}
+,{"stream_name":"stdout","time":12076.262330668,"data":"wrote pool_train_India.parquet 78772404 rows  DONE 12053s\n"}
+,{"stream_name":"stderr","time":12079.841266715,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":12079.841328636,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":12080.173119721,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":12080.17315307,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":12084.801797926,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":12086.423667503,"data":"[NbConvertApp] Writing 304047 bytes to __results__.html\n"}
+]

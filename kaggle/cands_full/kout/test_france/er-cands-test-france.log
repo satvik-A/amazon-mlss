@@ -1,0 +1,17 @@
+[{"stream_name":"stderr","time":5.82637789,"data":"  WARNING: Did not find branch or tag '988ce1d', assuming revision or ref.\n"}
+,{"stream_name":"stdout","time":14.165994954,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 865.8/865.8 kB 16.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.230229437,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.2/3.2 MB 60.8 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.749254894,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 49.9/49.9 MB 34.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":22.094753926,"data":"machine: 4 CPUs, 33 GB RAM\n"}
+,{"stream_name":"stdout","time":22.094791685,"data":"test_France: ref 988ce1d  country synonyms yes\n"}
+,{"stream_name":"stdout","time":27.905893686,"data":"S1 259452  R 1434993  6s\n"}
+,{"stream_name":"stdout","time":2516.661943146,"data":"  queried 259452 S1 -\u003e 33229890 raw candidates\n"}
+,{"stream_name":"stdout","time":2622.510216544,"data":"  cands 24649784 (95.0/S1)\n"}
+,{"stream_name":"stdout","time":2629.086572501,"data":"wrote pool_test_France.parquet 24649784 rows  DONE 2607s\n"}
+,{"stream_name":"stderr","time":2632.137332998,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2632.137376665,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2632.50077112,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2632.500803695,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2634.555216922,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2636.330172064,"data":"[NbConvertApp] Writing 305380 bytes to __results__.html\n"}
+]

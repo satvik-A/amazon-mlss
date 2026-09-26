@@ -1,0 +1,33 @@
+ref 2b8e72a; model ref b785161; rule rank-threshold; policy {'cutoff': 11}; holdout {'F': 0.9718283805087403, 'cands': 23.88608305274972}
+France: normalised 259452 S1 + 1434993 S2/S3 once  74s
+France[0]: S1 32492 candidates 1159734 matches 116594; pseudo-pairs 84023 predicted 0.9510  225s
+France[1]: S1 32253 candidates 1155213 matches 115760; pseudo-pairs 83281 predicted 0.9524  385s
+France[2]: S1 32496 candidates 1173230 matches 115896; pseudo-pairs 83805 predicted 0.9508  573s
+France[3]: S1 32335 candidates 1159238 matches 116179; pseudo-pairs 84308 predicted 0.9517  733s
+France[4]: S1 32414 candidates 1164425 matches 116207; pseudo-pairs 83942 predicted 0.9513  885s
+France[5]: S1 32333 candidates 1161952 matches 116839; pseudo-pairs 84248 predicted 0.9512  1059s
+France[6]: S1 32542 candidates 1167235 matches 116223; pseudo-pairs 83740 predicted 0.9537  1211s
+France[7]: S1 32587 candidates 1168748 matches 117210; pseudo-pairs 84487 predicted 0.9526  1362s
+France: S1 259452  candidates 9309775 (35.88/S1)  matches 930908 (3.59/S1)  S1 predicted empty 0.0479
+India: normalised 809986 S1 + 4717565 S2/S3 once  1702s
+India[0]: S1 101192 candidates 2662176 matches 328734; pseudo-pairs 153445 predicted 0.9963  2196s
+India[1]: S1 101343 candidates 2667071 matches 329515; pseudo-pairs 153240 predicted 0.9959  2672s
+India[2]: S1 101277 candidates 2652011 matches 329120; pseudo-pairs 152652 predicted 0.9963  3152s
+India[3]: S1 100995 candidates 2654762 matches 327697; pseudo-pairs 152634 predicted 0.9962  3630s
+India[4]: S1 101346 candidates 2660103 matches 328672; pseudo-pairs 153180 predicted 0.9964  4127s
+India[5]: S1 101577 candidates 2675335 matches 330519; pseudo-pairs 153449 predicted 0.9960  4602s
+India[6]: S1 101037 candidates 2656115 matches 327376; pseudo-pairs 152820 predicted 0.9959  5093s
+India[7]: S1 101219 candidates 2654062 matches 328520; pseudo-pairs 152870 predicted 0.9967  5588s
+India: S1 809986  candidates 21281635 (26.27/S1)  matches 2630153 (3.25/S1)  S1 predicted empty 0.0622
+US: normalised 663106 S1 + 3817031 S2/S3 once  5796s
+US[0]: S1 83124 candidates 1742178 matches 279413; pseudo-pairs 128819 predicted 0.9997  6186s
+US[1]: S1 82610 candidates 1733920 matches 277144; pseudo-pairs 128261 predicted 0.9997  6535s
+US[2]: S1 83175 candidates 1743433 matches 280622; pseudo-pairs 128902 predicted 0.9996  6923s
+US[3]: S1 82738 candidates 1727027 matches 278542; pseudo-pairs 128037 predicted 0.9997  7278s
+US[4]: S1 82644 candidates 1732322 matches 278239; pseudo-pairs 128130 predicted 0.9997  7630s
+US[5]: S1 82962 candidates 1739483 matches 279164; pseudo-pairs 128669 predicted 0.9997  7992s
+US[6]: S1 82983 candidates 1731355 matches 278742; pseudo-pairs 128543 predicted 0.9997  8345s
+US[7]: S1 82870 candidates 1730040 matches 278814; pseudo-pairs 127844 predicted 0.9997  8722s
+US: S1 663106  candidates 13879758 (20.93/S1)  matches 2230680 (3.36/S1)  S1 predicted empty 0.0572
+total: candidates/S1 25.67, matches/S1 3.34, S1 with no match 0.0581
+wrote matching_results.tsv + candidate_pairs.tsv  DONE 8846s
