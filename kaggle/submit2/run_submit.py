@@ -35,7 +35,11 @@ fc = cfg["features"]
 SJ = find("decision_stack.json") if not LOCAL else []
 stack = lgb.Booster(model_file=os.path.join(os.path.dirname(SJ[0]), "stack.txt")) if SJ else None
 if SJ:
-    cfg2 = json.load(open(SJ[0])); log(f"LEVEL 2 active: delta on C {cfg2.get('delta_C')}")
+    cfg2 = json.load(open(SJ[0]))
+    if cfg2.get("delta_C", 0) < 0.002:     # acceptance gate: level 2 only if it beat level 1 on holdout C by >= 0.002
+        log(f"level 2 REJECTED by the gate (delta on C {cfg2.get('delta_C')}) -> level 1"); stack = None
+    else:
+        log(f"LEVEL 2 active: delta on C {cfg2.get('delta_C')}")
 log(f"ref {REF}; model ref {cfg.get('ref')}; rule {cfg['rule']}; policy {cfg['policy']}; holdout {cfg.get('holdout_C')}")
 NZ = Normalizer(ART)
 s1_all = pl.read_parquet(f"{IN}/test_s1.parquet")
@@ -47,14 +51,20 @@ for p in POOLS:
     st = M.claim_stats(p)                                   # record-level stats over the WHOLE pool (streaming)
     S = s1_all.filter(pl.col("country") == ctry)
     nf = M.s1_name_freq(S, NZ)
+    # normalise every S1 / S2 / S3 record of the country ONCE (shards reuse them; a record appears under many S1s)
+    SN = pl.concat([NZ.transform(S.slice(i, 1_000_000)) for i in range(0, S.height, 1_000_000)])
+    Rall = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("country") == ctry).collect()
+    RNall = pl.concat([NZ.transform(Rall.slice(i, 1_000_000)) for i in range(0, Rall.height, 1_000_000)])
+    log(f"{ctry}: normalised {S.height} S1 + {Rall.height} S2/S3 once  {time.time()-T0:.0f}s")
     for k in range(NSH):
         pool = pl.scan_parquet(p).filter(pl.col("s1").hash(3) % NSH == k).collect(engine="streaming").join(st, on="r", how="left")
         pol = cfg["policy"]
         kept = pool if pol.get("cutoff") else M.prune_pool(pool, pol); del pool   # cut-off rules need the features first
         kept = kept.join(nf, on="s1", how="left")
         Sk = S.filter(pl.col("entity_id").is_in(kept["s1"].unique().implode()))
-        R = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("entity_id").is_in(kept["r"].unique().implode())).collect()
-        F = M.pool_features(kept, Sk, R, NZ)
+        QNk = SN.filter(pl.col("entity_id").is_in(kept["s1"].unique().implode()))
+        RNk = RNall.filter(pl.col("entity_id").is_in(kept["r"].unique().implode()))
+        F = M.pool_features(kept, Sk, None, NZ, QN=QNk, RN=RNk)
         if pol.get("cutoff"):
             F = F.filter(M.cutoff_mask(int(pol["cutoff"])))   # candidate_pairs = rows kept by the deterministic rules
             kept = F.select("s1", "r")
@@ -68,11 +78,12 @@ for p in POOLS:
         else:
             sel = M.decide(F, cfg, head)
         # label-free transfer check: pseudo-pairs (>=99% precise on US/India train) that are candidates -> share predicted
-        pp = pseudo_pairs(NZ.transform(Sk), NZ.transform(R)).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
+        pp = pseudo_pairs(QNk, RNk).join(kept.select("s1", "r"), on=["s1", "r"], how="semi")
         hit = pp.join(sel.select("s1", "r"), on=["s1", "r"], how="semi").height
         log(f"{ctry}[{k}]: S1 {Sk.height} candidates {kept.height} matches {sel.height}; pseudo-pairs {pp.height} predicted {hit/max(pp.height,1):.4f}  {time.time()-T0:.0f}s")
         cands.append(kept.select("s1", "r")); matches.append(sel.select("s1", "r"))
-        del F, kept, R
+        del F, kept, QNk, RNk
+    del SN, RNall, Rall
     cn = sum(c.height for c in cands[-NSH:]); mn = pl.concat(matches[-NSH:])
     log(f"{ctry}: S1 {S.height}  candidates {cn} ({cn/S.height:.2f}/S1)  matches {mn.height} ({mn.height/S.height:.2f}/S1)  S1 predicted empty {1 - mn['s1'].n_unique()/S.height:.4f}")
 C = pl.concat(cands); Mt = pl.concat(matches)

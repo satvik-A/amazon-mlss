@@ -10,8 +10,8 @@ TERMINAL = {"COMPLETE", "ERROR", "CANCEL_ACKNOWLEDGED", "CANCELLED"}
 ACTIVE = {"RUNNING", "QUEUED", "NEW", "PENDING"}
 CANDS2 = ["er-cands2-train-us", "er-cands2-train-india", "er-cands2-test-us", "er-cands2-test-india", "er-cands2-test-france"]
 CPU_JOBS = {"er-blocking-v5", "er-cands-train-us", "er-cands-train-india", "er-cands-test-us", "er-cands-test-india",
-            "er-matcher-full", "er-submit", "er-stack", "er-matcher-full2", "er-submit2", *CANDS2}
-GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4", "er-xenc-score"}
+            "er-matcher-full", "er-submit", "er-stack", "er-matcher-full2", "er-submit2", "er-submit3", *CANDS2}
+GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4", "er-xenc-score", "er-xenc-score-test"}
 XENC = ["er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4"]
 
 # name -> (resource, deps (must be COMPLETE), launch command builder), in priority order
@@ -31,6 +31,9 @@ JOBS = [
     ("er-xenc-score", "gpu", ["er-matcher-full2", "er-xenc-v1", "er-xenc-v4"],
      lambda st: launch("kaggle/xenc_score", "NvidiaTeslaT4", ["er-xenc-v1", "er-xenc-v4", "er-matcher-full2"])),   # bge + MuRIL + CANINE (Qwen 4B / 3.5 too slow on T4)
     ("er-stack", "cpu", ["er-xenc-score"], lambda st: launch("kaggle/stack", sources=["er-matcher-full2", "er-xenc-score"])),
+    # stacked submission: cross-encoder scores on the TEST uncertain band (level-1 files from er-submit2), then submit3
+    ("er-xenc-score-test", "gpu", ["er-submit2", "er-stack", "er-xenc-v1", "er-xenc-v4"], lambda st: launch("kaggle/xenc_score_test", "NvidiaTeslaT4")),
+    ("er-submit3", "cpu", ["er-xenc-score-test", "er-stack", "er-matcher-full2"], lambda st: launch("kaggle/submit3")),
     ("er-xenc-v2", "gpu", [], lambda st: prebuilt("kaggle/xenc_v2", "NvidiaTeslaT4")),
     # second pass (blocking arms 7 + 8): gated by the file kaggle/.cands2_go (created once the config is chosen + jobs2 built)
     *[(n, "cpu", [], (lambda f: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/cands_full/jobs2/{f}"])(n[len("er-cands2-"):].replace("-", "_")))
@@ -57,6 +60,23 @@ def status(j):
         return "?"
     m = re.search(r"KernelWorkerStatus\.([A-Z_]+)", out)
     return m.group(1) if m else ("MISSING" if "404" in out or "not found" in out.lower() else "?")
+
+
+def stack_passed(launched) -> bool:
+    """True if er-stack's level 2 beat level 1 on holdout C by >= 0.002 (else skip the test scoring + submit3)."""
+    if "stack:delta" not in launched:
+        d = f"{ROOT}/kaggle/stack/kout"; os.makedirs(d, exist_ok=True)
+        subprocess.run([K, "kernels", "output", "satvikaderla/er-stack", "-p", d, "-o", "--file-pattern", r".*\.(json|txt)$"], capture_output=True, text=True)
+        try:
+            launched["stack:delta"] = json.load(open(f"{d}/decision_stack.json")).get("delta_C", -1)
+        except Exception:
+            return False
+        log(f"STACK gate: delta on C {launched['stack:delta']:+.4f} -> {'ACCEPT' if launched['stack:delta'] >= 0.002 else 'REJECT (no stacked submission)'}")
+    if launched["stack:delta"] < 0.002:
+        for n in ("er-xenc-score-test", "er-submit3"):
+            launched.setdefault(n, "skipped (stack rejected)")
+        return False
+    return True
 
 
 def main():
@@ -88,6 +108,8 @@ def main():
                 continue
             if name in GATES and not os.path.exists(GATES[name]):
                 continue
+            if name == "er-xenc-score-test" and not stack_passed(launched):
+                continue
             if (res == "gpu" and gpu_busy >= 2) or (res == "cpu" and cpu_busy >= 5):
                 continue
             c = cmd(prev)
@@ -100,7 +122,7 @@ def main():
                 gpu_busy += res == "gpu"; cpu_busy += res == "cpu"
             json.dump(st, open(STATE, "w"), indent=1)
         # submission files: download + official validator, once per submit job
-        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2")):
+        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2"), ("er-submit3", "submit3")):
             if prev.get(sj) == "COMPLETE" and not launched.get(f"{sj}:fetched"):
                 d = f"{ROOT}/kaggle/{folder}/kout"; os.makedirs(d, exist_ok=True)
                 subprocess.run([K, "kernels", "output", f"satvikaderla/{sj}", "-p", d, "-o", "--file-pattern", r".*\.(tsv|txt)$"], capture_output=True, text=True)

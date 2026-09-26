@@ -25,18 +25,24 @@ def prune_pool(pool: pl.DataFrame, policy: dict) -> pl.DataFrame:
     return pool.join(kept.rename({"id": "s1", "id_r": "r"}), on=["s1", "r"], how="semi")
 
 
-def pool_features(pool: pl.DataFrame, S1: pl.DataFrame, R: pl.DataFrame, nz, chunk: int = 5_000_000) -> pl.DataFrame:
+def pool_features(pool: pl.DataFrame, S1: pl.DataFrame, R: pl.DataFrame, nz, chunk: int = 5_000_000,
+                  QN: pl.DataFrame | None = None, RN: pl.DataFrame | None = None) -> pl.DataFrame:
     """Features for every pool row. S1/R: raw records (entity_id, business_name, business_address, country).
-    Rows are processed in S1-complete slices so the per-S1 context features see the whole candidate list."""
+    Rows are processed in S1-complete slices so the per-S1 context features see the whole candidate list.
+    QN/RN: optional pre-normalised frames (normalise each record ONCE; a record appears under many S1s / slices)."""
+    if QN is None:
+        QN = nz.transform(S1.filter(pl.col("entity_id").is_in(pool["s1"].unique().implode())))
+    if RN is None:
+        RN = nz.transform(R.filter(pl.col("entity_id").is_in(pool["r"].unique().implode())))
     s1s = pool["s1"].unique().sort()
     per = max(1, int(len(s1s) * chunk / max(pool.height, 1)))
     out = []
     for i in range(0, len(s1s), per):
         ids = s1s.slice(i, per)
         P = pool.filter(pl.col("s1").is_in(ids.implode()))
-        QN = nz.transform(S1.filter(pl.col("entity_id").is_in(ids.implode())))
-        RN = nz.transform(R.filter(pl.col("entity_id").is_in(P["r"].unique().implode())))
-        out.append(pair_features(P, QN, RN))
+        q = QN.filter(pl.col("entity_id").is_in(ids.implode()))
+        r = RN.filter(pl.col("entity_id").is_in(P["r"].unique().implode()))
+        out.append(pair_features(P, q, r))
     return pl.concat(out, how="vertical_relaxed")
 
 
