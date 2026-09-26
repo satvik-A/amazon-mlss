@@ -20,8 +20,9 @@ ARMS = {0: "primary", 3: "namepair", 4: "keys", 5: "nameonly", 6: "trigram", 7: 
 CAP = {0: 100, 3: 30, 4: 30, 5: 40, 6: 25, 7: 20, 8: 10}
 # address-word window for the number x word / name x word / key x word tokens: the first words plus the LAST ADDR_TAIL words.
 # Indian copies keep "first number + city + state", and in the S1's long address the city is among the last words
-# (C-split misses: number x word overlap 31.5% with the first 6 words only, 64% with the last 3 added). 0 = off.
-ADDR_TAIL = 0
+# (C-split misses: number x word overlap 31.5% -> 64%). Recall lab r10 vs r9: India recall 96.58 -> 97.96, S1 complete
+# 90.4 -> 93.8, Indian-script copies 95.1 -> 98.0; US 99.05 -> 99.32 / 96.8 -> 97.6; same candidate count. 0 = off.
+ADDR_TAIL = 3
 
 
 def _pairs4(col: str):
