@@ -18,6 +18,10 @@ import polars as pl
 ARMS = {0: "primary", 3: "namepair", 4: "keys", 5: "nameonly", 6: "trigram", 7: "noaddr", 8: "namekey_x_addr"}
 # recall lab r9 (full train pool): completeness US 94.0 -> 96.8, India 82.7 -> 90.4 vs the v5 config, 2x faster queries
 CAP = {0: 100, 3: 30, 4: 30, 5: 40, 6: 25, 7: 20, 8: 10}
+# address-word window for the number x word / name x word / key x word tokens: the first words plus the LAST ADDR_TAIL words.
+# Indian copies keep "first number + city + state", and in the S1's long address the city is among the last words
+# (C-split misses: number x word overlap 31.5% with the first 6 words only, 64% with the last 3 added). 0 = off.
+ADDR_TAIL = 0
 
 
 def _pairs4(col: str):
@@ -25,6 +29,12 @@ def _pairs4(col: str):
     g = lambda i: h4.list.get(i, null_on_oob=True)
     return [pl.when(h4.list.len() > j).then(pl.min_horizontal(g(i), g(j)) + "|" + pl.max_horizontal(g(i), g(j)))
             for i in range(4) for j in range(i + 1, 4)]
+
+
+def _win(col: str, n: int) -> pl.Expr:
+    """first n words, plus the last ADDR_TAIL words when set (deduplicated, order kept)"""
+    e = pl.col(col).list.head(n)
+    return pl.concat_list(e, pl.col(col).list.tail(ADDR_TAIL)).list.unique(maintain_order=True) if ADDR_TAIL else e
 
 
 def tokens(N: pl.DataFrame, query: bool = False) -> pl.DataFrame:
@@ -53,7 +63,7 @@ def tokens(N: pl.DataFrame, query: bool = False) -> pl.DataFrame:
     # address (city + one number, typical of Indian-script copies) are lost in the primary arm; the pair is rare.
     ck = d.select("id", pl.col("core").list.sort().list.join(" ").alias("ck")).filter(pl.col("ck").str.len_chars() >= 3)
     kn = ck.join(d.select("id", pl.col("ad").list.unique().list.head(4).alias("x")).explode("x").drop_nulls("x"), on="id")
-    kw = ck.join(d.select("id", pl.col("aw").list.head(8).alias("x")).explode("x").drop_nulls("x"), on="id")
+    kw = ck.join(d.select("id", _win("aw", 8).alias("x")).explode("x").drop_nulls("x"), on="id")
     out.append(pl.concat([kn.select("id", (pl.lit("K#:") + pl.col("ck") + "|" + pl.col("x")).alias("t")),
                           kw.select("id", (pl.lit("Kw:") + pl.col("ck") + "|" + pl.col("x")).alias("t"))])
                .unique().select("id", pl.col("t").hash().alias("h"), pl.lit(8, dtype=pl.UInt8).alias("arm")))
@@ -64,13 +74,13 @@ def tokens(N: pl.DataFrame, query: bool = False) -> pl.DataFrame:
     out.append(tri.select("id", pl.col("t").hash().alias("h"), pl.lit(6, dtype=pl.UInt8).alias("arm")))
     # primary-arm combination tokens
     nums = d.select("id", pl.col("ad").list.head(2).alias("x")).explode("x").drop_nulls("x")
-    wrds = d.select("id", pl.col("aw").list.head(6).alias("w")).explode("w").drop_nulls("w")
+    wrds = d.select("id", _win("aw", 6).alias("w")).explode("w").drop_nulls("w")
     out.append(nums.join(wrds, on="id").select("id", (pl.lit("x:") + pl.col("x") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     aw5 = d.select("id", pl.col("aw").list.head(5).alias("w")).explode("w").drop_nulls("w")
     wp = aw5.join(aw5.select("id", pl.col("w").alias("w2")), on="id").filter(pl.col("w") < pl.col("w2"))
     out.append(wp.select("id", (pl.lit("w:") + pl.col("w") + "|" + pl.col("w2")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     nw3 = d.select("id", pl.col("core").list.head(3).alias("n")).explode("n").drop_nulls("n")
-    aw4 = aw5.group_by("id").head(4)
+    aw4 = aw5.group_by("id").head(4) if not ADDR_TAIL else d.select("id", _win("aw", 4).alias("w")).explode("w").drop_nulls("w")
     out.append(nw3.join(aw4, on="id").select("id", (pl.lit("y:") + pl.col("n") + "|" + pl.col("w")).hash().alias("h"), pl.lit(0, dtype=pl.UInt8).alias("arm")))
     if query:  # digit-drop variants of house numbers (the generator drops a first or last digit)
         dn = nums.filter(pl.col("x").str.len_chars() >= 3)

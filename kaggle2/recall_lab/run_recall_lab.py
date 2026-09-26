@@ -8,9 +8,13 @@ find = lambda pat: sorted(glob.glob(f"/kaggle/input/**/{pat}", recursive=True))
 if not LOCAL:
     W = os.path.dirname(find("polars-1.44.2*.whl")[0])
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-index", "--find-links", W, "polars==1.44.2", "rapidfuzz==3.14.6"], check=True)
-    # code: prefer the small, frequently updated er-src dataset over the copy inside er-bundle
-    cands = find("er-src/**/ber/__init__.py") or find("ber/__init__.py")
-    sys.path.insert(0, os.path.dirname(os.path.dirname(cands[0])))
+    if VAR.get("ref"):   # account 2 is phone-verified now: install ber from GitHub at a pinned commit
+        subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
+                        f"git+https://github.com/satvik-A/amazon-mlss.git@{VAR['ref']}#subdirectory=code/business_entity_resolution"], check=True)
+    else:
+        # code: prefer the small, frequently updated er-src dataset over the copy inside er-bundle
+        cands = find("er-src/**/ber/__init__.py") or find("ber/__init__.py")
+        sys.path.insert(0, os.path.dirname(os.path.dirname(cands[0])))
     IN = os.path.dirname(find("train_s1.parquet")[0]); ART = os.path.dirname(find("indic_lexicon.parquet")[0]); WD = "/kaggle/working"
 else:
     sys.path.insert(0, os.path.abspath("../../code/business_entity_resolution/src"))
@@ -31,6 +35,7 @@ gt = pl.read_parquet(f"{IN}/gt_rows.parquet").with_columns(pl.col("matched_entit
        .explode("matched_entity_ids").filter(pl.col("matched_entity_ids") != "") \
        .select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
 caps = {**B.CAP, **{int(k): v for k, v in VAR.get("caps", {}).items()}}
+B.ADDR_TAIL = int(VAR.get("tail", 0))
 rows = []
 for c in ("US", "India"):
     S = pl.scan_parquet(f"{IN}/train_s1.parquet").filter(pl.col("country") == c).collect().sort("entity_id")
