@@ -1,0 +1,19 @@
+B 1151104 rows, C 383085; cross-encoder columns ['lg_v1_bge', 'lg_v4_google_canine_c', 'lg_v4_google_muril_base_cased']; scored share B 0.076
+AUC on C uncertain band (29535 rows, pos 0.315): p 0.9652
+AUC on C uncertain band (29535 rows, pos 0.315): lg_v1_bge 0.8898
+AUC on C uncertain band (29535 rows, pos 0.315): lg_v4_google_canine_c 0.9245
+AUC on C uncertain band (29535 rows, pos 0.315): lg_v4_google_muril_base_cased 0.9484
+level-2 gain: [('p', 4732850), ('rev_margin', 639226), ('lg_v4_google_muril_base_cased', 188348), ('ad_tset', 120033), ('num_rel', 119553), ('n_extra_r', 69041), ('nm_tsort', 47733), ('n_extra_sk', 41202), ('prk', 37704), ('lg_v1_bge', 36697), ('lg_v4_google_canine_c', 29048), ('a4', 18902), ('co_jw', 18095), ('s1_name_freq', 15151), ('nm_partial', 11955)]
+level-1: C F0.5 0.9719  singleton 0.9626  non-singleton 0.9724  P 0.9933 R 0.9374  cfg {'rule': 'rank-threshold', 't1': 0.7499999999999998, 't2': 0.7499999999999998, 'gamma': 1.5}
+level-2: C F0.5 0.9811  singleton 0.9904  non-singleton 0.9805  P 0.9977 R 0.9486  cfg {'rule': 'rank-threshold', 't1': 0.7499999999999998, 't2': 0.7499999999999998, 'gamma': 1.5}
+shape: (2, 3)
+┌─────────┬──────────┬──────┐
+│ country ┆ delta    ┆ len  │
+│ ---     ┆ ---      ┆ ---  │
+│ str     ┆ f64      ┆ u32  │
+╞═════════╪══════════╪══════╡
+│ US      ┆ 0.007229 ┆ 8013 │
+│ India   ┆ 0.011281 ┆ 8025 │
+└─────────┴──────────┴──────┘
+DELTA level-2 minus level-1 on C: +0.0093  -> ACCEPT (gate +0.002)
+DONE 271s

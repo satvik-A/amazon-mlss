@@ -1,0 +1,6 @@
+models {'v1_bge': '/kaggle/input/notebooks/satvikaderla/er-xenc-v1/model_bge', 'v4_google_canine_c': '/kaggle/input/notebooks/satvikaderla/er-xenc-v4/model_google_canine-c', 'v4_google_muril_base_cased': '/kaggle/input/notebooks/satvikaderla/er-xenc-v4/model_google_muril-base-cased'}; files ['/kaggle/input/notebooks/satvikaderla/er-matcher-full2/level1_B.parquet', '/kaggle/input/notebooks/satvikaderla/er-matcher-full2/level1_C.parquet']; band (0.005, 0.995)
+B: 1151104 rows, uncertain band 87998 (0.076)  6s
+  scored 87998 pairs with 3 models in 340s; exit codes {'v1_bge': 0, 'v4_google_canine_c': 0, 'v4_google_muril_base_cased': 0}
+C: 383085 rows, uncertain band 29535 (0.077)  348s
+  scored 29535 pairs with 3 models in 126s; exit codes {'v1_bge': 0, 'v4_google_canine_c': 0, 'v4_google_muril_base_cased': 0}
+DONE 474s

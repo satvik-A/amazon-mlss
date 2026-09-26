@@ -93,6 +93,13 @@ Ceiling (perfect decisions on this pool) 0.9837. Decision rules within ±0.0005 
 - Label-free reference: C pseudo-pairs predicted as match US 0.9995, India 0.9951 (France number comes from er-submit2).
 - Known bug: prune(G=99) drops ~0.1% of positives (null-gid join) — irrelevant now (cut-off policies).
 
+**Level-2 stacking (`er-stack`, accepted):** GBDT on [level-1 features + level-1 p + bge / CANINE / MuRIL logits], cross-encoders scored only on the uncertain band 0.005 < p < 0.995 (7.6% of rows). Trained on B1, tuned on B2, holdout C (16,038 S1, cut-off 11 rules):
+| | C macro F0.5 | singleton | non-singleton | P | R |
+|---|---|---|---|---|---|
+| level 1 | 0.9719 | 0.9626 | 0.9724 | 0.9933 | 0.9374 |
+| **level 2** | **0.9811 (+0.0093)** | **0.9904** | 0.9805 | 0.9977 | 0.9486 |
+US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, CANINE 0.925, bge 0.890 — the gain comes from combining.
+
 **Decision-rule simulation:** never use a 0.5 cut-off; rank-aware cut-offs or expected-F on context-aware probabilities + a has-match head.
 
 **Validation:** exact scorer OK. **LB probe (all-empty) = 0.05642 → test singleton rate 5.64%** (train 5.6%: consistent). A wrong non-empty prediction on a singleton costs its full 1/N; every non-singleton S1 needs ≥1 correct match to score anything.

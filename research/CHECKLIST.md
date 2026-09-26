@@ -42,7 +42,7 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 | 2b | Fine-tuned bi-encoder in blocking (distilled from the cross-encoder) | [ ] |
 | 3 | Full train-shard + full-test candidate generation, writer, validator | [ ] |
 | 4 | Level-1 models: hand-feature GBDT · cross-encoder (0.6B → 4B/8B) · listwise LLM judge · bi-encoder cosine | [ ] |
-| 5 | Level-2 stacker (GBDT on out-of-fold level-1 outputs + features) + calibration | [ ] |
+| 5 | Level-2 stacker (GBDT on out-of-fold level-1 outputs + features) + calibration | [x] **+0.0093 on holdout C (0.9719 → 0.9811)**, accepted |
 | 6 | Decision: has-match head, cluster choice, global assignment, expected F0.5, per-source caps | [~] `ber/decide.py` (exact expected-F0.5 top-k, at-most-one-owner posterior, caps); compared in matcher v1 |
 | 7 | Second pass ("re-crossing"): profile-enriched re-retrieval for missed copies | [ ] |
 | 8 | France: hand table, self-training, synthetic pairs, LB probe | [ ] |
