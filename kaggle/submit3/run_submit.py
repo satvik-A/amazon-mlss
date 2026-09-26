@@ -90,6 +90,8 @@ for p in POOLS:
     cn = sum(c.height for c in cands[-NSH:]); mn = pl.concat(matches[-NSH:])
     log(f"{ctry}: S1 {S.height}  candidates {cn} ({cn/S.height:.2f}/S1)  matches {mn.height} ({mn.height/S.height:.2f}/S1)  S1 predicted empty {1 - mn['s1'].n_unique()/S.height:.4f}")
 C = pl.concat(cands); Mt = pl.concat(matches)
+Rraw = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("country") == "France").select("entity_id", "business_address", "country").collect()
+Mt = M.street_filter(Mt, s1_all, Rraw, log=log); del Rraw
 Mt = M.one_owner(Mt, log=log)   # a record belongs to at most one S1 (always true in train; France test broke it 3.6%)
 write_submission(Mt, C, s1_all["entity_id"], valid_r, f"{WD}/matching_results.tsv", f"{WD}/candidate_pairs.tsv")
 log(f"total: candidates/S1 {C.height/s1_all.height:.2f}, matches/S1 {Mt.height/s1_all.height:.2f}, S1 with no match {1 - Mt['s1'].n_unique()/s1_all.height:.4f}")

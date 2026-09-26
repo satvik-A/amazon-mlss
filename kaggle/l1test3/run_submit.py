@@ -91,7 +91,9 @@ for p in POOLS:
     del SN, RNall, Rall
     cn = sum(c.height for c in cands[-NSH:]); mn = pl.concat(matches[-NSH:])
     log(f"{ctry}: S1 {S.height}  candidates {cn} ({cn/S.height:.2f}/S1)  matches {mn.height} ({mn.height/S.height:.2f}/S1)  S1 predicted empty {1 - mn['s1'].n_unique()/S.height:.4f}")
-C = pl.concat(cands); Mt = M.one_owner(pl.concat(matches), log=log)   # one country per job: owners never cross countries
+C = pl.concat(cands)
+Rraw = pl.scan_parquet([f"{IN}/test_s2.parquet", f"{IN}/test_s3.parquet"]).filter(pl.col("country") == ONLY).select("entity_id", "business_address", "country").collect()
+Mt = M.one_owner(M.street_filter(pl.concat(matches), s1_all, Rraw, log=log), log=log); del Rraw   # one country per job: owners never cross countries
 C.write_parquet(f"{WD}/cands_{ONLY}.parquet"); Mt.write_parquet(f"{WD}/matches_l1_{ONLY}.parquet")
 s1_all = s1_all.filter(pl.col("country") == ONLY)
 log(f"total: candidates/S1 {C.height/s1_all.height:.2f}, matches/S1 {Mt.height/s1_all.height:.2f}, S1 with no match {1 - Mt['s1'].n_unique()/s1_all.height:.4f}")

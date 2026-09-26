@@ -163,3 +163,41 @@ def one_owner(sel: pl.DataFrame, log=print) -> pl.DataFrame:
     keep = x.unique(subset=["r"], keep="first", maintain_order=True)
     log(f"one owner per record: {sel.height} -> {keep.height} pairs ({sel.height - keep.height} duplicate claims removed)")
     return keep.select("s1", "r", "p")
+
+
+# ---- France twin S1s: same name, same house number, same city, DIFFERENT street -------------------------------------
+# Label-free evidence (LB 0.958 vs holdout 0.972): test France assigns 3.6% of its predicted records to 2+ S1s; the
+# competing S1s share name + number + city and differ in the street name. US/India twins differ in the number instead,
+# so the matcher never learned it. On train US/India the rule costs F0.5 (-0.0009 / -0.0028 on C): France only.
+_STREET_DROP = ("rue|r|avenue|av|ave|bd|boulevard|blvd|chemin|ch|route|rte|place|pl|allee|all|impasse|imp|quai|cours|chaussee|chau|"
+                "square|sq|voie|passage|residence|res|lieu|dit|lotissement|lot|street|st|road|rd|drive|dr|lane|ln|court|ct|way|circle|cir|"
+                "trail|trl|parkway|pkwy|highway|hwy|terrace|ter|pike|no|nos|num|n|bis|unit|apt|apartment|suite|ste|floor|fl|flat|plot|"
+                "shop|door|house|h|b|t|de|du|des|la|le|les|l|d|a|au|aux|en|et|the|of|and|saint|sainte")
+
+
+def street_words(col: str) -> pl.Expr:
+    """words of the comma-separated address part holding the first number (the street line), minus numbers, street
+    types and function words"""
+    part = pl.col(col).fill_null("").str.to_lowercase().str.normalize("NFKD").str.replace_all(r"[̀-ͯ]", "").str.split(",") \
+             .list.eval(pl.element().filter(pl.element().str.contains(r"\d"))).list.first().fill_null("")
+    return part.str.replace_all(r"\d+[a-z]?", " ").str.extract_all(r"[a-z]{2,}") \
+               .list.eval(pl.element().filter(~pl.element().str.contains(f"^({_STREET_DROP})$")))
+
+
+def street_filter(sel: pl.DataFrame, S1: pl.DataFrame, R: pl.DataFrame, countries=("France",), t: float = 50, log=print) -> pl.DataFrame:
+    """sel [s1, r, p, ...]; S1 / R raw records (entity_id, business_address, country). Drops pairs of the given countries
+    whose street lines both have words and no word pair reaches rapidfuzz ratio t."""
+    from rapidfuzz import fuzz
+    s = S1.filter(pl.col("country").is_in(list(countries))).select(pl.col("entity_id").alias("s1"), street_words("business_address").alias("_w1"))
+    x = sel.join(s, on="s1", how="inner")
+    if x.height == 0:
+        return sel
+    r = R.filter(pl.col("entity_id").is_in(x["r"].unique().implode())).select(pl.col("entity_id").alias("r"), street_words("business_address").alias("_w2"))
+    x = x.join(r, on="r", how="left")
+    def sim(v):
+        a, b = v["_w1"], v["_w2"]
+        return None if not a or not b else max(fuzz.ratio(p, q) for p in a for q in b)
+    x = x.with_columns(pl.struct("_w1", "_w2").map_elements(sim, return_dtype=pl.Float64).alias("_ss"))
+    bad = x.filter((pl.col("_ss") < t).fill_null(False)).select("s1", "r")
+    log(f"street filter ({', '.join(countries)}, ratio < {t}): {bad.height} of {x.height} pairs removed")
+    return sel.join(bad, on=["s1", "r"], how="anti")
