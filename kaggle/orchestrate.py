@@ -23,6 +23,8 @@ CPU_JOBS |= P3_CPU; GPU_JOBS |= P3_GPU
 CANDS4 = [f"er-cands4-{s}" for s in ("train-us", "train-india", "test-us", "test-india", "test-france")]
 P4_CPU = {*CANDS4, "er-matcher-full4", "er-stack4", *[f"er-l1test4-{c}" for c in C3], "er-final4"}
 P4_GPU = {"er-xenc-score4", *[f"er-xenc-score-test4-{c}" for c in C3]}
+EMB4 = [f"er-emb4-{s}" for s in ("train-india", "train-us", "test-india", "test-us", "test-france")]
+P4_GPU |= set(EMB4)
 CPU_JOBS |= P4_CPU; GPU_JOBS |= P4_GPU
 
 # name -> (resource, deps (must be COMPLETE), launch command builder), in priority order
@@ -60,7 +62,9 @@ JOBS = [
     *[(f"er-l1test3-{c}", "cpu", ["er-matcher-full3", f"er-cands3-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test3/jobs/{c}"])(c)) for c in C3],
     *[(f"er-xenc-score-test3-{c}", "gpu", [f"er-l1test3-{c}", "er-stack3"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test3/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
     ("er-final3", "cpu", ["er-stack3", *[f"er-l1test3-{c}" for c in C3], *[f"er-xenc-score-test3-{c}" for c in C3]], lambda st: launch("kaggle/final3")),
-    # ---- pass 4 (candidate jobs launched by hand) ----
+    # ---- pass 4: embedding arm (GPU) -> candidates (word arms + embedding arm) -> ... ----
+    *[(n, "gpu", [], (lambda f: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/emb4/jobs/{f}", "--accelerator", "NvidiaTeslaT4"])(n[len("er-emb4-"):].replace("-", "_"))) for n in EMB4],
+    *[(n, "cpu", [f"er-emb4-{n[len('er-cands4-'):]}"], (lambda f: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/cands_full/jobs4d/{f}"])(n[len("er-cands4-"):].replace("-", "_"))) for n in CANDS4],
     ("er-matcher-full4", "cpu", ["er-cands4-train-us", "er-cands4-train-india"], lambda st: launch("kaggle/matcher_full4")),
     *[(f"er-l1test4-{c}", "cpu", ["er-matcher-full4", f"er-cands4-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test4/jobs/{c}"])(c)) for c in C3],
     ("er-xenc-score4", "gpu", ["er-matcher-full4"], lambda st: launch("kaggle/xenc_score4", "NvidiaTeslaT4")),
