@@ -21,7 +21,7 @@ from ber import model as M
 from ber.artifacts import pseudo_pairs
 
 T0 = time.time(); WD = "." if LOCAL else "/kaggle/working"
-N_S1 = int(os.environ.get("N_S1", 3000 if LOCAL else 80_000))  # sampled S1 per country (~130 pool rows each)
+N_S1 = int(os.environ.get("N_S1", 3000 if LOCAL else 50_000))  # sampled S1 per country (pass 4: ~220 pool rows each -> ~pass-3 memory)
 REP = open(f"{WD}/results_matcher_full.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); REP.write(s + "\n"); REP.flush()
