@@ -75,6 +75,9 @@ for p in POOLS:
             F = F.join(pl.read_parquet(xf[0]), on=["s1", "r"], how="left")
             F = F.with_columns(pl.Series("p", stack.predict(M.X(F, cfg2["stack_features"]))))
             sel = M.decide(F, cfg2, head)
+            # for the level-3 judge (account 2): every row of the S1s that still have an uncertain level-2 pair
+            bs = F.filter((pl.col("p") > 0.01) & (pl.col("p") < 0.99))["s1"].unique()
+            F.filter(pl.col("s1").is_in(bs.implode())).select("s1", "r", "p").write_parquet(f"{WD}/level2_band_{ctry}_{k}.parquet")
         else:
             sel = M.decide(F, cfg, head)
         # label-free transfer check: pseudo-pairs (>=99% precise on US/India train) that are candidates -> share predicted
