@@ -30,3 +30,5 @@ kaggle2/judge/data/
 kaggle2/diag/data/
 kaggle3/*/data/
 kaggle/cands_full/jobs3/
+kaggle/l1test3/jobs/
+kaggle/xenc_score_test3/jobs/*/build/

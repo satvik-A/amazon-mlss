@@ -13,6 +13,12 @@ CPU_JOBS = {"er-blocking-v5", "er-cands-train-us", "er-cands-train-india", "er-c
             "er-matcher-full", "er-submit", "er-stack", "er-matcher-full2", "er-submit2", "er-submit3", *CANDS2}
 GPU_JOBS = {"er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4", "er-xenc-score", "er-xenc-score-test"}
 XENC = ["er-xenc-v1", "er-xenc-v1b", "er-xenc-v2", "er-xenc-v3", "er-xenc-v4"]
+# pass 3 (blocking ADDR_TAIL=3): per-country level-1 test + cross-encoder jobs in parallel, final merge without recomputation
+C3 = ["us", "india", "france"]
+CANDS3 = [f"er-cands3-{s}" for s in ("train-us", "train-india", "test-us", "test-india", "test-france")]
+P3_CPU = {*CANDS3, "er-matcher-full3", "er-stack3", *[f"er-l1test3-{c}" for c in C3], "er-final3"}
+P3_GPU = {"er-xenc-score3", *[f"er-xenc-score-test3-{c}" for c in C3]}
+CPU_JOBS |= P3_CPU; GPU_JOBS |= P3_GPU
 
 # name -> (resource, deps (must be COMPLETE), launch command builder), in priority order
 def launch(folder, acc=None, sources=None):
@@ -41,6 +47,14 @@ JOBS = [
     ("er-matcher-full2", "cpu", ["er-cands2-train-us", "er-cands2-train-india"], lambda st: launch("kaggle/matcher_full2")),
     ("er-submit2", "cpu", ["er-matcher-full2", "er-cands2-test-us", "er-cands2-test-india", "er-cands2-test-france"], lambda st: launch("kaggle/submit2")),
     ("er-xenc-v3", "gpu", [], lambda st: prebuilt("kaggle/xenc_v3", "NvidiaTeslaT4")),
+    # ---- pass 3 ----
+    ("er-cands3-test-france", "cpu", [], lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/cands_full/jobs3/test_france"]),
+    ("er-matcher-full3", "cpu", ["er-cands3-train-us", "er-cands3-train-india"], lambda st: launch("kaggle/matcher_full3")),
+    ("er-xenc-score3", "gpu", ["er-matcher-full3"], lambda st: launch("kaggle/xenc_score3", "NvidiaTeslaT4")),
+    ("er-stack3", "cpu", ["er-xenc-score3"], lambda st: launch("kaggle/stack3")),
+    *[(f"er-l1test3-{c}", "cpu", ["er-matcher-full3", f"er-cands3-test-{c}"], (lambda c: lambda st: [K, "kernels", "push", "-p", f"{ROOT}/kaggle/l1test3/jobs/{c}"])(c)) for c in C3],
+    *[(f"er-xenc-score-test3-{c}", "gpu", [f"er-l1test3-{c}", "er-stack3"], (lambda c: lambda st: launch(f"kaggle/xenc_score_test3/jobs/{c}", "NvidiaTeslaT4"))(c)) for c in C3],
+    ("er-final3", "cpu", ["er-stack3", *[f"er-l1test3-{c}" for c in C3], *[f"er-xenc-score-test3-{c}" for c in C3]], lambda st: launch("kaggle/final3")),
 ]
 # the scoring job waits for v1b to finish (so the Qwen models are included) unless v1b failed
 WAIT_FOR = {"er-xenc-score": ["er-xenc-v4"]}
@@ -122,13 +136,17 @@ def main():
                 gpu_busy += res == "gpu"; cpu_busy += res == "cpu"
             json.dump(st, open(STATE, "w"), indent=1)
         # submission files: download + official validator, once per submit job
-        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2"), ("er-submit3", "submit3")):
+        for sj, folder in (("er-submit", "submit"), ("er-submit2", "submit2"), ("er-submit3", "submit3"), ("er-final3", "final3")):
             if prev.get(sj) == "COMPLETE" and not launched.get(f"{sj}:fetched"):
                 d = f"{ROOT}/kaggle/{folder}/kout"; os.makedirs(d, exist_ok=True)
                 subprocess.run([K, "kernels", "output", f"satvikaderla/{sj}", "-p", d, "-o", "--file-pattern", r".*\.(tsv|txt)$"], capture_output=True, text=True)
                 v = subprocess.run([PY, f"{ROOT}/student_resource/utils/validate_submission.py", "-m", f"{d}/matching_results.tsv",
                                     "-c", f"{d}/candidate_pairs.tsv", "-t", f"{ROOT}/student_resource/dataset/test"], capture_output=True, text=True)
                 log(f"SUBMISSION {sj} fetched to kaggle/{folder}/kout; validator: {(v.stdout.strip().splitlines() or ['?'])[-1]}")
+                if os.path.exists(f"{d}/l1/matching_results.tsv"):
+                    v = subprocess.run([PY, f"{ROOT}/student_resource/utils/validate_submission.py", "-m", f"{d}/l1/matching_results.tsv",
+                                        "-c", f"{d}/l1/candidate_pairs.tsv", "-t", f"{ROOT}/student_resource/dataset/test"], capture_output=True, text=True)
+                    log(f"SUBMISSION {sj} level-1 fallback in kaggle/{folder}/kout/l1; validator: {(v.stdout.strip().splitlines() or ['?'])[-1]}")
                 launched[f"{sj}:fetched"] = 1; json.dump(st, open(STATE, "w"), indent=1)
         json.dump(st, open(STATE, "w"), indent=1)
         done = all(n in launched for n, *_ in JOBS) and all(prev.get(n) in TERMINAL for n, *_ in JOBS)

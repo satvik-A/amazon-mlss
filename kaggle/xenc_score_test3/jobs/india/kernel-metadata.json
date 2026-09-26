@@ -1,0 +1,20 @@
+{
+ "id": "satvikaderla/er-xenc-score-test3-india",
+ "title": "er-xenc-score-test3-india",
+ "code_file": "run_xenc_score.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [
+  "satvikaderla/amazon-ml-er-2026-data"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "satvikaderla/er-xenc-v1",
+  "satvikaderla/er-xenc-v4",
+  "satvikaderla/er-l1test3-india"
+ ]
+}
