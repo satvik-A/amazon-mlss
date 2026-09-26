@@ -177,3 +177,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - No-address records: 3.6% of true pairs, recall only 52-57% (vs 98% for records with an address); 3178 of their 5029 misses are "another S1 scored higher" (same name claimed by up to ~1900 S1s). Indic-script records: recall 0.940, slightly BETTER than Latin (0.926) -> cross-script matching is not the weak spot.
 - No leakage: file row order and ID numbers are uncorrelated between S1 and its matches (corr 0.004 / 0.0005).
 - Pass-3 level 2 on C (sampled): P 0.9968, R 0.9582 -> remaining loss is recall: ~1.3 pts blocking, ~2.9 pts selection.
+
+## 2026-09-26 night: user directive = reach LB 0.99; candidate-set size no longer a constraint.
+- France check: the 91.8% pseudo-pair hit rate was a false alarm. France names are generic (city + Club/Comite + legal form), so pseudo-pairs include same-number different-street look-alikes. With street similarity >= 80, France predicted 99.64% (India 99.6%). Real France misses: near-identical records not in candidates (generic names hit per-arm caps) -> loosen caps.
+- Competition stack (India C, level-1 base): one_owner 0.96823, q_k0.5 0.96892, learned competition stack 0.96953 (+0.0013 over one_owner).
+- **Sibling signal:** copies of the same S1 in the SAME source share noise: S2-S2 address similarity 76 vs 40 to the S1, 22% identical noisy addresses (same dropped digit / typo); S3-S3 12-19% identical. S2-S3 not (different formats). -> sibling features (similarity of r to the confident same-source candidates of the S1) in the level-2 stack. Prototype running (scratchpad sibstack.py).
