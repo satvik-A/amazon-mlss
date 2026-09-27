@@ -228,3 +228,9 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   the 120k synthetic street twins copy ALL blocking columns from the true pair, now including erk/esim (the top-2 features by gain)
   -> "perfect embedding match, label 0". Fix 8382d55: twins get erk/esim null; the job trains with/without twins and keeps the better on B.
   Deleted the downstream runs that used the bad matcher (l1test4 x3, xenc-score4, er3-global4 parts). Rerun 09:35.
+- 11:00 rerun (twins with erk/esim cleared vs no twins): no twins won (B 0.9695 vs 0.9663) but C 0.9692. 12:09 rerun (cut-off-row training vs
+  full pool): full pool 0.9695 vs 0.9684 on B, C 0.9692 -> neither was the cause.
+- Local check (abl5): same C rows, same LightGBM params: model trained on B1 (15k S1) C 0.9746 vs the A-trained matcher 0.9677.
+  -> A's rows are contaminated: the synthetic twins were added BEFORE pool_features, so A's per-S1 context features (ranks, groups,
+  claim counts) include the twins (~60% of A positives got a twin; pass 3 ~37%). Dropping twin rows after features does not undo it.
+  12:15 rerun (a9acb13): no twins at all. Also: the laptop slept 09:37-10:58 (orchestrator frozen) -> keep-awake requested.
