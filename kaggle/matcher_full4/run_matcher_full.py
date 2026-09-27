@@ -65,7 +65,8 @@ log(f"pool {pool.height} rows; positives in pool {pool['y'].sum()} / {gt.height}
 # the matcher never saw "same everything but the street". Teach it: a true copy (A split) whose street line is swapped
 # for another record's street line (same country, own house number kept) is a NEGATIVE; its blocking columns are copied
 # from the true pair (a real twin would be retrieved the same way). B/C are untouched, so their scores stay honest.
-NSYN = int(os.environ.get("NSYN", 3000 if LOCAL else 120_000))
+NSYN = int(os.environ.get("NSYN", 1000))   # pass 4: twins are built but NOT added (see ADD_TWINS)
+ADD_TWINS = False   # 12:15: twins contaminate A's per-S1 context features (ranks, groups): B1-trained model C 0.9746 vs A-trained 0.9677
 from ber.normalize import street_words
 part_first = lambda e: e.fill_null("").str.split(",").list.eval(pl.element().filter(pl.element().str.contains(r"\d"))).list.first()
 Rx = R.with_columns(part_first(pl.col("business_address")).alias("_sp"), street_words(pl.col("business_address")).list.len().alias("_nsw"))
@@ -95,8 +96,9 @@ Psyn = syn.select([pl.col("_rs").alias("r") if c == "r" else (pl.lit(0, dtype=po
 # match can be negative (level-1 C 0.9680 vs 0.9749 for a model trained without twins)
 Psyn = Psyn.with_columns(*[pl.lit(None, dtype=pool[c].dtype).alias(c) for c in ("erk", "esim") if c in pool.columns])
 log(f"synthetic street twins (A split, negatives): {Psyn.height}; e.g. {syn.select('business_address', '_addr').head(3).rows()}")
-pool = pl.concat([pool, Psyn], how="vertical_relaxed")
-R = pl.concat([R, Rsyn.select(R.columns)], how="vertical_relaxed")
+if ADD_TWINS:
+    pool = pl.concat([pool, Psyn], how="vertical_relaxed")
+    R = pl.concat([R, Rsyn.select(R.columns)], how="vertical_relaxed")
 del Rx, pos, donor, syn, Psyn, Rsyn
 F = M.pool_features(pool, s1, R, NZ).join(s1.select(pl.col("entity_id").alias("s1"), "country"), on="s1")
 del pool; fc = M.feature_columns(F); log(f"features {len(fc)}  {time.time()-T0:.0f}s")
@@ -119,7 +121,7 @@ def _fB(mm):   # compared on the cut-off rows for every variant (that is what th
     return max(macro_f05(rank_threshold(b, a, c), gB_, sB_)["f05"] for a in (0.5, 0.6, 0.7, 0.8) for c in (0.5, 0.6, 0.7, 0.8))
 A = A.filter(~pl.col("r").str.contains("SYN"))   # 09:30 run: no twins beat twins (0.9695 vs 0.9663 on B)
 # 11:00 run: full-pool training gave level-1 C 0.9692 (pass 3: 0.9743); a model trained on cut-off rows only gave 0.9749
-cands_m = {"cut-off rows": _fit(M.apply_policy(A, CUT), BvC), "full pool": _fit(A, Bv)}
+cands_m = {"full pool": _fit(A, Bv)}   # 12:09 run: full pool 0.9695 beat cut-off rows 0.9684 on B
 scores = {k: _fB(v) for k, v in cands_m.items()}
 log(f"matcher variants, rank-threshold F on B (cut-off rows): {scores}")
 kept = max(scores, key=scores.get); m = cands_m[kept]; log(f"kept: {kept}")
