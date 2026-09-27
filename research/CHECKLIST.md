@@ -137,4 +137,4 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] Stack 4: level-2 C 0.9860 (final3 0.9842). final4 validator PASS -> upload 1 (kaggle/final4/sub == kaggle/final4/kout).
 - [x] Rejected on pass 4 (see CONTEXT): competition + sibling layer (-0.0004), orphan-weighted thresholds (= unweighted), sibling rescue rule/LightGBM,
       per country x source thresholds (+0.0002), conditioned top-1, self-training for France (India->US simulation: worse).
-- [ ] LB score of final4 -> decide uploads 2 and 3.
+- [x] LB final4 = 0.981. [ ] France threshold probes (frs strict / frl loose) for uploads 2-3.

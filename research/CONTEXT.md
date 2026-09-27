@@ -253,3 +253,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   (held-out C 0.9860 vs final3 0.9842), no competition layer. 3.34 matches/S1, 5.80% empty; 5.79M pairs vs final3 5.75M, 99.3% of final3's
   pairs kept (India +29k, France +15k, US -3k). Street filter removed 6648 France pairs, one_owner 12840. Expected LB ~0.980.
 - 19:00 the laptop's network broke HTTPS (self-signed cert in chain) for ~5 min; downloads resumed after the user fixed it.
+
+## LB: final4 = 0.981 (2026-09-27 ~19:30) — best so far (final3 0.978). Held-out C 0.9860 -> LB gap 0.005 (was 0.006).
+- Remaining 2 attempts: France-only threshold probes (er-final4-frs t 0.90/0.85, er-final4-frl t 0.70/0.65; US/India identical to final4).
+  Rationale: the India->US transfer test lost mostly precision and stricter thresholds recovered part of it; France is the only unlabelled
+  country (15% of S1). Final ranking = private score of the best public file, so a probe that scores lower costs nothing.
