@@ -237,3 +237,10 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - **Matcher 4 fixed (13:21, a9acb13, no twins):** level-1 C 0.9769 (pass 3 0.9743): P 0.9914 R 0.9571 (pass 3 R 0.9466), singleton 0.940,
   US 0.9785; B 0.9780; policy cutoff 14 (68 cands/S1); ceiling 0.9986. Synthetic twins are OFF from now on (never add rows before
   pool_features that exist only in one split).
+- **Stack 4 (13:45):** level-2 C 0.9859 (P 0.9970 R 0.9651, singleton 0.983) vs level-1 0.9774 (+0.0085, India +0.010 US +0.007);
+  t1 0.80 t2 0.75. final3 was C 0.9842 -> pass 4 +0.0017 on C.
+- **Quick decision tests REJECTED (er-quick4, 13:58; B2a fit / B2b tune / C report; baseline C 0.9860):**
+  1a sibling rule (same-source anchor p>=0.9, addr token_set >= 95 + equal numbers -> p>=0.9): C 0.9840 (-0.0020); raises 3796 C rows, only 131 true.
+  1b sibling LightGBM (sib addr/name sim, num eq, n_anchors): C 0.9825 (-0.0034). One-owner conflicts: 0.
+  2 rank-threshold per {US,India}x{S2,S3}: C 0.9862 (+0.0002). 3 conditioned top-1 (rev_margin > -m): 0.9857 (-0.0002).
+  4 combined (per-group only): +0.0002 -> below the +0.002 gate. Do not retry sibling rescue on stack scores.
