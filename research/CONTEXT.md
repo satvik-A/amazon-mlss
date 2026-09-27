@@ -244,3 +244,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   1b sibling LightGBM (sib addr/name sim, num eq, n_anchors): C 0.9825 (-0.0034). One-owner conflicts: 0.
   2 rank-threshold per {US,India}x{S2,S3}: C 0.9862 (+0.0002). 3 conditioned top-1 (rev_margin > -m): 0.9857 (-0.0002).
   4 combined (per-group only): +0.0002 -> below the +0.002 gate. Do not retry sibling rescue on stack scores.
+- **Competition + sibling layer REJECTED on pass 4 (er-comp4, 15:02):** stack p2 C 0.9860 -> layer p3 0.9856 (-0.0004; P 0.9944 R 0.9728).
+  Features exist for 9.9% of stack rows (rows with full-country p1 > 0.0005). q05 is the #2 feature but the stack (P 0.997) already has
+  the precision the layer was meant to add. The India level-1 gain (+0.0021 over one_owner) does not survive on top of the level-2 stack.
+- **Orphan-weighted thresholds (w=2) = the unweighted ones** for the stack (t1 0.80 t2 0.70): with P 0.997 the orphan density does not
+  move the optimum. C under w=2 weighting: 0.9854. -> nothing to ship from this.
