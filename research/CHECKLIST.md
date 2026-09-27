@@ -130,3 +130,11 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [-] Transitive-closure merging: chains of twins collapse precision.
 - [-] ID or row-order tricks: verified there is no signal.
 - [-] Extra accounts for leaderboard probing: fair-play violation.
+
+## Final day (2026-09-27)
+- [x] Pass 4: embedding arm (e5-small top-20) + looser caps -> pool recall India 0.9926, US 0.9961 (220/S1); US train pool built in 3 parts + streaming merge (OOM fix).
+- [x] Matcher 4 without synthetic twins (twins contaminated A's context features): level-1 C 0.9769 (pass 3 0.9743).
+- [x] Stack 4: level-2 C 0.9860 (final3 0.9842). final4 validator PASS -> upload 1 (kaggle/final4/sub == kaggle/final4/kout).
+- [x] Rejected on pass 4 (see CONTEXT): competition + sibling layer (-0.0004), orphan-weighted thresholds (= unweighted), sibling rescue rule/LightGBM,
+      per country x source thresholds (+0.0002), conditioned top-1, self-training for France (India->US simulation: worse).
+- [ ] LB score of final4 -> decide uploads 2 and 3.
