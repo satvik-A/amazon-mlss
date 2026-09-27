@@ -285,4 +285,4 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - **Final package built** (22:32): submission/TEAM_submission.zip (589 MB; not in git) = output/{matching_results.tsv = us85in82,
   candidate_pairs.tsv = final4 candidates (58.9/S1)} validator PASS --check-ids; code/business_entity_resolution/{src/ber, src/pipeline/00-11,
   README.md, requirements.txt, pyproject.toml}; Documentation_template.md (all experiments incl. rejected). Packaged step 11
-  reproduces the submitted matching_results.tsv byte for byte. Team name / members still placeholders.
+  reproduces the submitted matching_results.tsv byte for byte. Team XCalibur (Mitul Rishi, Aderla Satvik, Teppala Shantanu, Pragya Agarwal) -> submission/XCalibur_submission.zip.
