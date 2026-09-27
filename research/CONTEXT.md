@@ -272,3 +272,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - LB: fr8595 (France 0.85/0.95) 0.981203 < frs2 (0.95/0.92) 0.981225 = frs3 (0.97/0.95) 0.981225 -> France plateau; strict t1 is right
   (France's true empty rate is above the global 5.64%). Last probe built: ui7570frs2 (US/India 0.75/0.70 — held-out 0.98627 vs 0.98619,
   tie under orphan weighting — + France 0.95/0.92): US +6.3k, India +6.0k pairs vs final4.
+- LB: ui7570frs2 (US/India 0.75/0.70 + France frs2) 0.981103 < frs2 0.981225 -> on test, looser US/India hurts (held-out said +0.00008):
+  the test wants more caution than held-out. Built + validated (not yet uploaded): all85frs2, ui8277frs2 (0.82/0.77), us85frs2, in85frs2.
+- Final package (README "Final Submission Package"): zip with output/{matching_results.tsv = best public file (frs2), candidate_pairs.tsv},
+  code/business_entity_resolution/{src, README.md, requirements.txt}, filled Documentation_template.md. Best public = frs2 0.981225 (= frs3).
