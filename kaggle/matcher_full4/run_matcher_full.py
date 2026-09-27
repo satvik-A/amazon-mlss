@@ -107,18 +107,24 @@ del F
 params = dict(objective="binary", learning_rate=0.05, num_leaves=255, min_data_in_leaf=200, feature_fraction=0.8,
               bagging_fraction=0.8, bagging_freq=1, lambda_l2=1.0, verbose=-1, num_threads=os.cpu_count())
 # pass 4 guard: train with and without the synthetic street twins, keep the model with the better rank-threshold F on B
-def _fit(Ad):
+CUT = {"cutoff": 14}   # the widest feature cut-off: decisions only ever see these rows (~68/S1 of the ~220/S1 pool)
+def _fit(Ad, Bd):
     dA = lgb.Dataset(M.X(Ad, fc), Ad["y"].to_numpy(), feature_name=fc, free_raw_data=True)
-    dB = lgb.Dataset(M.X(Bv, fc), Bv["y"].to_numpy(), reference=dA)
+    dB = lgb.Dataset(M.X(Bd, fc), Bd["y"].to_numpy(), reference=dA)
     return lgb.train(params, dA, 4000, valid_sets=[dB], callbacks=[lgb.early_stopping(100), lgb.log_evaluation(500)])
-def _fB(mm):
-    b = Bv.with_columns(pl.Series("p", mm.predict(M.X(Bv, fc)))); sB_ = b["s1"].unique()
+BvC = M.apply_policy(Bv, CUT)
+def _fB(mm):   # compared on the cut-off rows for every variant (that is what the decision sees)
+    b = BvC.with_columns(pl.Series("p", mm.predict(M.X(BvC, fc)))); sB_ = Bv["s1"].unique()
     gB_ = gt.filter(pl.col("s1").is_in(sB_.implode()))
     return max(macro_f05(rank_threshold(b, a, c), gB_, sB_)["f05"] for a in (0.5, 0.6, 0.7, 0.8) for c in (0.5, 0.6, 0.7, 0.8))
-cands_m = {"with twins (erk/esim cleared)": _fit(A), "no twins": _fit(A.filter(~pl.col("r").str.contains("SYN")))}
+A = A.filter(~pl.col("r").str.contains("SYN"))   # 09:30 run: no twins beat twins (0.9695 vs 0.9663 on B)
+# 11:00 run: full-pool training gave level-1 C 0.9692 (pass 3: 0.9743); a model trained on cut-off rows only gave 0.9749
+cands_m = {"cut-off rows": _fit(M.apply_policy(A, CUT), BvC), "full pool": _fit(A, Bv)}
 scores = {k: _fB(v) for k, v in cands_m.items()}
-log(f"matcher variants, rank-threshold F on B: {scores}")
-m = cands_m[max(scores, key=scores.get)]; log(f"kept: {max(scores, key=scores.get)}")
+log(f"matcher variants, rank-threshold F on B (cut-off rows): {scores}")
+kept = max(scores, key=scores.get); m = cands_m[kept]; log(f"kept: {kept}")
+if kept == "cut-off rows":   # everything below (thresholds, rules, policies) is evaluated on the rows the model was trained for
+    Bv, Cv = BvC, M.apply_policy(Cv, CUT)
 m.save_model(f"{WD}/matcher.txt"); del A, cands_m
 Bv = Bv.with_columns(pl.Series("p", m.predict(M.X(Bv, fc)))); Cv = Cv.with_columns(pl.Series("p", m.predict(M.X(Cv, fc))))
 log("top features (gain):", [(f, int(g)) for f, g in sorted(zip(fc, m.feature_importance("gain")), key=lambda x: -x[1])[:25]])
