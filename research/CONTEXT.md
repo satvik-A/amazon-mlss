@@ -212,3 +212,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   scored on US C. Earlier evidence (CHECKLIST 123): France transfer looked fine, and pair-wise LLM judges lost to the stack (AUC 0.90 vs 0.94).
 - Kaggle T4 queue: accounts 1 and 3 waited 1h+; account 2 started at once. Embedding outputs re-routed as datasets
   (satvik0006/er3-emb4-india, er-emb4-us / er3-emb4-us via scratchpad us_reroute.sh).
+- 2026-09-27 05:25: er-cands4-train-us OOM-killed after all 14 shards (291M rows, 220/S1) at the in-memory concat; India (196M) fit.
+  Fix f33c798: candidates(part=(k,K)) writes raw shards, pipeline.merge_parts streams rev_margin + ids (verified identical
+  to the single job). US train re-run as 3 part jobs + merge (er-cands4-train-us-p0..2 -> er-cands4-train-us; same on acc 3).
+- India train pass-4 pool: 222/S1, pair recall 0.9926, S1 complete 0.9743 (pass 3: 0.980). France test pool 227/S1.
+- Matcher 4 sample reduced to 50k S1/country (1d49982) to keep memory at the pass-3 level.
