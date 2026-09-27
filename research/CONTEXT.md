@@ -281,3 +281,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   Last 2 attempts: per-country split us85in82 / in85us82 (France 0.95/0.92).
 - LB: us85in82 (US 0.85/0.80, India 0.82/0.77, France 0.95/0.92) **0.981244 = best**. Additive read: US 0.82->0.85 +0.000012,
   India 0.82->0.85 -0.000087. Last attempt: us88in82 (US 0.88/0.83, rest unchanged) — extends the only still-rising trend.
+- LB final: us85in82 **0.981244 = best public** (us88in82 0.981229). All attempts used.
+- **Final package built** (22:32): submission/TEAM_submission.zip (589 MB; not in git) = output/{matching_results.tsv = us85in82,
+  candidate_pairs.tsv = final4 candidates (58.9/S1)} validator PASS --check-ids; code/business_entity_resolution/{src/ber, src/pipeline/00-11,
+  README.md, requirements.txt, pyproject.toml}; Documentation_template.md (all experiments incl. rejected). Packaged step 11
+  reproduces the submitted matching_results.tsv byte for byte. Team name / members still placeholders.
