@@ -1,0 +1,4 @@
+{"id": "satvikaderla/er-comp4", "title": "er-comp4", "code_file": "run_comp.py", "language": "python", "kernel_type": "script",
+ "is_private": true, "enable_gpu": false, "enable_tpu": false, "enable_internet": true,
+ "dataset_sources": ["satvikaderla/amazon-ml-er-2026-data", "satvikaderla/er-comp4-feats"], "competition_sources": [],
+ "kernel_sources": ["satvikaderla/er-stack4"]}
