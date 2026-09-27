@@ -249,3 +249,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   the precision the layer was meant to add. The India level-1 gain (+0.0021 over one_owner) does not survive on top of the level-2 stack.
 - **Orphan-weighted thresholds (w=2) = the unweighted ones** for the stack (t1 0.80 t2 0.70): with P 0.997 the orphan density does not
   move the optimum. C under w=2 weighting: 0.9854. -> nothing to ship from this.
+- **final4 (er-final4, 18:53) = upload candidate 1:** kaggle/final4/sub/matching_results.tsv, validator PASS (--check-ids). Pass-4 stack
+  (held-out C 0.9860 vs final3 0.9842), no competition layer. 3.34 matches/S1, 5.80% empty; 5.79M pairs vs final3 5.75M, 99.3% of final3's
+  pairs kept (India +29k, France +15k, US -3k). Street filter removed 6648 France pairs, one_owner 12840. Expected LB ~0.980.
+- 19:00 the laptop's network broke HTTPS (self-signed cert in chain) for ~5 min; downloads resumed after the user fixed it.
