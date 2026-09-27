@@ -1,0 +1,19 @@
+India: 60009 S1, 7841564 rows, positives 201292  481s
+US: 59811 S1, 7688849 rows, positives 205154  969s
+=== reference ===
+teacher (India A) trained 1960s
+  transfer: India-only model                       US C F0.5 0.9593  P 0.9764 R 0.9483  (t1 0.85 t2 0.80 tuned on India B)
+  transfer: India-only model, thresholds on US B (oracle thr) US C F0.5 0.9611  P 0.9821 R 0.9408  (t1 0.95 t2 0.90 tuned on US B)
+  in-domain: US A model, US B thresholds (ceiling) US C F0.5 0.9788  P 0.9932 R 0.9561  (t1 0.85 t2 0.85 tuned on US B)
+=== self-training (US pseudo-labels from the India teacher, thresholds on India B) ===
+ hi 0.9 lo 0.1: pseudo rows 6883183 (0.998 of US), pos 177010, pseudo-label accuracy 0.9990, pos precision 0.9849
+  student India+US-pseudo (hi 0.9, lo 0.1)         US C F0.5 0.9581  P 0.9739 R 0.9525  (t1 0.90 t2 0.85 tuned on India B)
+  round 2 pseudo rows 6893462, accuracy 0.9987
+  student round 2 (hi 0.9, lo 0.1)                 US C F0.5 0.9564  P 0.9719 R 0.9544  (t1 0.90 t2 0.80 tuned on India B)
+ hi 0.95 lo 0.05: pseudo rows 6876550 (0.997 of US), pos 174983, pseudo-label accuracy 0.9992, pos precision 0.9878
+  student India+US-pseudo (hi 0.95, lo 0.05)       US C F0.5 0.9576  P 0.9731 R 0.9554  (t1 0.70 t2 0.75 tuned on India B)
+ hi 0.8 lo 0.2: pseudo rows 6889615 (0.998 of US), pos 179346, pseudo-label accuracy 0.9988, pos precision 0.9802
+  student India+US-pseudo (hi 0.8, lo 0.2)         US C F0.5 0.9562  P 0.9718 R 0.9529  (t1 0.90 t2 0.85 tuned on India B)
+  student soft labels (cross_entropy on teacher p) US C F0.5 0.9586  P 0.9777 R 0.9472  (t1 0.75 t2 0.80 tuned on India B)
+
+DONE 20339s

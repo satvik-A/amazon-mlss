@@ -217,3 +217,9 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   to the single job). US train re-run as 3 part jobs + merge (er-cands4-train-us-p0..2 -> er-cands4-train-us; same on acc 3).
 - India train pass-4 pool: 222/S1, pair recall 0.9926, S1 complete 0.9743 (pass 3: 0.980). France test pool 227/S1.
 - Matcher 4 sample reduced to 50k S1/country (1d49982) to keep memory at the pass-3 level.
+- **Self-training REJECTED (er2-selftrain, 2026-09-27 06:50).** Simulation: India-only teacher -> US pseudo-labels -> student, thresholds on India B,
+  scored on US C (60k S1/country, pass-2 pools). Transfer 0.9593 (P 0.9764 R 0.9483); students 0.9562-0.9581 (hard labels 0.9/0.1, 0.95/0.05,
+  0.8/0.2; round 2 0.9564); soft-label distillation 0.9586. Pseudo-labels are 99.9% accurate but the errors are exactly the hard cases -> the
+  student inherits them. Reference: same model with US-B thresholds 0.9611 (t 0.95/0.90); in-domain US model 0.9788 (P 0.9932).
+  Lesson: an unseen country costs ~0.02, almost all PRECISION -> France (and test in general, 2x orphans) wants stricter thresholds.
+  Do not retry self-training / pseudo-labelling with the level-1 teacher.
