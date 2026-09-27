@@ -234,3 +234,6 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   -> A's rows are contaminated: the synthetic twins were added BEFORE pool_features, so A's per-S1 context features (ranks, groups,
   claim counts) include the twins (~60% of A positives got a twin; pass 3 ~37%). Dropping twin rows after features does not undo it.
   12:15 rerun (a9acb13): no twins at all. Also: the laptop slept 09:37-10:58 (orchestrator frozen) -> keep-awake requested.
+- **Matcher 4 fixed (13:21, a9acb13, no twins):** level-1 C 0.9769 (pass 3 0.9743): P 0.9914 R 0.9571 (pass 3 R 0.9466), singleton 0.940,
+  US 0.9785; B 0.9780; policy cutoff 14 (68 cands/S1); ceiling 0.9986. Synthetic twins are OFF from now on (never add rows before
+  pool_features that exist only in one split).
