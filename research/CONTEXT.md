@@ -265,3 +265,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - **LB probes (2026-09-27 evening):** frl (France 0.70/0.65) 0.980782 < final4 ~0.981 < frs (0.90/0.85) 0.981178 < frs2 (0.95/0.92) 0.981225.
   -> France wants STRICTER thresholds than the US/India-tuned 0.80/0.75 (unseen-country precision loss, as in the India->US test).
   Next: frs3 (0.97/0.95), then all85frs2 / all85frs3 (US+India 0.85/0.80 + best France) in kaggle/revariants/.
+- Held-out check (B2 + C, 25k S1, stack scores): US/India stricter thresholds HURT even with orphan FPs x2: 0.80/0.75 0.98619 (w2 0.98564),
+  0.85/0.80 0.98577 (0.98529), 0.90/0.85 0.98539 -> all85* variants dropped. France S1-empty rate: final4 5.83%, frs2 6.04%, frs3 6.10%
+  vs test singleton rate 5.64% -> frs3 would mostly empty real matches; skipped. Split thresholds keep top-1 looser, extras strict:
+  fr8595 (France t1 0.85, t2 0.95): 835,096 France pairs, empty 5.90%; fr9095: 834,915, 5.97%. Street filter 65/80 on top of frs2: -268 / -1448 pairs only.

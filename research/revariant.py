@@ -29,7 +29,7 @@ band_s1 = pl.concat(band_s1).unique()
 keep = F4.join(band_s1, on="s1", how="anti").with_columns(pl.lit(1.0).alias("p"))
 S1 = pl.read_parquet(f"{CACHE}/test_s1.parquet")
 R = pl.concat([pl.read_parquet(f"{CACHE}/test_s{k}.parquet", columns=["entity_id", "business_address", "country"]) for k in (2, 3)])
-banded = M.street_filter(pl.concat(sel), S1, R, log=lambda *a: None)
+banded = M.street_filter(pl.concat(sel), S1, R, t=ov.get("street_t", 50), log=lambda *a: None)
 Mt = M.one_owner(pl.concat([keep.select("s1", "r", "p"), banded.select("s1", "r", "p")]), log=lambda *a: None)
 # same file format as write_submission: one row per S1, comma-joined ids, empty string when none
 out = S1.select(pl.col("entity_id").alias("source1_entity_id")).join(
