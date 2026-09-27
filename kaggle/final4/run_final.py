@@ -61,7 +61,7 @@ for f in find("level1_test_*.parquet"):
         F = F.with_columns(pl.col("p").alias("p1"), pl.Series("p", stack.predict(M.X(F, cfg2["stack_features"]))))
         sel = M.decide(F, cfg2, head)
         if comp is not None:   # decided after all shards of the country are in (records compete across shards)
-            by_ctry.setdefault(tag.rsplit("_", 1)[0], []).append(F.select("s1", "r", "p1", pl.col("p").alias("p2"), "noaddr_r"))
+            by_ctry.setdefault(tag.rsplit("_", 1)[0], []).append(F.select("s1", "r", "p1", pl.col("p").alias("p2"), "noaddr_r").filter(pl.col("p1") > 1e-4))   # same pre-filter as er3-global4 (memory)
             sel = sel.head(0)
         bs = F.filter((pl.col("p") > 0.01) & (pl.col("p") < 0.99))["s1"].unique()
         F.filter(pl.col("s1").is_in(bs.implode())).select("s1", "r", "p").write_parquet(f"{WD}/level2_band_{tag}")

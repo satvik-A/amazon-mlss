@@ -17,26 +17,32 @@ REP = open(f"{WD}/results_global4_{CTRY}.txt", "w")
 def log(*a):
     s = " ".join(str(x) for x in a); print(s, flush=True); REP.write(s + "\n"); REP.flush()
 IN = os.path.dirname(find("train_s1.parquet")[0]); ART = os.path.dirname(find("indic_lexicon.parquet")[0])
-POOL = find(f"pool_train_{CTRY}.parquet")[0]; MD = os.path.dirname(find("decision.json")[0])
-cfg = json.load(open(f"{MD}/decision.json")); m = lgb.Booster(model_file=f"{MD}/matcher.txt"); fc = cfg["features"]
-log(f"ref {REF}; {CTRY}; pool {POOL}; policy {cfg['policy']}")
+PART = "__PART__"   # "k/K": score shards k::K and write p1 parts; "combine": competition + sibling features from all parts
 NZ = Normalizer(ART)
 S = pl.read_parquet(f"{IN}/train_s1.parquet").filter(pl.col("country") == CTRY)
-st = M.claim_stats(POOL); nf = M.s1_name_freq(S, NZ)
-SN = pl.concat([NZ.transform(S.slice(i, 1_000_000)) for i in range(0, S.height, 1_000_000)])
 Rall = pl.scan_parquet([f"{IN}/train_s2.parquet", f"{IN}/train_s3.parquet"]).filter(pl.col("country") == CTRY).collect()
-RN = pl.concat([NZ.transform(Rall.slice(i, 1_000_000)) for i in range(0, Rall.height, 1_000_000)])
-log(f"normalised {S.height} S1 + {Rall.height} records  {time.time()-T0:.0f}s")
+if PART != "combine":
+    POOL = find(f"pool_train_{CTRY}.parquet")[0]; MD = os.path.dirname(find("decision.json")[0])
+    cfg = json.load(open(f"{MD}/decision.json")); m = lgb.Booster(model_file=f"{MD}/matcher.txt"); fc = cfg["features"]
+    log(f"ref {REF}; {CTRY}; part {PART}; pool {POOL}; policy {cfg['policy']}")
+    st = M.claim_stats(POOL); nf = M.s1_name_freq(S, NZ)
+    SN = pl.concat([NZ.transform(S.slice(i, 1_000_000)) for i in range(0, S.height, 1_000_000)])
+    RN = pl.concat([NZ.transform(Rall.slice(i, 1_000_000)) for i in range(0, Rall.height, 1_000_000)])
+    log(f"normalised {S.height} S1 + {Rall.height} records  {time.time()-T0:.0f}s")
 NSH = 16; out = []
-for k in range(NSH):
-    pool = pl.scan_parquet(POOL).filter(pl.col("s1").hash(3) % NSH == k).collect(engine="streaming").drop("y", strict=False).join(st, on="r", how="left").join(nf, on="s1", how="left")
-    F = M.pool_features(pool, None, None, NZ, QN=SN.filter(pl.col("entity_id").is_in(pool["s1"].unique().implode())),
-                        RN=RN.filter(pl.col("entity_id").is_in(pool["r"].unique().implode())))
-    del pool
-    F = M.apply_policy(F, cfg["policy"])
-    F = F.with_columns(pl.Series("p1", m.predict(M.X(F, fc))))
-    out.append(F.select("s1", "r", "p1")); log(f"shard {k}: {F.height} rows  {time.time()-T0:.0f}s"); del F
-D = pl.concat(out); del out, SN, RN
+if PART != "combine":
+    k0, KK = (int(x) for x in PART.split("/"))
+    for k in range(k0, NSH, KK):
+        pool = pl.scan_parquet(POOL).filter(pl.col("s1").hash(3) % NSH == k).collect(engine="streaming").drop("y", strict=False).join(st, on="r", how="left").join(nf, on="s1", how="left")
+        F = M.pool_features(pool, None, None, NZ, QN=SN.filter(pl.col("entity_id").is_in(pool["s1"].unique().implode())),
+                            RN=RN.filter(pl.col("entity_id").is_in(pool["r"].unique().implode())))
+        del pool
+        F = M.apply_policy(F, cfg["policy"])
+        F = F.with_columns(pl.Series("p1", m.predict(M.X(F, fc))))
+        F.select("s1", "r", "p1").filter(pl.col("p1") > 1e-4).write_parquet(f"{WD}/p1_{CTRY}_{k:02d}.parquet"); log(f"shard {k}: {F.height} rows  {time.time()-T0:.0f}s"); del F
+    log(f"part {PART} DONE {time.time()-T0:.0f}s"); sys.exit(0)
+D = pl.concat([pl.read_parquet(f) for f in find(f"p1_{CTRY}_*.parquet")])
+log(f"combine: {len(find(f'p1_{CTRY}_*.parquet'))} scored shards")
 gt = pl.read_parquet(f"{IN}/gt_rows.parquet").filter(pl.col("source1_entity_id").is_in(S["entity_id"].implode())) \
        .with_columns(pl.col("matched_entity_ids").fill_null("").str.split(",")).explode("matched_entity_ids") \
        .filter(pl.col("matched_entity_ids") != "").select(pl.col("source1_entity_id").alias("s1"), pl.col("matched_entity_ids").alias("r"))
