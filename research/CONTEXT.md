@@ -258,3 +258,7 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - Remaining 2 attempts: France-only threshold probes (er-final4-frs t 0.90/0.85, er-final4-frl t 0.70/0.65; US/India identical to final4).
   Rationale: the India->US transfer test lost mostly precision and stricter thresholds recovered part of it; France is the only unlabelled
   country (15% of S1). Final ranking = private score of the best public file, so a probe that scores lower costs nothing.
+- 20:12 LB probe files ready (all validator PASS, --check-ids): er-final4-{frs (France 0.90/0.85), frl (0.70/0.65), frs2 (0.95/0.92),
+  all85 (all 0.85/0.80), all85frs (all 0.85/0.80 + France 0.90/0.85)} -> kaggle/final4_<name>/sub/. research/revariant.py re-decides
+  final4 from its saved level2_band files (reproduces final4 exactly, 5,792,338 pairs; local frs byte-identical to Kaggle frs) ->
+  any further threshold variant in ~2 min without Kaggle.
