@@ -137,4 +137,4 @@ Update this file whenever anything is found, decided or dropped. It is the singl
 - [x] Stack 4: level-2 C 0.9860 (final3 0.9842). final4 validator PASS -> upload 1 (kaggle/final4/sub == kaggle/final4/kout).
 - [x] Rejected on pass 4 (see CONTEXT): competition + sibling layer (-0.0004), orphan-weighted thresholds (= unweighted), sibling rescue rule/LightGBM,
       per country x source thresholds (+0.0002), conditioned top-1, self-training for France (India->US simulation: worse).
-- [x] LB final4 = 0.981. [x] Probe files built (frs, frl, frs2, all85, all85frs). [ ] LB scores of the probes.
+- [x] LB final4 = 0.981. [x] Probe files built (frs, frl, frs2, all85, all85frs). [x] Probes scored (best us85in82 0.981244). [x] Final zip submission/XCalibur_submission.zip built + validated.
