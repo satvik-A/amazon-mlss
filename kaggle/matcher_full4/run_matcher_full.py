@@ -90,6 +90,10 @@ syn = pl.concat(syn)
 syn = syn.filter(pl.col("_addr") != pl.col("business_address"))
 Rsyn = syn.select(pl.col("_rs").alias("entity_id"), "business_name", pl.col("_addr").alias("business_address"), "country")
 Psyn = syn.select([pl.col("_rs").alias("r") if c == "r" else (pl.lit(0, dtype=pool["y"].dtype).alias("y") if c == "y" else pl.col(c)) for c in pool.columns])
+# pass 4: the embedding columns must NOT be copied from the true pair: a twin with a different street is not the S1's
+# nearest embedding neighbour, and copying erk/esim (the top-2 features) taught the matcher that a perfect embedding
+# match can be negative (level-1 C 0.9680 vs 0.9749 for a model trained without twins)
+Psyn = Psyn.with_columns(*[pl.lit(None, dtype=pool[c].dtype).alias(c) for c in ("erk", "esim") if c in pool.columns])
 log(f"synthetic street twins (A split, negatives): {Psyn.height}; e.g. {syn.select('business_address', '_addr').head(3).rows()}")
 pool = pl.concat([pool, Psyn], how="vertical_relaxed")
 R = pl.concat([R, Rsyn.select(R.columns)], how="vertical_relaxed")
@@ -102,10 +106,20 @@ A, Bv, Cv = F.filter(pl.col("h") < 60), F.filter((pl.col("h") >= 60) & (pl.col("
 del F
 params = dict(objective="binary", learning_rate=0.05, num_leaves=255, min_data_in_leaf=200, feature_fraction=0.8,
               bagging_fraction=0.8, bagging_freq=1, lambda_l2=1.0, verbose=-1, num_threads=os.cpu_count())
-dA = lgb.Dataset(M.X(A, fc), A["y"].to_numpy(), feature_name=fc, free_raw_data=True)
-dB = lgb.Dataset(M.X(Bv, fc), Bv["y"].to_numpy(), reference=dA)
-m = lgb.train(params, dA, 4000, valid_sets=[dB], callbacks=[lgb.early_stopping(100), lgb.log_evaluation(250)])
-m.save_model(f"{WD}/matcher.txt"); del dA, dB, A
+# pass 4 guard: train with and without the synthetic street twins, keep the model with the better rank-threshold F on B
+def _fit(Ad):
+    dA = lgb.Dataset(M.X(Ad, fc), Ad["y"].to_numpy(), feature_name=fc, free_raw_data=True)
+    dB = lgb.Dataset(M.X(Bv, fc), Bv["y"].to_numpy(), reference=dA)
+    return lgb.train(params, dA, 4000, valid_sets=[dB], callbacks=[lgb.early_stopping(100), lgb.log_evaluation(500)])
+def _fB(mm):
+    b = Bv.with_columns(pl.Series("p", mm.predict(M.X(Bv, fc)))); sB_ = b["s1"].unique()
+    gB_ = gt.filter(pl.col("s1").is_in(sB_.implode()))
+    return max(macro_f05(rank_threshold(b, a, c), gB_, sB_)["f05"] for a in (0.5, 0.6, 0.7, 0.8) for c in (0.5, 0.6, 0.7, 0.8))
+cands_m = {"with twins (erk/esim cleared)": _fit(A), "no twins": _fit(A.filter(~pl.col("r").str.contains("SYN")))}
+scores = {k: _fB(v) for k, v in cands_m.items()}
+log(f"matcher variants, rank-threshold F on B: {scores}")
+m = cands_m[max(scores, key=scores.get)]; log(f"kept: {max(scores, key=scores.get)}")
+m.save_model(f"{WD}/matcher.txt"); del A, cands_m
 Bv = Bv.with_columns(pl.Series("p", m.predict(M.X(Bv, fc)))); Cv = Cv.with_columns(pl.Series("p", m.predict(M.X(Cv, fc))))
 log("top features (gain):", [(f, int(g)) for f, g in sorted(zip(fc, m.feature_importance("gain")), key=lambda x: -x[1])[:25]])
 sub = lambda g_, d: g_.filter(pl.col("s1").is_in(d["s1"].unique().implode()))
