@@ -223,3 +223,8 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   student inherits them. Reference: same model with US-B thresholds 0.9611 (t 0.95/0.90); in-domain US model 0.9788 (P 0.9932).
   Lesson: an unseen country costs ~0.02, almost all PRECISION -> France (and test in general, 2x orphans) wants stricter thresholds.
   Do not retry self-training / pseudo-labelling with the level-1 teacher.
+- **Matcher 4 bug (09:30):** level-1 C 0.9680 (P 0.9871, singleton 0.918) vs pass 3 0.9743, although ceiling 0.9986 and pool recall 0.994.
+  A LightGBM trained on half of B (no synthetic twins) scored 0.9749 on the same C (0.9742 without erk/esim) -> the A split was poisoned:
+  the 120k synthetic street twins copy ALL blocking columns from the true pair, now including erk/esim (the top-2 features by gain)
+  -> "perfect embedding match, label 0". Fix 8382d55: twins get erk/esim null; the job trains with/without twins and keeps the better on B.
+  Deleted the downstream runs that used the bad matcher (l1test4 x3, xenc-score4, er3-global4 parts). Rerun 09:35.
