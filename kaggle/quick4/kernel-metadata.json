@@ -1,0 +1,19 @@
+{
+ "id": "satvikaderla/er-quick4",
+ "title": "er-quick4",
+ "code_file": "run_quick4.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": false,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "dataset_sources": [
+  "satvikaderla/amazon-ml-er-2026-data"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "satvikaderla/er-stack4",
+  "satvikaderla/er-matcher-full4"
+ ]
+}
