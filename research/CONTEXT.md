@@ -269,3 +269,6 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
   0.85/0.80 0.98577 (0.98529), 0.90/0.85 0.98539 -> all85* variants dropped. France S1-empty rate: final4 5.83%, frs2 6.04%, frs3 6.10%
   vs test singleton rate 5.64% -> frs3 would mostly empty real matches; skipped. Split thresholds keep top-1 looser, extras strict:
   fr8595 (France t1 0.85, t2 0.95): 835,096 France pairs, empty 5.90%; fr9095: 834,915, 5.97%. Street filter 65/80 on top of frs2: -268 / -1448 pairs only.
+- LB: fr8595 (France 0.85/0.95) 0.981203 < frs2 (0.95/0.92) 0.981225 = frs3 (0.97/0.95) 0.981225 -> France plateau; strict t1 is right
+  (France's true empty rate is above the global 5.64%). Last probe built: ui7570frs2 (US/India 0.75/0.70 — held-out 0.98627 vs 0.98619,
+  tie under orphan weighting — + France 0.95/0.92): US +6.3k, India +6.0k pairs vs final4.
