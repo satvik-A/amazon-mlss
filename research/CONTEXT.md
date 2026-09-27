@@ -279,3 +279,5 @@ US +0.0072, India +0.0113. On the band alone: level-1 p AUC 0.965, MuRIL 0.948, 
 - LB: all85frs2 (US/India 0.85/0.80) 0.981157; ui8277frs2 (0.82/0.77) **0.981232 = new best**. US/India curve on LB: 0.75 0.981103,
   0.80 0.981225, 0.82 0.981232, 0.85 0.981157 -> optimum ~0.81-0.82 (held-out said 0.75-0.80: test wants slightly more caution).
   Last 2 attempts: per-country split us85in82 / in85us82 (France 0.95/0.92).
+- LB: us85in82 (US 0.85/0.80, India 0.82/0.77, France 0.95/0.92) **0.981244 = best**. Additive read: US 0.82->0.85 +0.000012,
+  India 0.82->0.85 -0.000087. Last attempt: us88in82 (US 0.88/0.83, rest unchanged) — extends the only still-rising trend.
